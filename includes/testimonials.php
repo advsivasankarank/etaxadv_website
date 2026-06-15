@@ -1,35 +1,56 @@
 <?php
 require_once __DIR__ . '/../support/config.php';
 
+function testimonial_db_available(): bool {
+  static $available = null;
+
+  if ($available !== null) {
+    return $available;
+  }
+
+  try {
+    db();
+    $available = true;
+  } catch (Throwable $e) {
+    $available = false;
+  }
+
+  return $available;
+}
+
 function testimonial_ensure_schema(): void {
   static $ready = false;
 
-  if ($ready) {
+  if ($ready || !testimonial_db_available()) {
     return;
   }
 
-  db()->exec("
-    CREATE TABLE IF NOT EXISTS testimonials (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      created_at DATETIME NOT NULL,
-      approved_at DATETIME NULL,
-      client_name VARCHAR(120) NOT NULL,
-      company_name VARCHAR(160) NOT NULL,
-      city VARCHAR(120) NOT NULL,
-      mobile VARCHAR(20) NOT NULL,
-      email VARCHAR(190) NOT NULL,
-      service_availed VARCHAR(160) NOT NULL,
-      rating TINYINT NOT NULL,
-      testimonial_text TEXT NOT NULL,
-      publish_permission TINYINT(1) NOT NULL DEFAULT 0,
-      status ENUM('pending','approved','rejected') NOT NULL DEFAULT 'pending',
-      admin_notes TEXT NULL,
-      is_spam TINYINT(1) NOT NULL DEFAULT 0,
-      updated_at DATETIME NOT NULL
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
-  ");
+  try {
+    db()->exec("
+      CREATE TABLE IF NOT EXISTS testimonials (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        created_at DATETIME NOT NULL,
+        approved_at DATETIME NULL,
+        client_name VARCHAR(120) NOT NULL,
+        company_name VARCHAR(160) NOT NULL,
+        city VARCHAR(120) NOT NULL,
+        mobile VARCHAR(20) NOT NULL,
+        email VARCHAR(190) NOT NULL,
+        service_availed VARCHAR(160) NOT NULL,
+        rating TINYINT NOT NULL,
+        testimonial_text TEXT NOT NULL,
+        publish_permission TINYINT(1) NOT NULL DEFAULT 0,
+        status ENUM('pending','approved','rejected') NOT NULL DEFAULT 'pending',
+        admin_notes TEXT NULL,
+        is_spam TINYINT(1) NOT NULL DEFAULT 0,
+        updated_at DATETIME NOT NULL
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    ");
 
-  $ready = true;
+    $ready = true;
+  } catch (Throwable $e) {
+    $ready = false;
+  }
 }
 
 testimonial_ensure_schema();
@@ -105,6 +126,10 @@ function testimonial_clean_multiline(?string $value, int $maxLength): string {
 }
 
 function testimonial_get_summary(): array {
+  if (!testimonial_db_available()) {
+    return ['total_reviews' => 0, 'average_rating' => 0.0];
+  }
+
   try {
     $stmt = db()->query("
       SELECT
@@ -124,6 +149,10 @@ function testimonial_get_summary(): array {
 }
 
 function testimonial_get_featured(int $limit = 6): array {
+  if (!testimonial_db_available()) {
+    return [];
+  }
+
   try {
     $stmt = db()->prepare("
       SELECT id, client_name, company_name, city, service_availed, rating, testimonial_text, created_at
