@@ -98,7 +98,6 @@ $resource_links = [
 if (!function_exists('app_href')) {
   function app_href(string $path): string {
     global $site_root;
-
     return ($site_root !== '' ? $site_root : '') . $path;
   }
 }
@@ -113,7 +112,6 @@ function page_url(string $path): string {
   if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
     return $path;
   }
-
   return 'https://www.etaxadv.com' . $path;
 }
 
@@ -122,7 +120,6 @@ function render_nav_link(array $item, string $current_page, string $extra_classe
   $classes = trim('nav-link ' . $extra_classes . ($is_active ? ' is-active' : ''));
   $class_attr = ' class="' . htmlspecialchars($classes) . '"';
   $aria_current = $is_active ? ' aria-current="page"' : '';
-
   return sprintf(
     '<a href="%s"%s%s>%s</a>',
     htmlspecialchars(site_href($item['href'])),
@@ -188,7 +185,7 @@ $og_image = $og_image ?? '/assets/img/og-image.jpg';
   <meta name="google-site-verification" content="REPLACE_WITH_GSC_CODE" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="<?= htmlspecialchars(site_href('/assets/css/style.css')) ?>" />
 <?php if (!empty($extra_css)): ?>
   <link rel="stylesheet" href="<?= htmlspecialchars($extra_css) ?>" />
@@ -208,29 +205,13 @@ $og_image = $og_image ?? '/assets/img/og-image.jpg';
 
 <a class="skip-link" href="#main-content">Skip to content</a>
 
-<div class="topbar">
-  <div class="container topbar-inner">
-    <div class="topbar-contact">
-      <a href="tel:+919894626300">+91 98946 26300</a>
-      <a href="mailto:info@etaxadv.com">info@etaxadv.com</a>
-    </div>
-    <div class="topbar-topics" aria-label="Primary service areas">
-      <span>GST</span>
-      <span>Income Tax</span>
-      <span>Legal</span>
-      <span>HR Compliance</span>
-      <span>Payroll</span>
-    </div>
-  </div>
-</div>
-
 <header class="site-header" id="siteHeader">
   <div class="container header-shell">
     <a class="brand" href="<?= htmlspecialchars(site_href('/index.php')) ?>" aria-label="E Tax Advisors home">
       <span class="brand-mark" aria-hidden="true">ET</span>
       <div class="brand-copy">
         <span class="brand-name">E Tax Advisors</span>
-        <span class="brand-tag">Tax &bull; Legal &bull; Compliance &bull; Technology</span>
+        <span class="brand-tag">Premium Tax &bull; Legal &bull; Advisory</span>
       </div>
     </a>
 
@@ -255,11 +236,8 @@ $og_image = $og_image ?? '/assets/img/og-image.jpg';
               <h3><?= htmlspecialchars($column['heading']) ?></h3>
 <?php foreach ($column['items'] as $service): ?>
               <a class="mega-menu-link" href="<?= htmlspecialchars(site_href($service['href'])) ?>">
-                <span class="mega-menu-icon" aria-hidden="true"></span>
-                <span class="mega-menu-copy">
-                  <strong><?= htmlspecialchars($service['title']) ?></strong>
-                  <span><?= htmlspecialchars($service['description']) ?></span>
-                </span>
+                <strong><?= htmlspecialchars($service['title']) ?></strong>
+                <span><?= htmlspecialchars($service['description']) ?></span>
               </a>
 <?php endforeach; ?>
             </section>
@@ -301,7 +279,6 @@ $og_image = $og_image ?? '/assets/img/og-image.jpg';
     </nav>
 
     <div class="header-actions">
-      <a class="header-link" href="<?= htmlspecialchars(site_href('/client-support.php')) ?>">Client Login</a>
       <a class="btn btn-primary btn-sm" href="<?= htmlspecialchars(site_href('/contact.php#consult')) ?>">Book Consultation</a>
     </div>
 
@@ -358,16 +335,3 @@ $og_image = $og_image ?? '/assets/img/og-image.jpg';
     </div>
   </div>
 </header>
-
-<div class="trust-announcement">
-  <div class="container trust-announcement-inner">
-    <span class="trust-announcement-title">Trusted by Businesses Across India</span>
-    <div class="trust-points" aria-label="Trust indicators">
-      <span>GST Experts</span>
-      <span>Advocates</span>
-      <span>Tax Consultants</span>
-      <span>HR Compliance Specialists</span>
-      <span>Technology Driven</span>
-    </div>
-  </div>
-</div>
