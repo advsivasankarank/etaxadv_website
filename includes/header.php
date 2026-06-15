@@ -13,8 +13,15 @@ if (!isset($page_path)) {
 
 $page_description = trim($page_description);
 $current_page = basename($_SERVER['PHP_SELF'] ?? 'index.php');
-$script_dir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/'));
-$site_root = $script_dir === '/' || $script_dir === '.' ? '' : rtrim($script_dir, '/');
+$site_root = '';
+$project_root = str_replace('\\', '/', realpath(dirname(__DIR__)) ?: dirname(__DIR__));
+$document_root = str_replace('\\', '/', realpath($_SERVER['DOCUMENT_ROOT'] ?? '') ?: ($_SERVER['DOCUMENT_ROOT'] ?? ''));
+
+if ($document_root !== '' && str_starts_with($project_root, $document_root)) {
+  $computed_root = substr($project_root, strlen($document_root));
+  $computed_root = str_replace('\\', '/', $computed_root);
+  $site_root = $computed_root === '' ? '' : rtrim($computed_root, '/');
+}
 
 $nav_items = [
   ['href' => '/index.php', 'label' => 'Home', 'match' => ['index.php']],
