@@ -2,7 +2,7 @@
 $page_title = "About the Firm | E Tax Advisors Private Limited";
 $page_description = "Learn how E Tax Advisors Private Limited delivers tax, legal, compliance and bookkeeping support through disciplined workflows, review controls and client communication standards.";
 $page_path = '/about.php';
-include __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/header.php';
 ?>
 
 <main id="main-content">
@@ -126,4 +126,4 @@ include __DIR__ . '/includes/header.php';
   </section>
 </main>
 
-<?php include __DIR__ . '/includes/footer.php'; ?>
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

@@ -2,7 +2,7 @@
 $page_title = "Client Support & Escalation | E Tax Advisors";
 $page_description = "Raise service concerns, feedback, suggestions and escalation requests through the structured support and ticketing desk of E Tax Advisors.";
 $page_path = '/client-support.php';
-include __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/header.php';
 ?>
 
 <main id="main-content">
@@ -120,4 +120,4 @@ include __DIR__ . '/includes/header.php';
   </section>
 </main>
 
-<?php include __DIR__ . '/includes/footer.php'; ?>
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

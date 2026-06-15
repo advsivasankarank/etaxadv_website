@@ -36,6 +36,32 @@ window.scrollTestimonialTrack = function(direction){
   track.scrollBy({ left: delta, behavior: 'smooth' });
 };
 
+window.sendConsult = function(event){
+  event.preventDefault();
+
+  const form = event.target;
+  const name = form.querySelector('[name="name"]')?.value.trim() ?? '';
+  const mobile = form.querySelector('[name="mobile"]')?.value.trim() ?? '';
+  const email = form.querySelector('[name="email"]')?.value.trim() ?? '';
+  const organisation = form.querySelector('[name="organisation"]')?.value.trim() ?? '';
+  const service = form.querySelector('[name="service"]')?.value.trim() ?? '';
+  const preferredTime = form.querySelector('[name="preferred_time"]')?.value.trim() ?? '';
+  const message = form.querySelector('[name="message"]')?.value.trim() ?? '';
+  const subject = encodeURIComponent('Consultation Request - E Tax Advisors');
+  const body = encodeURIComponent(
+    'Name: ' + name + '\n' +
+    'Mobile: ' + mobile + '\n' +
+    'Email: ' + email + '\n' +
+    'Organisation: ' + organisation + '\n' +
+    'Service: ' + service + '\n' +
+    'Preferred Consultation Time: ' + preferredTime + '\n\n' +
+    'Requirement:\n' + message
+  );
+
+  window.location.href = 'mailto:support@etaxadv.com?subject=' + subject + '&body=' + body;
+  return false;
+};
+
 document.addEventListener('click', function(event){
   const menu = document.getElementById('mobileNav');
   const trigger = document.querySelector('.hamburger');
@@ -48,6 +74,12 @@ document.addEventListener('click', function(event){
 
   if (quickLinks && quickTrigger && !quickLinks.contains(event.target) && !quickTrigger.contains(event.target)) {
     toggleQuickLinks(false);
+  }
+});
+
+document.addEventListener('submit', function(event){
+  if (event.target.matches('.js-consult-form')) {
+    sendConsult(event);
   }
 });
 

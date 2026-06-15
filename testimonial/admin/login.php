@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     session_regenerate_id(true);
     $_SESSION['admin_id'] = (int)$user['id'];
     $_SESSION['admin_username'] = $user['username'];
-    header('Location: /testimonial/admin/dashboard.php');
+    header('Location: ' . app_href('/testimonial/admin/dashboard.php'));
     exit;
   }
 

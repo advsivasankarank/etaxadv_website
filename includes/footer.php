@@ -65,6 +65,6 @@
   <a href="<?= htmlspecialchars(site_href('/contact.php#consult')) ?>">Consult</a>
 </div>
 
-<script src="<?= htmlspecialchars(site_href('/assets/js/main.js')) ?>"></script>
+<script src="<?= htmlspecialchars(app_href('/assets/js/main.js')) ?>"></script>
 </body>
 </html>

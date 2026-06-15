@@ -10,7 +10,7 @@ if (!isset($page_title) || trim($page_title) === '') {
 $extra_css = "";
 // $extra_css = "/support/assets/support.css";
 
-include __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../includes/header.php';
 ?>
 
 <!-- Support Page Wrapper (optional, keeps spacing nice) -->

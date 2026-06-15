@@ -2,7 +2,7 @@
 $page_title = "Tax, Legal & Compliance Services | E Tax Advisors";
 $page_description = "Explore tax, GST, TDS, payroll, company compliance, trust support, bookkeeping and representation services delivered through structured advisory workflows.";
 $page_path = '/services.php';
-include __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/header.php';
 ?>
 
 <main id="main-content">
@@ -199,4 +199,4 @@ include __DIR__ . '/includes/header.php';
   </section>
 </main>
 
-<?php include __DIR__ . '/includes/footer.php'; ?>
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

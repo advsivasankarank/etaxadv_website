@@ -20,6 +20,31 @@ define('FROM_EMAIL', 'support@etaxadv.com');
 define('SITE_NAME', 'E Tax Advisors Private Limited');
 define('SESSION_NAME', 'ETAX_SUPPORT');
 
+function app_root_path(): string {
+  static $root = null;
+
+  if ($root !== null) {
+    return $root;
+  }
+
+  $project_root = str_replace('\\', '/', realpath(dirname(__DIR__)) ?: dirname(__DIR__));
+  $document_root = str_replace('\\', '/', realpath($_SERVER['DOCUMENT_ROOT'] ?? '') ?: ($_SERVER['DOCUMENT_ROOT'] ?? ''));
+
+  if ($document_root !== '' && str_starts_with($project_root, $document_root)) {
+    $computed_root = substr($project_root, strlen($document_root));
+    $computed_root = str_replace('\\', '/', $computed_root);
+    $root = $computed_root === '' ? '' : rtrim($computed_root, '/');
+  } else {
+    $root = '';
+  }
+
+  return $root;
+}
+
+function app_href(string $path): string {
+  return app_root_path() . $path;
+}
+
 // PDO
 function db(): PDO {
   static $pdo = null;

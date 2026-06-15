@@ -39,10 +39,18 @@ $service_quick_links = [
   ['href' => '/ekanakan.php', 'label' => 'e-Kanakan'],
 ];
 
-function site_href(string $path): string {
-  global $site_root;
+if (!function_exists('app_href')) {
+  function app_href(string $path): string {
+    global $site_root;
 
-  return ($site_root !== '' ? $site_root : '') . $path;
+    return ($site_root !== '' ? $site_root : '') . $path;
+  }
+}
+
+if (!function_exists('site_href')) {
+  function site_href(string $path): string {
+    return app_href($path);
+  }
 }
 
 function page_url(string $path): string {

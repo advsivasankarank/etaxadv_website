@@ -2,22 +2,22 @@
 require __DIR__ . '/config.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-  header('Location: /testimonial/');
+  header('Location: ' . app_href('/testimonial/'));
   exit;
 }
 
 if (!testimonial_verify_csrf($_POST['csrf_token'] ?? null)) {
-  header('Location: /testimonial/?error=' . urlencode('Security validation failed. Please try again.'));
+  header('Location: ' . app_href('/testimonial/') . '?error=' . urlencode('Security validation failed. Please try again.'));
   exit;
 }
 
 if (testimonial_submission_too_fast()) {
-  header('Location: /testimonial/?error=' . urlencode('Submission blocked by spam protection. Please try again after a moment.'));
+  header('Location: ' . app_href('/testimonial/') . '?error=' . urlencode('Submission blocked by spam protection. Please try again after a moment.'));
   exit;
 }
 
 if (trim((string)($_POST['website'] ?? '')) !== '') {
-  header('Location: /testimonial/?submitted=1');
+  header('Location: ' . app_href('/testimonial/') . '?submitted=1');
   exit;
 }
 
@@ -35,7 +35,7 @@ if (
   $name === '' || $company === '' || $city === '' || $mobile === '' || $email === '' ||
   $service === '' || $testimonial === '' || $rating < 1 || $rating > 5
 ) {
-  header('Location: /testimonial/?error=' . urlencode('Please complete all required fields correctly.'));
+  header('Location: ' . app_href('/testimonial/') . '?error=' . urlencode('Please complete all required fields correctly.'));
   exit;
 }
 
@@ -74,5 +74,5 @@ $body = "New testimonial submission awaiting approval\n\n" .
 
 send_mail_safe(OFFICE_EMAIL, 'New Testimonial Submission', $body);
 
-header('Location: /testimonial/?submitted=1');
+header('Location: ' . app_href('/testimonial/') . '?submitted=1');
 exit;

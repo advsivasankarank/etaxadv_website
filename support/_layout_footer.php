@@ -1,4 +1,4 @@
   </div>
 </section>
 
-<?php include __DIR__ . '/../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>

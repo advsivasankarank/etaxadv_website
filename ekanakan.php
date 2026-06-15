@@ -2,7 +2,7 @@
 $page_title = "e-Kanakan Bookkeeping Division | E Tax Advisors";
 $page_description = "Explore e-Kanakan, the bookkeeping and accounting support division of E Tax Advisors, built for ledger discipline, reconciliations and MIS-ready reporting.";
 $page_path = '/ekanakan.php';
-include __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/header.php';
 ?>
 
 <main id="main-content">
@@ -158,4 +158,4 @@ include __DIR__ . '/includes/header.php';
   </section>
 </main>
 
-<?php include __DIR__ . '/includes/footer.php'; ?>
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

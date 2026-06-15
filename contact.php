@@ -2,7 +2,7 @@
 $page_title = "Contact & Consultation | E Tax Advisors";
 $page_description = "Book a consultation with E Tax Advisors Private Limited for tax, legal, compliance, bookkeeping and representation requirements.";
 $page_path = '/contact.php';
-include __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/header.php';
 ?>
 
 <main id="main-content">
@@ -76,7 +76,7 @@ include __DIR__ . '/includes/header.php';
         <h3>Book a Consultation</h3>
         <p>Complete the form and we will open your preferred email client with a structured consultation draft.</p>
 
-        <form onsubmit="return sendConsult(event)">
+        <form class="js-consult-form">
           <div class="form-grid">
             <div class="field">
               <label for="c_name">Name</label>
@@ -135,30 +135,4 @@ include __DIR__ . '/includes/header.php';
   </section>
 </main>
 
-<script>
-  function sendConsult(event){
-    event.preventDefault();
-    const form = event.target;
-    const name = form.querySelector('[name="name"]').value.trim();
-    const mobile = form.querySelector('[name="mobile"]').value.trim();
-    const email = form.querySelector('[name="email"]').value.trim();
-    const organisation = form.querySelector('[name="organisation"]').value.trim();
-    const service = form.querySelector('[name="service"]').value.trim();
-    const preferredTime = form.querySelector('[name="preferred_time"]').value.trim();
-    const message = form.querySelector('[name="message"]').value.trim();
-    const subject = encodeURIComponent('Consultation Request - E Tax Advisors');
-    const body = encodeURIComponent(
-      'Name: ' + name + '\n' +
-      'Mobile: ' + mobile + '\n' +
-      'Email: ' + email + '\n' +
-      'Organisation: ' + organisation + '\n' +
-      'Service: ' + service + '\n' +
-      'Preferred Consultation Time: ' + preferredTime + '\n\n' +
-      'Requirement:\n' + message
-    );
-    window.location.href = 'mailto:support@etaxadv.com?subject=' + subject + '&body=' + body;
-    return false;
-  }
-</script>
-
-<?php include __DIR__ . '/includes/footer.php'; ?>
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

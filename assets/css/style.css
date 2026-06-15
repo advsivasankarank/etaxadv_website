@@ -1096,6 +1096,36 @@ textarea.input{
   resize:vertical;
 }
 
+.form{
+  display:grid;
+  gap:14px;
+}
+.grid2{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:18px;
+}
+.lead{
+  margin:0 0 16px;
+  color:var(--muted);
+  font-size:1.03rem;
+}
+.actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  margin-top:18px;
+}
+.btn.primary{
+  color:#fff;
+  background:linear-gradient(135deg, var(--amber-soft), var(--amber));
+}
+.btn.secondary{
+  border:1px solid var(--line-strong);
+  background:#fff;
+  color:var(--text);
+}
+
 .faq-list{
   display:grid;
   gap:14px;
@@ -1268,6 +1298,7 @@ textarea.input{
   .process-timeline,
   .grid-3,
   .grid-2,
+  .grid2,
   .form-grid{
     grid-template-columns:1fr;
   }
@@ -1314,7 +1345,8 @@ textarea.input{
     line-height:1.02;
   }
   .hero-actions,
-  .cta-actions{
+  .cta-actions,
+  .actions{
     flex-direction:column;
     align-items:stretch;
   }

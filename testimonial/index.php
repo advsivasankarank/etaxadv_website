@@ -13,7 +13,7 @@ $flashErr = $_GET['error'] ?? '';
 testimonial_register_form_render();
 $csrf = testimonial_csrf_token();
 
-include __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../includes/header.php';
 ?>
 
 <main id="main-content">
@@ -28,7 +28,7 @@ include __DIR__ . '/../includes/header.php';
         </p>
         <div class="hero-actions">
           <a class="btn btn-primary" href="#share-review">Share Your Experience</a>
-          <a class="btn btn-outline" href="/contact.php#consult">Book Consultation</a>
+          <a class="btn btn-outline" href="<?= htmlspecialchars(app_href('/contact.php#consult')) ?>">Book Consultation</a>
         </div>
       </div>
 
@@ -110,7 +110,7 @@ include __DIR__ . '/../includes/header.php';
         <div class="alert err"><?= h($flashErr) ?></div>
 <?php endif; ?>
 
-        <form method="post" action="/testimonial/submit.php">
+        <form method="post" action="<?= htmlspecialchars(app_href('/testimonial/submit.php')) ?>">
           <input type="hidden" name="csrf_token" value="<?= h($csrf) ?>" />
           <input type="text" name="website" class="sr-only" tabindex="-1" autocomplete="off" />
 
@@ -172,4 +172,4 @@ include __DIR__ . '/../includes/header.php';
   </section>
 </main>
 
-<?php include __DIR__ . '/../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>

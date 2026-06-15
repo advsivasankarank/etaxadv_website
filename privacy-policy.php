@@ -2,7 +2,7 @@
 $page_title = "Privacy Policy | E Tax Advisors";
 $page_description = "Read the privacy policy for E Tax Advisors Private Limited covering data collection, client communications and website usage.";
 $page_path = '/privacy-policy.php';
-include __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/header.php';
 ?>
 
 <main id="main-content">
@@ -47,4 +47,4 @@ include __DIR__ . '/includes/header.php';
   </section>
 </main>
 
-<?php include __DIR__ . '/includes/footer.php'; ?>
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

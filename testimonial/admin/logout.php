@@ -4,5 +4,5 @@ session_name(SESSION_NAME);
 session_start();
 session_unset();
 session_destroy();
-header('Location: /testimonial/admin/login.php');
+header('Location: ' . app_href('/testimonial/admin/login.php'));
 exit;

@@ -2,7 +2,7 @@
 $page_title = "e-Task Workflow Platform | E Tax Advisors";
 $page_description = "Preview the upcoming e-Task workflow and compliance tracking platform from E Tax Advisors Private Limited.";
 $page_path = '/e-task.php';
-include __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/header.php';
 ?>
 
 <main id="main-content">
@@ -37,4 +37,4 @@ include __DIR__ . '/includes/header.php';
   </section>
 </main>
 
-<?php include __DIR__ . '/includes/footer.php'; ?>
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

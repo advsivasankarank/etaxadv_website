@@ -4,7 +4,7 @@ require_testimonial_admin();
 
 $id = (int)($_GET['id'] ?? $_POST['id'] ?? 0);
 if ($id <= 0) {
-  header('Location: /testimonial/admin/dashboard.php');
+  header('Location: ' . app_href('/testimonial/admin/dashboard.php'));
   exit;
 }
 
@@ -13,7 +13,7 @@ $stmt->execute([$id]);
 $item = $stmt->fetch();
 
 if (!$item) {
-  header('Location: /testimonial/admin/dashboard.php');
+  header('Location: ' . app_href('/testimonial/admin/dashboard.php'));
   exit;
 }
 
@@ -70,7 +70,7 @@ require __DIR__ . '/../../support/_layout_header.php';
 
 <div class="card">
   <h3>Edit Testimonial</h3>
-  <p class="note"><a href="/testimonial/admin/dashboard.php"><b>Back to Dashboard</b></a></p>
+  <p class="note"><a href="<?= h(app_href('/testimonial/admin/dashboard.php')) ?>"><b>Back to Dashboard</b></a></p>
   <?php if ($ok): ?><div class="alert ok"><?= h($ok) ?></div><?php endif; ?>
   <?php if ($err): ?><div class="alert err"><?= h($err) ?></div><?php endif; ?>
 

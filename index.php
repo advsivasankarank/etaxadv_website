@@ -6,7 +6,7 @@ $page_description = "Integrated tax, legal, compliance and bookkeeping advisory 
 $page_path = '/index.php';
 $homepageTestimonialSummary = testimonial_get_summary();
 $homepageTestimonials = testimonial_get_featured(8);
-include __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/header.php';
 ?>
 
 <main id="main-content">
@@ -407,8 +407,8 @@ include __DIR__ . '/includes/header.php';
 <?php endif; ?>
 
       <div class="section-actions">
-        <a class="btn btn-outline" href="/testimonial/">View All Testimonials</a>
-        <a class="btn btn-primary" href="/testimonial/#share-review">Share Your Experience</a>
+        <a class="btn btn-outline" href="<?= htmlspecialchars(app_href('/testimonial/')) ?>">View All Testimonials</a>
+        <a class="btn btn-primary" href="<?= htmlspecialchars(app_href('/testimonial/#share-review')) ?>">Share Your Experience</a>
       </div>
     </div>
   </section>
@@ -439,7 +439,7 @@ include __DIR__ . '/includes/header.php';
         </div>
 
         <div class="contact-card">
-          <form onsubmit="return sendConsult(event)">
+          <form class="js-consult-form">
             <div class="form-grid">
               <div class="field">
                 <label for="home_name">Name</label>
@@ -540,33 +540,4 @@ include __DIR__ . '/includes/header.php';
   </section>
 </main>
 
-<script>
-  function sendConsult(event){
-    event.preventDefault();
-    const form = event.target;
-    const name = form.querySelector('[name=\"name\"]').value.trim();
-    const mobile = form.querySelector('[name=\"mobile\"]').value.trim();
-    const emailField = form.querySelector('[name=\"email\"]');
-    const orgField = form.querySelector('[name=\"organisation\"]');
-    const service = form.querySelector('[name=\"service\"]').value.trim();
-    const timeField = form.querySelector('[name=\"preferred_time\"]');
-    const message = form.querySelector('[name=\"message\"]').value.trim();
-    const email = emailField ? emailField.value.trim() : '';
-    const organisation = orgField ? orgField.value.trim() : '';
-    const preferredTime = timeField ? timeField.value.trim() : '';
-    const subject = encodeURIComponent('Consultation Request - E Tax Advisors');
-    const body = encodeURIComponent(
-      'Name: ' + name + '\n' +
-      'Mobile: ' + mobile + '\n' +
-      'Email: ' + email + '\n' +
-      'Organisation: ' + organisation + '\n' +
-      'Service: ' + service + '\n' +
-      'Preferred Consultation Time: ' + preferredTime + '\n\n' +
-      'Requirement:\n' + message
-    );
-    window.location.href = 'mailto:support@etaxadv.com?subject=' + subject + '&body=' + body;
-    return false;
-  }
-</script>
-
-<?php include __DIR__ . '/includes/footer.php'; ?>
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

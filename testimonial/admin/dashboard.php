@@ -78,8 +78,8 @@ require __DIR__ . '/../../support/_layout_header.php';
   <h3>Testimonial Management</h3>
   <p class="note">
     Logged in as <b><?= h($_SESSION['admin_username'] ?? 'admin') ?></b> |
-    <a href="/testimonial/" target="_blank"><b>View Public Testimonials</b></a> |
-    <a href="/testimonial/admin/logout.php"><b>Logout</b></a>
+    <a href="<?= h(app_href('/testimonial/')) ?>" target="_blank"><b>View Public Testimonials</b></a> |
+    <a href="<?= h(app_href('/testimonial/admin/logout.php')) ?>"><b>Logout</b></a>
   </p>
 
   <?php if ($ok): ?><div class="alert ok"><?= h($ok) ?></div><?php endif; ?>
@@ -148,7 +148,7 @@ require __DIR__ . '/../../support/_layout_header.php';
         <td><?= h($item['created_at']) ?></td>
         <td>
           <div class="admin-action-stack">
-            <a class="btn btn-outline btn-sm" href="/testimonial/admin/edit.php?id=<?= (int)$item['id'] ?>">Edit</a>
+            <a class="btn btn-outline btn-sm" href="<?= h(app_href('/testimonial/admin/edit.php')) ?>?id=<?= (int)$item['id'] ?>">Edit</a>
             <form method="post">
               <input type="hidden" name="csrf_token" value="<?= h($csrf) ?>" />
               <input type="hidden" name="id" value="<?= (int)$item['id'] ?>" />

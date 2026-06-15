@@ -5,7 +5,7 @@ session_start();
 
 function require_testimonial_admin(): void {
   if (empty($_SESSION['admin_id'])) {
-    header('Location: /testimonial/admin/login.php');
+    header('Location: ' . app_href('/testimonial/admin/login.php'));
     exit;
   }
 }
