@@ -45,7 +45,6 @@
 !/testimonial/admin/logout.php
 !/support/
 /support/*
-!/support/config.php
 !/support/install.sql
 !/support/_layout_header.php
 !/support/_layout_footer.php
