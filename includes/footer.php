@@ -23,9 +23,11 @@
         <li><a href="<?= htmlspecialchars(site_href('/income-tax-consultant-puducherry.php')) ?>">Income Tax Advisory</a></li>
         <li><a href="<?= htmlspecialchars(site_href('/gst-consultant-puducherry.php')) ?>">GST Compliance</a></li>
         <li><a href="<?= htmlspecialchars(site_href('/tds-return-filing.php')) ?>">TDS & Payroll</a></li>
+        <li><a href="<?= htmlspecialchars(site_href('/litigation-representation.php')) ?>">Litigation & Representation</a></li>
         <li><a href="<?= htmlspecialchars(site_href('/roc-company-compliance.php')) ?>">Company / LLP Compliance</a></li>
-        <li><a href="<?= htmlspecialchars(site_href('/labour-law-compliance.php')) ?>">Labour Law</a></li>
-        <li><a href="<?= htmlspecialchars(site_href('/trust-society-registration.php')) ?>">Trust & Society</a></li>
+        <li><a href="<?= htmlspecialchars(site_href('/labour-law-hr-compliance.php')) ?>">Labour Law & HR Compliance</a></li>
+        <li><a href="<?= htmlspecialchars(site_href('/manufacturing-compliance.php')) ?>">Manufacturing Compliance</a></li>
+        <li><a href="<?= htmlspecialchars(site_href('/trust-ngo-advisory.php')) ?>">Trust & NGO Advisory</a></li>
         <li><a href="<?= htmlspecialchars(site_href('/project-report-cma.php')) ?>">Project Reports</a></li>
       </ul>
     </div>
@@ -46,10 +48,11 @@
       <ul class="footer-links">
         <li><a href="<?= htmlspecialchars(site_href('/about.php')) ?>">About</a></li>
         <li><a href="<?= htmlspecialchars(site_href('/team.php')) ?>">Our Team</a></li>
+        <li><a href="<?= htmlspecialchars(site_href('/team/ks-sivasankaran.php')) ?>">K. Sivasankaran — Profile</a></li>
         <li><a href="<?= htmlspecialchars(site_href('/why-choose-us.php')) ?>">Why Choose Us</a></li>
+        <li><a href="<?= htmlspecialchars(site_href('/success-stories.php')) ?>">Success Stories</a></li>
+        <li><a href="<?= htmlspecialchars(site_href('/faq.php')) ?>">FAQs</a></li>
         <li><a href="<?= htmlspecialchars(site_href('/contact.php')) ?>">Contact</a></li>
-        <li><a href="<?= htmlspecialchars(site_href('/testimonial/')) ?>">Testimonials</a></li>
-        <li><a href="<?= htmlspecialchars(site_href('/client-support.php')) ?>">Client Support</a></li>
         <li><a href="<?= htmlspecialchars(site_href('/privacy-policy.php')) ?>">Privacy Policy</a></li>
       </ul>
     </div>

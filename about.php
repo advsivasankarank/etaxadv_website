@@ -2,6 +2,7 @@
 $page_title = "About the Firm | E Tax Advisors Private Limited";
 $page_description = "Learn how E Tax Advisors Private Limited delivers tax, legal, compliance and bookkeeping support through disciplined workflows, review controls and client communication standards.";
 $page_path = '/about.php';
+require_once __DIR__ . '/content/trust-sections.php';
 require_once __DIR__ . '/includes/header.php';
 ?>
 
@@ -124,6 +125,10 @@ require_once __DIR__ . '/includes/header.php';
       </div>
     </div>
   </section>
+
+  <?php render_consultation_process_section(); ?>
+  <?php render_membership_section(); ?>
+  <?php render_service_guarantee_section(); ?>
 </main>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

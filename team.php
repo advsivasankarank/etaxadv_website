@@ -75,11 +75,11 @@ require_once __DIR__ . '/includes/header.php';
 
       <div class="leadership-grid">
         <article class="leader-card">
-          <div class="leader-portrait" aria-label="Portrait of K. Sivasankaran">KS</div>
+          <a href="/team/ks-sivasankaran.php" class="leader-portrait" aria-label="View full profile of K. Sivasankaran" style="display:grid;place-items:center;text-decoration:none;">KS</a>
           <div class="leader-body">
             <p class="leader-role">Advocate | Tax Consultant</p>
-            <h3>K. Sivasankaran</h3>
-            <p class="leader-credentials">B.Com., LL.B. &mdash; 15+ years of professional experience</p>
+            <h3><a href="/team/ks-sivasankaran.php" style="color:inherit;text-decoration:none;">K. Sivasankaran</a></h3>
+            <p class="leader-credentials">B.Com., LL.B. &mdash; Nearly 30 years of professional experience</p>
             <ul class="leader-expertise">
               <li>GST Advisory &amp; Litigation &ndash; notice response, assessment representation and appeal support</li>
               <li>Income Tax Advisory &ndash; return review, scrutiny handling and tax planning</li>
@@ -93,7 +93,10 @@ require_once __DIR__ . '/includes/header.php';
               corporate compliance management for operating entities, and structured commercial documentation
               advisory for businesses and promoters.
             </p>
-            <a class="btn btn-primary" href="contact.php#consult">Schedule a Consultation</a>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <a class="btn btn-outline btn-sm" href="/team/ks-sivasankaran.php">View Full Profile</a>
+              <a class="btn btn-primary btn-sm" href="contact.php#consult">Schedule a Consultation</a>
+            </div>
           </div>
         </article>
 

@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/testimonials.php';
 require_once __DIR__ . '/includes/contact-handler.php';
+require_once __DIR__ . '/content/trust-sections.php';
 
 $page_title = "Premium Tax, Legal & Compliance Advisory | E Tax Advisors Private Limited";
 $page_description = "Integrated tax, legal, compliance and bookkeeping advisory for businesses, founders, trustees and promoters seeking structured execution and professional representation.";
@@ -65,11 +66,11 @@ require_once __DIR__ . '/includes/header.php';
 
       <div class="leadership-grid">
         <article class="leader-card">
-          <div class="leader-photo">
+          <a href="/team/ks-sivasankaran.php" class="leader-photo" aria-label="View full profile of K. Sivasankaran" style="display:block;text-decoration:none;">
             <div class="leader-photo-placeholder">KS</div>
-          </div>
+          </a>
           <div class="leader-body">
-            <h3>K. Sivasankaran</h3>
+            <h3><a href="/team/ks-sivasankaran.php" style="color:inherit;text-decoration:none;">K. Sivasankaran</a></h3>
             <p class="leader-role">Advocate | Tax Consultant</p>
             <p class="leader-credentials">B.Com., LL.B. — 15+ years in tax, litigation and corporate compliance advisory.</p>
             <ul class="leader-expertise">
@@ -78,7 +79,10 @@ require_once __DIR__ . '/includes/header.php';
               <li>Corporate &amp; Labour Law Compliance</li>
               <li>Commercial Documentation &amp; Contracts</li>
             </ul>
-            <a class="btn btn-primary btn-sm" href="contact.php#consult">Schedule Consultation</a>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <a class="btn btn-outline btn-sm" href="/team/ks-sivasankaran.php">View Full Profile</a>
+              <a class="btn btn-primary btn-sm" href="contact.php#consult">Schedule Consultation</a>
+            </div>
           </div>
         </article>
 
@@ -167,6 +171,8 @@ require_once __DIR__ . '/includes/header.php';
       </div>
     </div>
   </section>
+
+<?php render_membership_section(); ?>
 
   <section class="section" id="who-we-advise">
     <div class="container">
@@ -344,6 +350,8 @@ require_once __DIR__ . '/includes/header.php';
       </div>
     </div>
   </section>
+
+<?php render_service_guarantee_section(); ?>
 
   <section class="section" id="consult">
     <div class="container consult-shell">

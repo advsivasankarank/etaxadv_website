@@ -24,11 +24,11 @@ if ($document_root !== '' && str_starts_with($project_root, $document_root)) {
 }
 
 $nav_items = [
-  ['href' => '/services.php', 'label' => 'Services', 'match' => ['services.php', 'digital-signature.php', 'gst-consultant-puducherry.php', 'gst-consultant-chennai.php', 'income-tax-consultant-puducherry.php', 'income-tax-consultant-chennai.php', 'tds-return-filing.php', 'labour-law-compliance.php', 'roc-company-compliance.php', 'trust-society-registration.php', 'project-report-cma.php']],
+  ['href' => '/services.php', 'label' => 'Services', 'match' => ['services.php', 'digital-signature.php', 'gst-consultant-puducherry.php', 'gst-consultant-chennai.php', 'income-tax-consultant-puducherry.php', 'income-tax-consultant-chennai.php', 'tds-return-filing.php', 'labour-law-compliance.php', 'labour-law-hr-compliance.php', 'roc-company-compliance.php', 'trust-society-registration.php', 'trust-ngo-advisory.php', 'manufacturing-compliance.php', 'litigation-representation.php', 'project-report-cma.php']],
   ['href' => '/index.php#technology-driven-advisory', 'label' => 'Products', 'match' => ['ekanakan.php', 'e-task.php', 'tools.php', 'e-hr.php', 'e-pani.php', 'salpro.php', 'etax-academy.php']],
   ['href' => '/index.php#who-we-advise', 'label' => 'Industries', 'match' => []],
   ['href' => '/index.php#insights-updates', 'label' => 'Resources', 'match' => []],
-  ['href' => '/about.php', 'label' => 'About', 'match' => ['about.php', 'team.php', 'why-choose-us.php']],
+  ['href' => '/about.php', 'label' => 'About', 'match' => ['about.php', 'team.php', 'why-choose-us.php', 'ks-sivasankaran.php', 'success-stories.php', 'faq.php']],
   ['href' => '/contact.php', 'label' => 'Contact', 'match' => ['contact.php']],
 ];
 
@@ -38,8 +38,8 @@ $service_mega_menu = [
     'items' => [
       ['href' => '/income-tax-consultant-puducherry.php', 'title' => 'Income Tax', 'description' => 'Advisory, planning and representation for businesses and promoters.'],
       ['href' => '/gst-consultant-puducherry.php', 'title' => 'GST', 'description' => 'Return, review and notice support for evolving GST obligations.'],
-      ['href' => '/tds-return-filing.php', 'title' => 'TDS', 'description' => 'Structured withholding, reconciliations and payroll-linked compliance.'],
-      ['href' => '/contact.php#consult', 'title' => 'Tax Litigation', 'description' => 'Replies, appeals and coordinated tax matter handling.'],
+      ['href' => '/tds-return-filing.php', 'title' => 'TDS & Payroll', 'description' => 'Structured withholding, reconciliations and payroll-linked compliance.'],
+      ['href' => '/litigation-representation.php', 'title' => 'Tax Litigation', 'description' => 'Replies, appeals and coordinated tax matter handling.'],
     ],
   ],
   [
@@ -54,19 +54,19 @@ $service_mega_menu = [
   [
     'heading' => 'Legal Services',
     'items' => [
-      ['href' => '/labour-law-compliance.php', 'title' => 'Labour Law', 'description' => 'HR, labour and employee regulation advisory for employers.'],
+      ['href' => '/labour-law-hr-compliance.php', 'title' => 'Labour Law & HR', 'description' => 'ESI, PF, contract labour, factory act and employer compliance advisory.'],
       ['href' => '/roc-company-compliance.php', 'title' => 'Corporate Law', 'description' => 'Entity governance, records and statutory decision support.'],
-      ['href' => '/trust-society-registration.php', 'title' => 'Trust & Society', 'description' => 'Registration and compliance for NGOs and trusts.'],
-      ['href' => '/contact.php#consult', 'title' => 'Litigation', 'description' => 'Matter preparation, responses and professional representation support.'],
+      ['href' => '/trust-ngo-advisory.php', 'title' => 'Trust & NGO', 'description' => 'Registration, FCRA, 12A/80G and governance for charitable institutions.'],
+      ['href' => '/litigation-representation.php', 'title' => 'Litigation', 'description' => 'Matter preparation, responses and professional representation support.'],
     ],
   ],
   [
-    'heading' => 'Advisory & More',
+    'heading' => 'Industry Solutions',
     'items' => [
+      ['href' => '/manufacturing-compliance.php', 'title' => 'Manufacturing', 'description' => 'Factory compliance, GST input credit, labour law and inspection readiness.'],
       ['href' => '/project-report-cma.php', 'title' => 'Project Reports', 'description' => 'CMA data, DPR and bank loan documentation support.'],
       ['href' => '/digital-signature.php', 'title' => 'Digital Signature', 'description' => 'DSC issuance and renewal assistance.'],
-      ['href' => '/why-choose-us.php', 'title' => 'Why Choose Us', 'description' => 'Our integrated advisory model explained.'],
-      ['href' => '/team.php', 'title' => 'Our Team', 'description' => 'Meet our experienced professionals.'],
+      ['href' => '/team/ks-sivasankaran.php', 'title' => 'Our Team', 'description' => 'Meet our experienced professionals and practice leads.'],
     ],
   ],
 ];
@@ -156,7 +156,7 @@ $organization_schema = [
 require_once __DIR__ . '/security.php';
 send_security_headers();
 
-$services_active = in_array($current_page, ['services.php', 'digital-signature.php', 'gst-consultant-puducherry.php', 'gst-consultant-chennai.php', 'income-tax-consultant-puducherry.php', 'income-tax-consultant-chennai.php', 'tds-return-filing.php', 'labour-law-compliance.php', 'roc-company-compliance.php', 'trust-society-registration.php', 'project-report-cma.php'], true);
+$services_active = in_array($current_page, ['services.php', 'digital-signature.php', 'gst-consultant-puducherry.php', 'gst-consultant-chennai.php', 'income-tax-consultant-puducherry.php', 'income-tax-consultant-chennai.php', 'tds-return-filing.php', 'labour-law-compliance.php', 'labour-law-hr-compliance.php', 'roc-company-compliance.php', 'trust-society-registration.php', 'trust-ngo-advisory.php', 'manufacturing-compliance.php', 'litigation-representation.php', 'project-report-cma.php'], true);
 $products_active = in_array($current_page, ['ekanakan.php', 'e-task.php', 'tools.php', 'e-hr.php', 'e-pani.php', 'salpro.php', 'etax-academy.php'], true);
 
 $og_image = $og_image ?? '/assets/img/og-image.jpg';
@@ -302,9 +302,11 @@ $og_image = $og_image ?? '/assets/img/og-image.jpg';
         <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/income-tax-consultant-puducherry.php')) ?>">Income Tax</a>
         <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/gst-consultant-puducherry.php')) ?>">GST</a>
         <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/tds-return-filing.php')) ?>">TDS & Payroll</a>
+        <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/litigation-representation.php')) ?>">Tax Litigation</a>
         <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/roc-company-compliance.php')) ?>">Company / LLP Compliance</a>
-        <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/labour-law-compliance.php')) ?>">Labour Law</a>
-        <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/trust-society-registration.php')) ?>">Trust & Society</a>
+        <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/labour-law-hr-compliance.php')) ?>">Labour Law & HR</a>
+        <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/trust-ngo-advisory.php')) ?>">Trust & NGO Advisory</a>
+        <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/manufacturing-compliance.php')) ?>">Manufacturing Compliance</a>
         <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/project-report-cma.php')) ?>">Project Reports & CMA</a>
         <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/digital-signature.php')) ?>">Digital Signature</a>
 
