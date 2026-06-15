@@ -1,0 +1,49 @@
+<?php
+// ==============================
+// E Tax Advisors - Support Config
+// ==============================
+
+// DB Settings
+// Update these on the live server with your actual cPanel MySQL values.
+// Example live values shared by you:
+// DB_NAME => etaxadv_support
+// DB_USER => etaxadv_supportuser
+// DB_PASS => your live password
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'your_database_name');
+define('DB_USER', 'your_database_user');
+define('DB_PASS', 'your_database_password');
+
+// Site
+define('OFFICE_EMAIL', 'support@etaxadv.com');
+define('FROM_EMAIL', 'support@etaxadv.com');
+define('SITE_NAME', 'E Tax Advisors Private Limited');
+define('SESSION_NAME', 'ETAX_SUPPORT');
+
+// PDO
+function db(): PDO {
+  static $pdo = null;
+  if ($pdo instanceof PDO) return $pdo;
+  $dsn = "mysql:host=".DB_HOST.";dbname=".DB_NAME.";charset=utf8mb4";
+  $pdo = new PDO($dsn, DB_USER, DB_PASS, [
+    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+  ]);
+  return $pdo;
+}
+
+function h(?string $s): string {
+  return htmlspecialchars($s ?? '', ENT_QUOTES, 'UTF-8');
+}
+
+function make_ticket_id(): string {
+  return "ETA-".date('Ymd')."-".strtoupper(substr(bin2hex(random_bytes(3)),0,6));
+}
+
+function send_mail_safe(string $to, string $subject, string $body): void {
+  // Basic mail() for cPanel shared hosting
+  $headers = "From: ".FROM_EMAIL."\r\n".
+             "Reply-To: ".OFFICE_EMAIL."\r\n".
+             "X-Mailer: PHP/" . phpversion();
+  @mail($to, $subject, $body, $headers);
+}
