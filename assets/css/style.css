@@ -83,10 +83,12 @@ body.menu-open { overflow: hidden; }
 }
 .brand-copy { display: flex; flex-direction: column; gap: 2px; }
 .brand-name {
-  font-family: var(--font-display); font-size: 18px; font-weight: 700;
-  line-height: 1.1; letter-spacing: -.01em;
+  font-family: var(--font-display); font-size: 22px; font-weight: 700;
+  line-height: 1.1; letter-spacing: -.01em; white-space: nowrap;
 }
-.brand-tag { color: var(--gray-600); font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; }
+.brand-name-full { display: inline; }
+.brand-name-short { display: none; }
+.brand-tag { color: var(--gray-600); font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
 
 .nav { display: flex; align-items: center; gap: 4px; }
 .nav-item { position: relative; }
@@ -645,7 +647,8 @@ textarea.input { min-height: 120px; resize: vertical; }
   .hamburger { display: block; }
   .hero-shell { grid-template-columns: 1fr; gap: 40px; }
   .hero-copy { max-width: 100%; }
-  .credibility-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .credibility-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .credibility-item strong { font-size: 24px; }
   .practice-grid { grid-template-columns: repeat(2, 1fr); }
   .industry-grid { grid-template-columns: repeat(2, 1fr); }
   .consult-shell { grid-template-columns: 1fr; padding: 32px; }
@@ -662,6 +665,9 @@ textarea.input { min-height: 120px; resize: vertical; }
   .footer-grid { grid-template-columns: 1fr; }
   .footer-bottom { flex-direction: column; text-align: center; }
   .header-actions .header-link { display: none; }
+  .brand-name { font-size: 18px; }
+  .brand-name-full { display: none; }
+  .brand-name-short { display: inline; }
 }
 
 @media (max-width: 620px) {

@@ -210,8 +210,8 @@ $og_image = $og_image ?? '/assets/img/og-image.jpg';
     <a class="brand" href="<?= htmlspecialchars(site_href('/index.php')) ?>" aria-label="E Tax Advisors home">
       <span class="brand-mark" aria-hidden="true">ET</span>
       <div class="brand-copy">
-        <span class="brand-name">E Tax Advisors</span>
-        <span class="brand-tag">Premium Tax &bull; Legal &bull; Advisory</span>
+        <span class="brand-name"><span class="brand-name-full">E Tax Advisors Private Limited</span><span class="brand-name-short">E Tax Advisors</span></span>
+        <span class="brand-tag">Advocates | Tax Consultants | Compliance Advisors</span>
       </div>
     </a>
 

@@ -45,11 +45,11 @@ require_once __DIR__ . '/includes/header.php';
   <section class="credibility-strip">
     <div class="container">
       <div class="credibility-grid">
-        <div class="credibility-item"><strong>3000+</strong><span>Business Clients</span></div>
+        <div class="credibility-item"><strong>1000+</strong><span>Clients Served</span></div>
         <div class="credibility-item"><strong>15+</strong><span>Years Experience</span></div>
-        <div class="credibility-item"><strong>50+</strong><span>Advisory Professionals</span></div>
+        <div class="credibility-item"><strong>5+</strong><span>Advisory Professionals</span></div>
         <div class="credibility-item"><strong>8</strong><span>Core Practice Areas</span></div>
-        <div class="credibility-item"><strong>98%</strong><span>Notice Resolution Rate</span></div>
+        <div class="credibility-item"><strong>500+</strong><span>Notice &amp; Compliance Matters</span></div>
         <div class="credibility-item"><strong>PAN India</strong><span>Service Coverage</span></div>
       </div>
     </div>
