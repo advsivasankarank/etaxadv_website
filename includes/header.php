@@ -278,9 +278,7 @@ $og_image = $og_image ?? '/assets/img/og-image.jpg';
 <?php endforeach; ?>
     </nav>
 
-    <div class="header-actions">
-      <a class="btn btn-primary btn-sm" href="<?= htmlspecialchars(site_href('/contact.php#consult')) ?>">Book Consultation</a>
-    </div>
+
 
     <button
       class="hamburger"
