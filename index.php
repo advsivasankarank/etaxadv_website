@@ -1,7 +1,11 @@
 <?php
+require_once __DIR__ . '/includes/testimonials.php';
+
 $page_title = "Premium Tax, Legal & Compliance Advisory | E Tax Advisors Private Limited";
 $page_description = "Integrated tax, legal, compliance and bookkeeping advisory for businesses, founders, trustees and promoters seeking structured execution and professional representation.";
 $page_path = '/index.php';
+$homepageTestimonialSummary = testimonial_get_summary();
+$homepageTestimonials = testimonial_get_featured(8);
 include __DIR__ . '/includes/header.php';
 ?>
 
@@ -59,22 +63,30 @@ include __DIR__ . '/includes/header.php';
       </div>
     </div>
 
-    <div class="container trust-strip">
-      <div class="trust-item">
-        <strong>Corporate-Ready</strong>
-        <span>Professional communication, governed timelines and documentation-led delivery.</span>
+    <div class="container authority-ribbon">
+      <div class="authority-pill">
+        <strong>3000+</strong>
+        <span>Clients Served</span>
       </div>
-      <div class="trust-item">
-        <strong>Representation Support</strong>
-        <span>Replies, submissions, hearing preparation and statutory follow-through.</span>
+      <div class="authority-pill">
+        <strong>15+</strong>
+        <span>Years Experience</span>
       </div>
-      <div class="trust-item">
-        <strong>Compliance Control</strong>
-        <span>Review checkpoints before filing, reporting and closure sign-off.</span>
+      <div class="authority-pill">
+        <strong>50+</strong>
+        <span>Professionals</span>
       </div>
-      <div class="trust-item">
-        <strong>Client Access</strong>
-        <span>Support desk, tools, WhatsApp access and structured consultation flow.</span>
+      <div class="authority-pill">
+        <strong>Dedicated</strong>
+        <span>Compliance Team</span>
+      </div>
+      <div class="authority-pill">
+        <strong>Technology</strong>
+        <span>Enabled Processes</span>
+      </div>
+      <div class="authority-pill">
+        <strong>Confidential</strong>
+        <span>&amp; Secure Handling</span>
       </div>
     </div>
   </section>
@@ -82,30 +94,160 @@ include __DIR__ . '/includes/header.php';
   <section class="section">
     <div class="container">
       <div class="section-header">
-        <p class="section-label">Why Clients Choose Us</p>
-        <h2 class="section-title">A premium advisory experience without losing operational rigor.</h2>
+        <p class="section-label">Leadership Team</p>
+        <h2 class="section-title">Visible leadership for clients who need experience, accountability and judgment.</h2>
+        <p class="section-intro">
+          Premium advisory relationships are built on who leads the matter, how decisions are reviewed and whether
+          clients can rely on experienced hands when timing, compliance and representation risk matter.
+        </p>
+      </div>
+
+      <div class="leadership-grid">
+        <article class="leader-card">
+          <div class="leader-portrait" aria-label="Placeholder portrait for K. Sivasankaran">KS</div>
+          <div class="leader-body">
+            <p class="leader-role">Advocate | Tax Consultant</p>
+            <h3>K. Sivasankaran</h3>
+            <p class="leader-credentials">B.Com., LL.B.</p>
+            <ul class="leader-expertise">
+              <li>GST Advisory &amp; Litigation</li>
+              <li>Income Tax Advisory</li>
+              <li>Corporate Compliance</li>
+              <li>Labour Law Advisory</li>
+              <li>Commercial Documentation</li>
+            </ul>
+            <a class="btn btn-primary" href="contact.php#consult">Schedule a Consultation</a>
+          </div>
+        </article>
+
+        <article class="leader-card">
+          <div class="leader-portrait" aria-label="Placeholder portrait for S. Muthulakshmi">SM</div>
+          <div class="leader-body">
+            <p class="leader-role">Managing Director</p>
+            <h3>S. Muthulakshmi</h3>
+            <p class="leader-credentials">Client-facing operations and compliance leadership</p>
+            <ul class="leader-expertise">
+              <li>Client Relations</li>
+              <li>Operations Management</li>
+              <li>Compliance Delivery</li>
+              <li>Business Development</li>
+            </ul>
+            <a class="btn btn-primary" href="contact.php#consult">Schedule a Consultation</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-muted">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-label">Who We Advise</p>
+        <h2 class="section-title">Structured advisory support for businesses and institutions that carry real operating responsibility.</h2>
+      </div>
+
+      <div class="who-grid">
+        <article class="who-card">
+          <div class="feature-icon">MS</div>
+          <h3>MSMEs</h3>
+          <p>Compliance, notices, documentation and periodic controls for growing small and medium enterprises.</p>
+        </article>
+        <article class="who-card">
+          <div class="feature-icon">MF</div>
+          <h3>Manufacturers</h3>
+          <p>GST, labour, entity and record discipline support for operationally intensive businesses.</p>
+        </article>
+        <article class="who-card">
+          <div class="feature-icon">TD</div>
+          <h3>Traders &amp; Distributors</h3>
+          <p>Return support, reconciliations, documentation and commercial control for moving-volume businesses.</p>
+        </article>
+        <article class="who-card">
+          <div class="feature-icon">ST</div>
+          <h3>Startups &amp; Entrepreneurs</h3>
+          <p>Formation, compliance setup, bookkeeping discipline and promoter-side advisory for scaling teams.</p>
+        </article>
+        <article class="who-card">
+          <div class="feature-icon">ED</div>
+          <h3>Educational Institutions</h3>
+          <p>Governance-sensitive support for entity, payroll, tax and administrative compliance requirements.</p>
+        </article>
+        <article class="who-card">
+          <div class="feature-icon">NG</div>
+          <h3>NGOs &amp; Trusts</h3>
+          <p>Registration, governance, reporting and compliance handling for institutions built on public trust.</p>
+        </article>
+        <article class="who-card">
+          <div class="feature-icon">PR</div>
+          <h3>Professionals</h3>
+          <p>Individual and practice-entity support for tax planning, compliance and documentation-sensitive matters.</p>
+        </article>
+        <article class="who-card">
+          <div class="feature-icon">FB</div>
+          <h3>Family-Owned Businesses</h3>
+          <p>Integrated advisory where business operations, promoter obligations and entity compliance intersect.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-label">Why E Tax Advisors</p>
+        <h2 class="section-title">Why businesses choose E Tax Advisors over a traditional accountant-led model.</h2>
         <p class="section-intro">
           The current market often forces clients to coordinate between separate accountants, tax consultants and compliance handlers.
           Our model closes that gap through one integrated workflow.
         </p>
       </div>
 
-      <div class="grid-3">
-        <article class="card card-muted">
-          <div class="feature-icon">01</div>
-          <h3>One coordinated advisory desk</h3>
-          <p>Tax, compliance, bookkeeping and documentation support align within a single client-facing structure.</p>
-        </article>
-        <article class="card card-muted">
-          <div class="feature-icon">02</div>
-          <h3>Controls before commitment</h3>
-          <p>Checklist validation, exception handling and internal review strengthen filing and response quality.</p>
-        </article>
-        <article class="card card-muted">
-          <div class="feature-icon">03</div>
-          <h3>Professional response discipline</h3>
-          <p>Clients receive documented communication, support routing, escalation structure and action clarity.</p>
-        </article>
+      <div class="comparison-shell">
+        <div class="comparison-head">
+          <div>Decision Area</div>
+          <div>Traditional Accountant</div>
+          <div>E Tax Advisors</div>
+        </div>
+        <div class="comparison-row">
+          <div>Compliance</div>
+          <div>Periodic filing focus</div>
+          <div>Filing plus review controls, documentation and follow-through</div>
+        </div>
+        <div class="comparison-row">
+          <div>Advisory</div>
+          <div>Mostly transaction-based guidance</div>
+          <div>Structured interpretation, risk view and action planning</div>
+        </div>
+        <div class="comparison-row">
+          <div>Technology</div>
+          <div>Low-process dependence on manual coordination</div>
+          <div>Platform-led workflows, tracking and accounting support tools</div>
+        </div>
+        <div class="comparison-row">
+          <div>Reporting</div>
+          <div>Submission-focused</div>
+          <div>Management-ready clarity, next actions and closure summaries</div>
+        </div>
+        <div class="comparison-row">
+          <div>Follow-up</div>
+          <div>Reactive response after filing</div>
+          <div>Documented escalation, support routing and response timelines</div>
+        </div>
+        <div class="comparison-row">
+          <div>Litigation Support</div>
+          <div>Limited notice handling depth</div>
+          <div>Notice response, representation support and matter coordination</div>
+        </div>
+        <div class="comparison-row">
+          <div>Dedicated Team</div>
+          <div>Single-handler dependency</div>
+          <div>Leadership oversight plus compliance and support coordination</div>
+        </div>
+        <div class="comparison-row">
+          <div>Business Insights</div>
+          <div>Compliance viewed in isolation</div>
+          <div>Books, tax, labour and entity issues viewed together</div>
+        </div>
       </div>
     </div>
   </section>
@@ -113,37 +255,70 @@ include __DIR__ . '/includes/header.php';
   <section class="section section-muted">
     <div class="container">
       <div class="section-header">
-        <p class="section-label">Service Portfolio</p>
-        <h2 class="section-title">Advisory and compliance support across the core business lifecycle.</h2>
-        <p class="section-intro">
-          Each line is designed to support both immediate statutory action and the quality of records that sit behind it.
-        </p>
+        <p class="section-label">Technology Driven Advisory</p>
+        <h2 class="section-title">A digital ecosystem designed to strengthen execution, visibility and client responsiveness.</h2>
       </div>
 
-      <div class="grid-4">
-        <article class="card service-card">
-          <div class="feature-icon">IT</div>
-          <h3>Income Tax</h3>
-          <p>Returns, notices, assessments, appeals and professional tax planning support.</p>
-          <a class="service-link" href="services.php#income-tax">View service details</a>
+      <div class="grid-3 tech-grid">
+        <article class="card tech-card">
+          <div class="feature-icon">EP</div>
+          <h3>e-Pani</h3>
+          <p class="tech-subtitle">Office Management Suite</p>
+          <p>Internal office coordination, work routing, task visibility and operating discipline for engagement execution.</p>
+          <ul class="list-clean">
+            <li>Operational control</li>
+            <li>Workflow visibility</li>
+            <li>Accountability support</li>
+          </ul>
+          <a class="service-link" href="contact.php#consult">Learn more</a>
         </article>
-        <article class="card service-card">
-          <div class="feature-icon">GST</div>
-          <h3>GST Advisory</h3>
-          <p>Registration, return support, reconciliations, notices, assessments and representation.</p>
-          <a class="service-link" href="services.php#gst">See GST scope</a>
+        <article class="card tech-card">
+          <div class="feature-icon">HR</div>
+          <h3>e-HR</h3>
+          <p class="tech-subtitle">HR &amp; Labour Compliance Platform</p>
+          <p>Structured support for labour law administration, people-process coordination and compliance delivery.</p>
+          <ul class="list-clean">
+            <li>Labour compliance workflows</li>
+            <li>HR coordination support</li>
+            <li>Documentation discipline</li>
+          </ul>
+          <a class="service-link" href="contact.php#consult">Learn more</a>
         </article>
-        <article class="card service-card">
-          <div class="feature-icon">ROC</div>
-          <h3>Company / LLP</h3>
-          <p>Entity compliance, ROC filings, annual obligations and event-based support.</p>
-          <a class="service-link" href="services.php#company">Review compliance support</a>
-        </article>
-        <article class="card service-card">
-          <div class="feature-icon">ACC</div>
+        <article class="card tech-card">
+          <div class="feature-icon">EK</div>
           <h3>e-Kanakan</h3>
-          <p>Structured bookkeeping, reconciliation controls and MIS-ready accounting support.</p>
-          <a class="service-link" href="ekanakan.php">Open bookkeeping division</a>
+          <p class="tech-subtitle">Accounting Automation</p>
+          <p>Bookkeeping and reconciliation support designed to improve record quality and downstream compliance readiness.</p>
+          <ul class="list-clean">
+            <li>Ledger discipline</li>
+            <li>Reconciliation control</li>
+            <li>MIS-ready support</li>
+          </ul>
+          <a class="service-link" href="ekanakan.php">Learn more</a>
+        </article>
+        <article class="card tech-card">
+          <div class="feature-icon">SP</div>
+          <h3>SalPro</h3>
+          <p class="tech-subtitle">Salary Tax Planning System</p>
+          <p>A structured framework for salary-oriented tax planning, employee support and working-sheet efficiency.</p>
+          <ul class="list-clean">
+            <li>Employee tax clarity</li>
+            <li>Working automation support</li>
+            <li>Repeatable planning workflows</li>
+          </ul>
+          <a class="service-link" href="tools.php">Learn more</a>
+        </article>
+        <article class="card tech-card">
+          <div class="feature-icon">AC</div>
+          <h3>E Tax Academy</h3>
+          <p class="tech-subtitle">Professional Training &amp; Certification</p>
+          <p>Capability-building initiatives designed to improve technical execution, delivery consistency and professional readiness.</p>
+          <ul class="list-clean">
+            <li>Training and upskilling</li>
+            <li>Delivery consistency</li>
+            <li>Professional knowledge culture</li>
+          </ul>
+          <a class="service-link" href="contact.php#consult">Learn more</a>
         </article>
       </div>
     </div>
@@ -152,33 +327,40 @@ include __DIR__ . '/includes/header.php';
   <section class="section">
     <div class="container">
       <div class="section-header">
-        <p class="section-label">Delivery Model</p>
-        <h2 class="section-title">How an engagement moves from instruction to closure.</h2>
-        <p class="section-intro">
-          Our process is designed to reduce ambiguity, improve record quality and keep clients informed throughout the engagement.
-        </p>
+        <p class="section-label">Practice Area Highlights</p>
+        <h2 class="section-title">Focused support where the cost of delay, error or weak follow-up is high.</h2>
       </div>
 
-      <div class="process-timeline">
-        <article class="timeline-step">
-          <span class="timeline-number">1</span>
-          <h3>Scope & onboarding</h3>
-          <p>Engagement scope, document list, responsibilities and turnaround framework are confirmed upfront.</p>
+      <div class="grid-3 practice-grid">
+        <article class="card practice-card">
+          <h3>GST Notices &amp; Appeals</h3>
+          <p class="practice-problem">Common problems: notice anxiety, incomplete records, poor response framing and timeline pressure.</p>
+          <p class="practice-solution">We support matter review, documentation readiness, drafting support and authority-facing follow-through.</p>
+          <a class="btn btn-outline" href="contact.php#consult">Discuss GST matter</a>
         </article>
-        <article class="timeline-step">
-          <span class="timeline-number">2</span>
-          <h3>Document review</h3>
-          <p>Inputs are checked for completeness, deficiencies are flagged and clarifications are documented.</p>
+        <article class="card practice-card">
+          <h3>Income Tax Notices</h3>
+          <p class="practice-problem">Common problems: unexplained mismatches, scrutiny concerns, missing backup and unclear submission strategy.</p>
+          <p class="practice-solution">We help structure facts, records, response notes and escalation-sensitive handling.</p>
+          <a class="btn btn-outline" href="contact.php#consult">Review notice</a>
         </article>
-        <article class="timeline-step">
-          <span class="timeline-number">3</span>
-          <h3>Advisory execution</h3>
-          <p>Drafts, filings, reconciliations or submissions are prepared with internal quality checkpoints.</p>
+        <article class="card practice-card">
+          <h3>Labour Law Compliance</h3>
+          <p class="practice-problem">Common problems: fragmented HR processes, missed filings and weak documentation discipline.</p>
+          <p class="practice-solution">We align labour compliance with recurring controls, operational coordination and reporting discipline.</p>
+          <a class="btn btn-outline" href="contact.php#consult">Discuss labour compliance</a>
         </article>
-        <article class="timeline-step">
-          <span class="timeline-number">4</span>
-          <h3>Submission & follow-through</h3>
-          <p>Acknowledgements, follow-up items and next-stage client actions are communicated clearly.</p>
+        <article class="card practice-card">
+          <h3>Company &amp; LLP Compliance</h3>
+          <p class="practice-problem">Common problems: promoter-side confusion, due-date pressure and incomplete filing support.</p>
+          <p class="practice-solution">We coordinate entity compliance, event-based filings and management documentation follow-through.</p>
+          <a class="btn btn-outline" href="services.php#company">Explore support</a>
+        </article>
+        <article class="card practice-card">
+          <h3>Litigation &amp; Representation</h3>
+          <p class="practice-problem">Common problems: weak draft responses, inconsistent records and escalation risk.</p>
+          <p class="practice-solution">We support representation-sensitive matters with clearer documentation and structured response preparation.</p>
+          <a class="btn btn-outline" href="contact.php#consult">Schedule representation review</a>
         </article>
       </div>
     </div>
@@ -187,16 +369,148 @@ include __DIR__ . '/includes/header.php';
   <section class="section section-muted">
     <div class="container">
       <div class="section-header">
-        <p class="section-label">Industries We Support</p>
-        <h2 class="section-title">Structured support for diverse entity and management profiles.</h2>
+        <p class="section-label">Testimonials</p>
+        <h2 class="section-title">How clients describe the value of a more structured advisory relationship.</h2>
+        <p class="section-intro">
+          Average approved rating: <strong><?= h(number_format($homepageTestimonialSummary['average_rating'], 1)) ?>/5</strong>
+          across <strong><?= h((string)$homepageTestimonialSummary['total_reviews']) ?></strong> published client reviews.
+        </p>
       </div>
 
-      <div class="industry-grid">
-        <div class="industry-pill">SMEs & Family Businesses</div>
-        <div class="industry-pill">Professional Services</div>
-        <div class="industry-pill">Retail & Distribution</div>
-        <div class="industry-pill">Startups & Founder-led Teams</div>
-        <div class="industry-pill">Trusts & Societies</div>
+<?php if ($homepageTestimonials): ?>
+      <div class="testimonial-controls">
+        <button class="testimonial-nav" type="button" onclick="scrollTestimonialTrack('prev')" aria-label="Previous testimonials">Previous</button>
+        <button class="testimonial-nav" type="button" onclick="scrollTestimonialTrack('next')" aria-label="Next testimonials">Next</button>
+      </div>
+
+      <div class="testimonial-track" id="testimonialTrack">
+<?php foreach ($homepageTestimonials as $item): ?>
+        <article class="testimonial-card premium">
+          <div class="testimonial-meta">
+            <span class="verified-badge">Verified Client</span>
+            <span class="star-rating"><?= h(testimonial_issue_stars((int)$item['rating'])) ?></span>
+          </div>
+          <span class="testimonial-type"><?= h($item['service_availed']) ?></span>
+          <p><?= h($item['testimonial_text']) ?></p>
+          <div class="testimonial-footer">
+            <strong><?= h($item['client_name']) ?></strong>
+            <span><?= h($item['company_name']) ?><?php if ($item['city']): ?>, <?= h($item['city']) ?><?php endif; ?></span>
+          </div>
+        </article>
+<?php endforeach; ?>
+      </div>
+<?php else: ?>
+      <div class="card">
+        <h3>Approved testimonials will appear here.</h3>
+        <p>Reviews are displayed only after approval and only when the client has granted publish permission.</p>
+      </div>
+<?php endif; ?>
+
+      <div class="section-actions">
+        <a class="btn btn-outline" href="/testimonial/">View All Testimonials</a>
+        <a class="btn btn-primary" href="/testimonial/#share-review">Share Your Experience</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container consult-shell">
+      <div class="section-header">
+        <p class="section-label">Book A Consultation</p>
+        <h2 class="section-title">Start with a structured advisory discussion.</h2>
+        <p class="section-intro">
+          Use this route when you need a professional review of a notice, entity compliance issue, labour law requirement,
+          bookkeeping challenge or documentation-sensitive business decision.
+        </p>
+      </div>
+
+      <div class="contact-grid">
+        <div class="contact-card consult-benefits">
+          <h3>What this consultation helps you do</h3>
+          <ul class="list-clean">
+            <li>Clarify the issue, timeline and risk level before action is taken.</li>
+            <li>Identify what records, reconciliations or supporting papers are missing.</li>
+            <li>Route the matter to the right advisory, compliance or representation path.</li>
+          </ul>
+          <div class="consult-note">
+            <strong>Preferred matters</strong>
+            <span>GST notices, income tax notices, labour compliance, promoter issues, company compliance and accounting clean-up.</span>
+          </div>
+        </div>
+
+        <div class="contact-card">
+          <form onsubmit="return sendConsult(event)">
+            <div class="form-grid">
+              <div class="field">
+                <label for="home_name">Name</label>
+                <input class="input" id="home_name" name="name" required />
+              </div>
+              <div class="field">
+                <label for="home_mobile">Mobile</label>
+                <input class="input" id="home_mobile" name="mobile" required />
+              </div>
+              <div class="field">
+                <label for="home_email">Email</label>
+                <input class="input" id="home_email" name="email" type="email" required />
+              </div>
+              <div class="field">
+                <label for="home_org">Organisation</label>
+                <input class="input" id="home_org" name="organisation" />
+              </div>
+              <div class="field">
+                <label for="home_service">Service Required</label>
+                <input class="input" id="home_service" name="service" placeholder="GST, income tax, labour, company, bookkeeping, litigation, etc." required />
+              </div>
+              <div class="field">
+                <label for="home_time">Preferred Consultation Time</label>
+                <input class="input" id="home_time" name="preferred_time" placeholder="Today evening / Tomorrow morning / Specific date & time" required />
+              </div>
+              <div class="field full-span">
+                <label for="home_msg">Brief Requirement</label>
+                <textarea class="input" id="home_msg" name="message" required></textarea>
+              </div>
+              <div class="field full-span">
+                <button class="btn btn-primary" type="submit">Open Consultation Draft</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-muted">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-label">Insights &amp; Updates</p>
+        <h2 class="section-title">A reusable structure for thought leadership, compliance alerts and client-facing updates.</h2>
+      </div>
+
+      <div class="grid-4 insight-grid">
+        <article class="card insight-card">
+          <span class="insight-tag">GST Updates</span>
+          <h3>Periodic GST interpretation notes</h3>
+          <p>Use this space for filing changes, notice trends, reconciliation risks and practical GST guidance.</p>
+          <a class="service-link" href="contact.php#consult">Request update brief</a>
+        </article>
+        <article class="card insight-card">
+          <span class="insight-tag">Income Tax Updates</span>
+          <h3>Assessment and planning developments</h3>
+          <p>Use this block for income tax interpretations, filing alerts and representation-sensitive updates.</p>
+          <a class="service-link" href="contact.php#consult">Request update brief</a>
+        </article>
+        <article class="card insight-card">
+          <span class="insight-tag">Compliance Alerts</span>
+          <h3>Due-date and governance reminders</h3>
+          <p>Use this block for company, LLP, TDS, payroll and recurring compliance action alerts.</p>
+          <a class="service-link" href="contact.php#consult">Request update brief</a>
+        </article>
+        <article class="card insight-card">
+          <span class="insight-tag">Labour Law Updates</span>
+          <h3>Labour and HR compliance developments</h3>
+          <p>Use this space for labour compliance interpretations, process changes and employer response notes.</p>
+          <a class="service-link" href="contact.php#consult">Request update brief</a>
+        </article>
       </div>
     </div>
   </section>
@@ -225,5 +539,34 @@ include __DIR__ . '/includes/header.php';
     </div>
   </section>
 </main>
+
+<script>
+  function sendConsult(event){
+    event.preventDefault();
+    const form = event.target;
+    const name = form.querySelector('[name=\"name\"]').value.trim();
+    const mobile = form.querySelector('[name=\"mobile\"]').value.trim();
+    const emailField = form.querySelector('[name=\"email\"]');
+    const orgField = form.querySelector('[name=\"organisation\"]');
+    const service = form.querySelector('[name=\"service\"]').value.trim();
+    const timeField = form.querySelector('[name=\"preferred_time\"]');
+    const message = form.querySelector('[name=\"message\"]').value.trim();
+    const email = emailField ? emailField.value.trim() : '';
+    const organisation = orgField ? orgField.value.trim() : '';
+    const preferredTime = timeField ? timeField.value.trim() : '';
+    const subject = encodeURIComponent('Consultation Request - E Tax Advisors');
+    const body = encodeURIComponent(
+      'Name: ' + name + '\n' +
+      'Mobile: ' + mobile + '\n' +
+      'Email: ' + email + '\n' +
+      'Organisation: ' + organisation + '\n' +
+      'Service: ' + service + '\n' +
+      'Preferred Consultation Time: ' + preferredTime + '\n\n' +
+      'Requirement:\n' + message
+    );
+    window.location.href = 'mailto:support@etaxadv.com?subject=' + subject + '&body=' + body;
+    return false;
+  }
+</script>
 
 <?php include __DIR__ . '/includes/footer.php'; ?>

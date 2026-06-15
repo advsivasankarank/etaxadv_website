@@ -24,6 +24,18 @@ window.toggleQuickLinks = function(forceState){
   trigger.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
 };
 
+window.scrollTestimonialTrack = function(direction){
+  const track = document.getElementById('testimonialTrack');
+
+  if (!track) {
+    return;
+  }
+
+  const distance = Math.max(track.clientWidth * 0.85, 320);
+  const delta = direction === 'prev' ? -distance : distance;
+  track.scrollBy({ left: delta, behavior: 'smooth' });
+};
+
 document.addEventListener('click', function(event){
   const menu = document.getElementById('mobileNav');
   const trigger = document.querySelector('.hamburger');

@@ -27,6 +27,16 @@ include __DIR__ . '/includes/header.php';
             <h2>Preferred channels for faster routing.</h2>
             <p>Call for urgent conversations, WhatsApp for quick initiation and the form below for structured consultation intake.</p>
           </div>
+          <div class="hero-grid">
+            <div class="hero-metric">
+              <strong>Consult First</strong>
+              <span>Useful for notices, representation, compliance setup and decision-sensitive reviews.</span>
+            </div>
+            <div class="hero-metric">
+              <strong>Structured Intake</strong>
+              <span>Service line, timing, organisation and requirement captured in one consultation brief.</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -55,10 +65,15 @@ include __DIR__ . '/includes/header.php';
             No. 234, I Floor, Lawspet Main Road, Pakkamudayanpet, Lawspet, Puducherry - 605008
           </div>
         </div>
+
+        <div class="consult-note">
+          <strong>Recommended for</strong>
+          <span>GST notices, income tax notices, labour compliance matters, company &amp; LLP compliance, bookkeeping cleanup and representation support.</span>
+        </div>
       </div>
 
-      <div class="contact-card">
-        <h3>Consultation request</h3>
+      <div class="contact-card consult-form-card">
+        <h3>Book a Consultation</h3>
         <p>Complete the form and we will open your preferred email client with a structured consultation draft.</p>
 
         <form onsubmit="return sendConsult(event)">
@@ -68,12 +83,24 @@ include __DIR__ . '/includes/header.php';
               <input class="input" id="c_name" name="name" required />
             </div>
             <div class="field">
-              <label for="c_mobile">Mobile Number</label>
+              <label for="c_mobile">Mobile</label>
               <input class="input" id="c_mobile" name="mobile" required />
             </div>
-            <div class="field full-span">
-              <label for="c_service">Service Requirement</label>
+            <div class="field">
+              <label for="c_email">Email</label>
+              <input class="input" id="c_email" name="email" type="email" required />
+            </div>
+            <div class="field">
+              <label for="c_org">Organisation</label>
+              <input class="input" id="c_org" name="organisation" />
+            </div>
+            <div class="field">
+              <label for="c_service">Service Required</label>
               <input class="input" id="c_service" name="service" placeholder="Income Tax, GST, TDS, e-Kanakan, company compliance, notices, DSC, etc." required />
+            </div>
+            <div class="field">
+              <label for="c_time">Preferred Consultation Time</label>
+              <input class="input" id="c_time" name="preferred_time" placeholder="Today evening / Tomorrow morning / Specific date & time" required />
             </div>
             <div class="field full-span">
               <label for="c_msg">Brief Requirement</label>
@@ -111,15 +138,22 @@ include __DIR__ . '/includes/header.php';
 <script>
   function sendConsult(event){
     event.preventDefault();
-    const name = document.getElementById('c_name').value.trim();
-    const mobile = document.getElementById('c_mobile').value.trim();
-    const service = document.getElementById('c_service').value.trim();
-    const message = document.getElementById('c_msg').value.trim();
+    const form = event.target;
+    const name = form.querySelector('[name="name"]').value.trim();
+    const mobile = form.querySelector('[name="mobile"]').value.trim();
+    const email = form.querySelector('[name="email"]').value.trim();
+    const organisation = form.querySelector('[name="organisation"]').value.trim();
+    const service = form.querySelector('[name="service"]').value.trim();
+    const preferredTime = form.querySelector('[name="preferred_time"]').value.trim();
+    const message = form.querySelector('[name="message"]').value.trim();
     const subject = encodeURIComponent('Consultation Request - E Tax Advisors');
     const body = encodeURIComponent(
       'Name: ' + name + '\n' +
       'Mobile: ' + mobile + '\n' +
-      'Service: ' + service + '\n\n' +
+      'Email: ' + email + '\n' +
+      'Organisation: ' + organisation + '\n' +
+      'Service: ' + service + '\n' +
+      'Preferred Consultation Time: ' + preferredTime + '\n\n' +
       'Requirement:\n' + message
     );
     window.location.href = 'mailto:support@etaxadv.com?subject=' + subject + '&body=' + body;

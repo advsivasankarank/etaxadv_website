@@ -30,6 +30,7 @@
       <ul class="footer-links">
         <li><a href="<?= htmlspecialchars(site_href('/contact.php#consult')) ?>">Book Consultation</a></li>
         <li><a href="<?= htmlspecialchars(site_href('/client-support.php')) ?>">Raise Support Ticket</a></li>
+        <li><a href="<?= htmlspecialchars(site_href('/testimonial/')) ?>">Client Testimonials</a></li>
         <li><a href="<?= htmlspecialchars(site_href('/tools.php')) ?>">Client Tools</a></li>
         <li><a href="<?= htmlspecialchars(site_href('/digital-signature.php')) ?>">Digital Signature Support</a></li>
         <li><a href="<?= htmlspecialchars(site_href('/e-task.php')) ?>">e-Task Preview</a></li>
