@@ -1,11 +1,11 @@
 :root {
-  --navy: #0a1f3f;
-  --navy-light: #132d5e;
-  --navy-mid: #1e3a6e;
-  --navy-50: #f0f2f7;
-  --gold: #c9a84c;
-  --gold-light: #e8d08d;
-  --gold-soft: #faf6ec;
+  --navy: #004d4d;
+  --navy-light: #006666;
+  --navy-mid: #005555;
+  --navy-50: #e8f4f4;
+  --gold: #cc6b1c;
+  --gold-light: #e8924d;
+  --gold-soft: #fdf2e8;
   --charcoal: #1a1a2e;
   --gray-600: #4a4a5a;
   --gray-400: #8a8a9a;
@@ -15,10 +15,10 @@
   --white: #ffffff;
   --success: #1a7b52;
   --danger: #a63a36;
-  --shadow-xs: 0 2px 8px rgba(10, 31, 63, 0.04);
-  --shadow-sm: 0 8px 24px rgba(10, 31, 63, 0.06);
-  --shadow-md: 0 16px 48px rgba(10, 31, 63, 0.08);
-  --shadow-lg: 0 32px 80px rgba(10, 31, 63, 0.10);
+  --shadow-xs: 0 2px 8px rgba(0, 77, 77, 0.04);
+  --shadow-sm: 0 8px 24px rgba(0, 77, 77, 0.06);
+  --shadow-md: 0 16px 48px rgba(0, 77, 77, 0.08);
+  --shadow-lg: 0 32px 80px rgba(0, 77, 77, 0.10);
   --radius-sm: 8px;
   --radius-md: 16px;
   --radius-lg: 24px;
@@ -505,7 +505,7 @@ main { display: block; }
   border-radius: var(--radius-sm); background: var(--white); outline: none;
   font-size: 14px; transition: border-color .2s, box-shadow .2s;
 }
-.input:focus { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(10,31,63,.08); }
+.input:focus { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(0,77,77,.08); }
 textarea.input { min-height: 120px; resize: vertical; }
 
 /* ============================================
@@ -615,7 +615,7 @@ textarea.input { min-height: 120px; resize: vertical; }
 .popup-overlay {
   position: fixed; inset: 0; z-index: 9999;
   display: grid; place-items: center;
-  background: rgba(10,31,63,.6); backdrop-filter: blur(6px);
+  background: rgba(0,77,77,.6); backdrop-filter: blur(6px);
   opacity: 0; visibility: hidden; pointer-events: none;
   transition: opacity .3s, visibility .3s;
 }
