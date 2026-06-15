@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+Allow: /assets/
+Allow: /tools/
+Disallow: /support/admin/
+Disallow: /support/agent/
+Disallow: /testimonial/admin/
+Disallow: /back_office/
+Disallow: /backup/
+Disallow: /storage/
+Disallow: /downloads/
+Disallow: /wordpress/wp-admin/
+Disallow: /ebal/
+Disallow: /e-kanakan/
+Disallow: /etask/
+
+Sitemap: https://www.etaxadv.com/sitemap.xml

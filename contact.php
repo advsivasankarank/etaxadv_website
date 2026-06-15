@@ -1,7 +1,16 @@
 <?php
+require_once __DIR__ . '/includes/contact-handler.php';
+
 $page_title = "Contact & Consultation | E Tax Advisors";
 $page_description = "Book a consultation with E Tax Advisors Private Limited for tax, legal, compliance, bookkeeping and representation requirements.";
 $page_path = '/contact.php';
+
+$consult_result = null;
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'contact_consult') {
+  $consult_result = contact_process_submission();
+}
+
+contact_register_form();
 require_once __DIR__ . '/includes/header.php';
 ?>
 
@@ -74,9 +83,18 @@ require_once __DIR__ . '/includes/header.php';
 
       <div class="contact-card consult-form-card">
         <h3>Book a Consultation</h3>
-        <p>Complete the form and we will open your preferred email client with a structured consultation draft.</p>
+        <p>Complete the form and our team will review your requirement and contact you.</p>
 
-        <form class="js-consult-form">
+<?php if ($consult_result && $consult_result['success']): ?>
+        <?= contact_render_success($consult_result['message']) ?>
+<?php elseif ($consult_result && !$consult_result['success']): ?>
+        <?= contact_render_error($consult_result['error']) ?>
+<?php endif; ?>
+
+        <form method="post" action="<?= htmlspecialchars(site_href('/contact.php')) ?>#consult">
+          <?= csrf_field() ?>
+          <input type="hidden" name="action" value="contact_consult">
+          <input type="hidden" name="source_page" value="/contact.php">
           <div class="form-grid">
             <div class="field">
               <label for="c_name">Name</label>
@@ -100,14 +118,14 @@ require_once __DIR__ . '/includes/header.php';
             </div>
             <div class="field">
               <label for="c_time">Preferred Consultation Time</label>
-              <input class="input" id="c_time" name="preferred_time" placeholder="Today evening / Tomorrow morning / Specific date & time" required />
+              <input class="input" id="c_time" name="preferred_time" placeholder="Today evening / Tomorrow morning / Specific date & time" />
             </div>
             <div class="field full-span">
               <label for="c_msg">Brief Requirement</label>
               <textarea class="input" id="c_msg" name="message" required></textarea>
             </div>
             <div class="field full-span">
-              <button class="btn btn-primary" type="submit">Open Consultation Draft</button>
+              <button class="btn btn-primary" type="submit">Submit Enquiry</button>
             </div>
           </div>
         </form>

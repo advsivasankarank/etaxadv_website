@@ -1,97 +1,113 @@
-window.toggleMenu = function(forceState){
-  const menu = document.getElementById('mobileNav');
-  const trigger = document.querySelector('.hamburger');
+const siteHeader = document.getElementById('siteHeader');
+const mobileNav = document.getElementById('mobileNav');
+const hamburger = document.querySelector('.hamburger');
+const navItemsWithPanels = Array.from(document.querySelectorAll('.nav-item-has-panel'));
 
-  if (!menu || !trigger) {
-    return;
-  }
+function setHeaderScrolledState() {
+  if (!siteHeader) return;
+  siteHeader.classList.toggle('is-scrolled', window.scrollY > 14);
+}
 
-  const shouldOpen = typeof forceState === 'boolean' ? forceState : !menu.classList.contains('show');
-  menu.classList.toggle('show', shouldOpen);
-  trigger.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+function closeAllNavPanels() {
+  navItemsWithPanels.forEach((item) => {
+    item.classList.remove('is-open');
+    const trigger = item.querySelector('.nav-panel-toggle');
+    if (trigger) trigger.setAttribute('aria-expanded', 'false');
+  });
+}
+
+function setMobileMenuState(shouldOpen) {
+  if (!mobileNav || !hamburger) return;
+  mobileNav.classList.toggle('show', shouldOpen);
+  hamburger.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+  document.body.classList.toggle('menu-open', shouldOpen);
+}
+
+window.toggleMenu = function(forceState) {
+  const shouldOpen = typeof forceState === 'boolean'
+    ? forceState
+    : !(mobileNav && mobileNav.classList.contains('show'));
+  closeAllNavPanels();
+  setMobileMenuState(shouldOpen);
 };
 
-window.toggleQuickLinks = function(forceState){
-  const links = document.getElementById('serviceQuickLinks');
-  const trigger = document.querySelector('.nav-services-toggle');
-
-  if (!links || !trigger) {
-    return;
-  }
-
-  const shouldOpen = typeof forceState === 'boolean' ? forceState : !links.classList.contains('show');
-  links.classList.toggle('show', shouldOpen);
-  trigger.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
-};
-
-window.scrollTestimonialTrack = function(direction){
+window.scrollTestimonialTrack = function(direction) {
   const track = document.getElementById('testimonialTrack');
-
-  if (!track) {
-    return;
-  }
-
+  if (!track) return;
   const distance = Math.max(track.clientWidth * 0.85, 320);
   const delta = direction === 'prev' ? -distance : distance;
   track.scrollBy({ left: delta, behavior: 'smooth' });
 };
 
-window.sendConsult = function(event){
-  event.preventDefault();
+navItemsWithPanels.forEach((item) => {
+  const trigger = item.querySelector('.nav-panel-toggle');
+  if (!trigger) return;
+  trigger.addEventListener('click', () => {
+    const shouldOpen = !item.classList.contains('is-open');
+    closeAllNavPanels();
+    if (shouldOpen) {
+      item.classList.add('is-open');
+      trigger.setAttribute('aria-expanded', 'true');
+    }
+  });
+});
 
-  const form = event.target;
-  const name = form.querySelector('[name="name"]')?.value.trim() ?? '';
-  const mobile = form.querySelector('[name="mobile"]')?.value.trim() ?? '';
-  const email = form.querySelector('[name="email"]')?.value.trim() ?? '';
-  const organisation = form.querySelector('[name="organisation"]')?.value.trim() ?? '';
-  const service = form.querySelector('[name="service"]')?.value.trim() ?? '';
-  const preferredTime = form.querySelector('[name="preferred_time"]')?.value.trim() ?? '';
-  const message = form.querySelector('[name="message"]')?.value.trim() ?? '';
-  const subject = encodeURIComponent('Consultation Request - E Tax Advisors');
-  const body = encodeURIComponent(
-    'Name: ' + name + '\n' +
-    'Mobile: ' + mobile + '\n' +
-    'Email: ' + email + '\n' +
-    'Organisation: ' + organisation + '\n' +
-    'Service: ' + service + '\n' +
-    'Preferred Consultation Time: ' + preferredTime + '\n\n' +
-    'Requirement:\n' + message
-  );
+if (hamburger) {
+  hamburger.addEventListener('click', () => {
+    const shouldOpen = !mobileNav?.classList.contains('show');
+    setMobileMenuState(Boolean(shouldOpen));
+  });
+}
 
-  window.location.href = 'mailto:support@etaxadv.com?subject=' + subject + '&body=' + body;
-  return false;
-};
-
-document.addEventListener('click', function(event){
-  const menu = document.getElementById('mobileNav');
-  const trigger = document.querySelector('.hamburger');
-  const quickLinks = document.getElementById('serviceQuickLinks');
-  const quickTrigger = document.querySelector('.nav-services-toggle');
-
-  if (menu && trigger && window.innerWidth <= 1120 && !menu.contains(event.target) && !trigger.contains(event.target)) {
-    toggleMenu(false);
-  }
-
-  if (quickLinks && quickTrigger && !quickLinks.contains(event.target) && !quickTrigger.contains(event.target)) {
-    toggleQuickLinks(false);
+document.addEventListener('click', (event) => {
+  const clickedInsidePanel = navItemsWithPanels.some((item) => item.contains(event.target));
+  if (!clickedInsidePanel) closeAllNavPanels();
+  if (mobileNav && hamburger && mobileNav.classList.contains('show') && !mobileNav.contains(event.target) && !hamburger.contains(event.target)) {
+    setMobileMenuState(false);
   }
 });
 
-document.addEventListener('submit', function(event){
-  if (event.target.matches('.js-consult-form')) {
-    sendConsult(event);
-  }
-});
-
-document.addEventListener('keydown', function(event){
+document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape') {
-    toggleMenu(false);
-    toggleQuickLinks(false);
+    closeAllNavPanels();
+    setMobileMenuState(false);
   }
 });
 
-window.addEventListener('resize', function(){
-  if (window.innerWidth > 1120) {
-    toggleMenu(false);
-  }
+window.addEventListener('resize', () => {
+  if (window.innerWidth > 1120) setMobileMenuState(false);
 });
+
+window.addEventListener('scroll', setHeaderScrolledState, { passive: true });
+setHeaderScrolledState();
+
+// Conversion tracking
+document.querySelectorAll('a[href*="wa.me"], a[href*="whatsapp"]').forEach(el => {
+  el.addEventListener('click', () => {
+    if (typeof gtag === 'function') gtag('event', 'whatsapp_click', { event_category: 'engagement' });
+  });
+});
+
+document.querySelectorAll('a[href^="tel:"]').forEach(el => {
+  el.addEventListener('click', () => {
+    if (typeof gtag === 'function') gtag('event', 'call_click', { event_category: 'engagement' });
+  });
+});
+
+// Exit intent popup
+(function() {
+  let shown = false;
+  const popup = document.getElementById('exitPopup');
+  if (!popup) return;
+  document.addEventListener('mouseleave', (e) => {
+    if (shown || e.clientY > 0) return;
+    shown = true;
+    popup.classList.add('show');
+  });
+  popup.querySelector('.popup-close')?.addEventListener('click', () => {
+    popup.classList.remove('show');
+  });
+  popup.addEventListener('click', (e) => {
+    if (e.target === popup) popup.classList.remove('show');
+  });
+})();

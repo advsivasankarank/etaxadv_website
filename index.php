@@ -1,11 +1,19 @@
 <?php
 require_once __DIR__ . '/includes/testimonials.php';
+require_once __DIR__ . '/includes/contact-handler.php';
 
 $page_title = "Premium Tax, Legal & Compliance Advisory | E Tax Advisors Private Limited";
 $page_description = "Integrated tax, legal, compliance and bookkeeping advisory for businesses, founders, trustees and promoters seeking structured execution and professional representation.";
 $page_path = '/index.php';
 $homepageTestimonialSummary = testimonial_get_summary();
 $homepageTestimonials = testimonial_get_featured(8);
+
+$consult_result = null;
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'home_consult') {
+  $consult_result = contact_process_submission();
+}
+
+contact_register_form();
 require_once __DIR__ . '/includes/header.php';
 ?>
 
@@ -139,7 +147,7 @@ require_once __DIR__ . '/includes/header.php';
     </div>
   </section>
 
-  <section class="section section-muted">
+  <section class="section section-muted" id="who-we-advise">
     <div class="container">
       <div class="section-header">
         <p class="section-label">Who We Advise</p>
@@ -252,7 +260,7 @@ require_once __DIR__ . '/includes/header.php';
     </div>
   </section>
 
-  <section class="section section-muted">
+  <section class="section section-muted" id="technology-driven-advisory">
     <div class="container">
       <div class="section-header">
         <p class="section-label">Technology Driven Advisory</p>
@@ -439,7 +447,16 @@ require_once __DIR__ . '/includes/header.php';
         </div>
 
         <div class="contact-card">
-          <form class="js-consult-form">
+<?php if ($consult_result && $consult_result['success']): ?>
+          <?= contact_render_success($consult_result['message']) ?>
+<?php elseif ($consult_result && !$consult_result['success']): ?>
+          <?= contact_render_error($consult_result['error']) ?>
+<?php endif; ?>
+
+          <form method="post" action="<?= htmlspecialchars(site_href('/index.php')) ?>#consult">
+            <?= csrf_field() ?>
+            <input type="hidden" name="action" value="home_consult">
+            <input type="hidden" name="source_page" value="/index.php">
             <div class="form-grid">
               <div class="field">
                 <label for="home_name">Name</label>
@@ -463,14 +480,14 @@ require_once __DIR__ . '/includes/header.php';
               </div>
               <div class="field">
                 <label for="home_time">Preferred Consultation Time</label>
-                <input class="input" id="home_time" name="preferred_time" placeholder="Today evening / Tomorrow morning / Specific date & time" required />
+                <input class="input" id="home_time" name="preferred_time" placeholder="Today evening / Tomorrow morning / Specific date & time" />
               </div>
               <div class="field full-span">
                 <label for="home_msg">Brief Requirement</label>
                 <textarea class="input" id="home_msg" name="message" required></textarea>
               </div>
               <div class="field full-span">
-                <button class="btn btn-primary" type="submit">Open Consultation Draft</button>
+                <button class="btn btn-primary" type="submit">Submit Enquiry</button>
               </div>
             </div>
           </form>
@@ -479,7 +496,7 @@ require_once __DIR__ . '/includes/header.php';
     </div>
   </section>
 
-  <section class="section section-muted">
+  <section class="section section-muted" id="insights-updates">
     <div class="container">
       <div class="section-header">
         <p class="section-label">Insights &amp; Updates</p>
