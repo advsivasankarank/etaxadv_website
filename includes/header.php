@@ -208,7 +208,7 @@ $og_image = $og_image ?? '/assets/img/og-image.jpg';
 <header class="site-header" id="siteHeader">
   <div class="container header-shell">
     <a class="brand" href="<?= htmlspecialchars(site_href('/index.php')) ?>" aria-label="E Tax Advisors home">
-      <span class="brand-mark" aria-hidden="true">ET</span>
+      <img class="brand-mark" src="<?= htmlspecialchars(site_href('/assets/img/logo.png')) ?>" alt="E Tax Advisors logo" width="44" height="44" />
       <div class="brand-copy">
         <span class="brand-name"><span class="brand-name-full">E Tax Advisors Private Limited</span><span class="brand-name-short">E Tax Advisors</span></span>
         <span class="brand-tag">Advocates | Tax Consultants | Compliance Advisors</span>

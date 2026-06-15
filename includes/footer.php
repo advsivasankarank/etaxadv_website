@@ -1,7 +1,7 @@
 <footer class="footer">
   <div class="container footer-grid">
     <div class="footer-brand">
-      <span class="brand-mark" aria-hidden="true" style="display:inline-flex;width:44px;height:44px;border-radius:12px;background:var(--navy);color:var(--gold);align-items:center;justify-content:center;font-family:var(--font-display);font-size:18px;font-weight:800;letter-spacing:.06em;margin-bottom:16px;">ET</span>
+      <img src="<?= htmlspecialchars(site_href('/assets/img/logo.png')) ?>" alt="E Tax Advisors logo" width="44" height="44" style="margin-bottom:16px;border-radius:8px;" />
       <p>
         E Tax Advisors Private Limited is a premium tax, legal, compliance and bookkeeping advisory firm serving businesses, promoters, trustees, and professional entities across India. Our integrated delivery model combines technical expertise with technology-enabled execution.
       </p>
