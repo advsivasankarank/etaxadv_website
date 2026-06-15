@@ -1,62 +1,40 @@
 <?php
-$page_title = "e-Task | E Tax Advisors Private Limited";
-include __DIR__.'/includes/header.php';
+$page_title = "e-Task Workflow Platform | E Tax Advisors";
+$page_description = "Preview the upcoming e-Task workflow and compliance tracking platform from E Tax Advisors Private Limited.";
+$page_path = '/e-task.php';
+include __DIR__ . '/includes/header.php';
 ?>
 
 <main id="main-content">
-  <section class="hero" style="padding-bottom:36px;">
-    <div class="container">
-      <div class="grid">
-        <div>
-          <div class="kicker">e-Task product overview</div>
-          <h1>e-Task</h1>
-          <p class="tagline">Task and compliance tracking web application</p>
-          <p>
-            e-Task is under development as a workflow and compliance tracking platform for internal operations
-            and client coordination.
-          </p>
-          <div class="actions">
-            <a class="btn primary" href="contact.php#consult">Request Early Access</a>
-            <a class="btn secondary" href="client-support.php">Client Support</a>
-          </div>
-        </div>
-
-        <div class="heroCard">
-          <div class="item">
-            <div class="badge">TASK</div>
-            <div><b>Task Tracking</b><div class="small">Assignment, monitoring and closure</div></div>
-          </div>
-          <div class="item">
-            <div class="badge">DUE</div>
-            <div><b>Due-date Alerts</b><div class="small">Compliance calendar and reminders</div></div>
-          </div>
-          <div class="item">
-            <div class="badge">DOC</div>
-            <div><b>Documents</b><div class="small">Collection and reference repository</div></div>
-          </div>
-          <div class="item">
-            <div class="badge">MIS</div>
-            <div><b>Dashboards</b><div class="small">Performance and status analytics</div></div>
-          </div>
+  <section class="hero">
+    <div class="container hero-shell">
+      <div class="hero-copy">
+        <div class="eyebrow">e-Task</div>
+        <h1>A developing workflow platform for compliance tracking, task control and document coordination.</h1>
+        <p>
+          e-Task is being positioned as an operational layer for internal workflows and client coordination with due-date visibility,
+          task assignment and documentation support.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="contact.php#consult">Request Early Access</a>
+          <a class="btn btn-outline" href="client-support.php">Client Support</a>
         </div>
       </div>
-    </div>
-  </section>
 
-  <section class="section">
-    <div class="container">
-      <div class="card">
-        <h3>Status</h3>
-        <p class="lead">
-          This page is a placeholder for integration. Once the e-Task web application is launched,
-          this link will direct to the app login.
-        </p>
-        <p class="note">
-          Access credentials will be issued upon official launch.
-        </p>
+      <div class="hero-visual">
+        <div class="hero-grid">
+          <div class="hero-metric">
+            <strong>Tracking</strong>
+            <span>Task ownership, monitoring and closure visibility.</span>
+          </div>
+          <div class="hero-metric">
+            <strong>Coordination</strong>
+            <span>Structured communication around compliance calendars and records.</span>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 </main>
 
-<?php include __DIR__.'/includes/footer.php'; ?>
+<?php include __DIR__ . '/includes/footer.php'; ?>

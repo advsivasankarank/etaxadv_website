@@ -1,42 +1,42 @@
 <?php
-$page_title = "Client Support | E Tax Advisors Private Limited";
-include __DIR__.'/includes/header.php';
+$page_title = "Client Support & Escalation | E Tax Advisors";
+$page_description = "Raise service concerns, feedback, suggestions and escalation requests through the structured support and ticketing desk of E Tax Advisors.";
+$page_path = '/client-support.php';
+include __DIR__ . '/includes/header.php';
 ?>
 
 <main id="main-content">
-  <section class="hero" style="padding-bottom:36px;">
-    <div class="container">
-      <div class="grid">
-        <div>
-          <div class="kicker">Client support and escalation</div>
-          <h1>Client Support & Escalation Matrix</h1>
-          <p class="tagline">Structured ticketing for service concerns, feedback and suggestions</p>
-          <p>
-            Please raise a ticket for service concerns, feedback or suggestions. Tickets ensure documented tracking
-            and timely resolution. You may track status using your Ticket ID and registered mobile number.
-          </p>
-          <div class="actions">
-            <a class="btn primary" href="#ticket">Raise Ticket</a>
-            <a class="btn secondary" href="<?= htmlspecialchars(site_href('/support/status.php')) ?>">Track Ticket</a>
-          </div>
+  <section class="hero">
+    <div class="container hero-shell">
+      <div class="hero-copy">
+        <div class="eyebrow">Client Support</div>
+        <h1>Structured support, documented escalation and accountable follow-through.</h1>
+        <p>
+          Use the support desk for existing service concerns, feedback, suggestions and escalation requests.
+          Tickets help preserve context, priority and accountability across the response cycle.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#ticket">Raise Ticket</a>
+          <a class="btn btn-outline" href="/support/status.php">Track Existing Ticket</a>
         </div>
-
-        <div class="heroCard">
-          <div class="item">
-            <div class="badge">24h</div>
-            <div><b>Level 1</b><div class="small">Response commitment within 24 working hours</div></div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-grid">
+          <div class="hero-metric">
+            <strong>24 hrs</strong>
+            <span>level 1 working-hour response commitment</span>
           </div>
-          <div class="item">
-            <div class="badge">48h</div>
-            <div><b>Level 2</b><div class="small">Escalation review within 48 working hours</div></div>
+          <div class="hero-metric">
+            <strong>48 hrs</strong>
+            <span>level 2 escalation review commitment</span>
           </div>
-          <div class="item">
-            <div class="badge">ID</div>
-            <div><b>Ticket ID</b><div class="small">Generated upon submission</div></div>
+          <div class="hero-metric">
+            <strong>Ticket ID</strong>
+            <span>documented tracking after submission</span>
           </div>
-          <div class="item">
-            <div class="badge">SEC</div>
-            <div><b>Confidential</b><div class="small">Handled with confidentiality</div></div>
+          <div class="hero-metric">
+            <strong>Confidential</strong>
+            <span>client records handled with controlled access discipline</span>
           </div>
         </div>
       </div>
@@ -44,67 +44,80 @@ include __DIR__.'/includes/header.php';
   </section>
 
   <section class="section">
-    <div class="container">
-      <div class="grid2">
-        <div class="card">
-          <h3>Functional Contacts</h3>
-          <p><strong>Client Relations Manager</strong><br/><a href="tel:+919500601119">9500601119</a></p>
-          <p><strong>Back Office</strong><br/><a href="tel:+919500727863">9500727863</a></p>
-          <p><strong>Accounts Manager</strong><br/><a href="tel:+919092026018">9092026018</a></p>
-          <p><strong>Managing Director (MD)</strong><br/><a href="tel:+919500601188">9500601188</a></p>
-          <p><strong>Chief Executive Officer (CEO)</strong><br/><a href="tel:+919894626300">98946 26300</a></p>
-        </div>
-
-        <div class="card">
-          <h3>Escalation Matrix</h3>
-          <p><strong>Level 1 - Accounts Manager</strong><br/><a href="tel:+919092026018">9092026018</a></p>
-          <p><strong>Level 2 - Managing Director</strong><br/><a href="tel:+919500601188">9500601188</a></p>
-          <p class="note" style="margin-top:12px;">
-            Clients are requested to follow the above escalation hierarchy for structured resolution.
-          </p>
-        </div>
-      </div>
+    <div class="container grid-2">
+      <article class="card">
+        <h3>Functional contact points</h3>
+        <ul class="list-clean">
+          <li>Client Relations Manager - <a href="tel:+919500601119">9500601119</a></li>
+          <li>Back Office - <a href="tel:+919500727863">9500727863</a></li>
+          <li>Accounts Manager - <a href="tel:+919092026018">9092026018</a></li>
+          <li>Managing Director - <a href="tel:+919500601188">9500601188</a></li>
+          <li>Chief Executive Officer - <a href="tel:+919894626300">9894626300</a></li>
+        </ul>
+      </article>
+      <article class="card">
+        <h3>Escalation framework</h3>
+        <ul class="list-clean">
+          <li>Level 1 - Accounts Manager review path</li>
+          <li>Level 2 - Managing Director escalation review</li>
+          <li>Track through your Ticket ID and registered mobile number</li>
+        </ul>
+      </article>
     </div>
   </section>
 
-  <section class="section" id="ticket" style="padding-top:0;">
-    <div class="container">
-      <div class="card">
-        <h3>Raise a Ticket (Concern / Feedback / Suggestion)</h3>
-        <form class="form" method="post" action="<?= htmlspecialchars(site_href('/support/submit.php')) ?>">
-          <select class="input" name="category" required>
-            <option value="">Select Category</option>
-            <option>Service Concern</option>
-            <option>Feedback</option>
-            <option>Suggestion</option>
-            <option>Escalation Request</option>
-          </select>
+  <section class="section section-muted" id="ticket">
+    <div class="container contact-card">
+      <h3>Raise a Ticket</h3>
+      <p>Use this form for service concerns, feedback, suggestions or escalation requests.</p>
 
-          <select class="input" name="priority" required>
-            <option>Normal</option>
-            <option>High</option>
-            <option>Urgent</option>
-          </select>
-
-          <input class="input" name="name" placeholder="Client Name (optional)" />
-          <input class="input" name="mobile" placeholder="Registered Mobile Number" required />
-          <input class="input" name="email" placeholder="Email (optional)" />
-          <input class="input" name="subject" placeholder="Subject" required />
-          <textarea class="input" name="message" placeholder="Describe the issue, feedback or suggestion" required></textarea>
-
-          <button class="btn primary" type="submit">Submit Ticket</button>
-
-          <div class="note">
-            After submission, you will receive a Ticket ID. Track at: <b><?= htmlspecialchars(site_href('/support/status.php')) ?></b>
+      <form method="post" action="/support/submit.php">
+        <div class="form-grid">
+          <div class="field">
+            <label for="category">Category</label>
+            <select class="input" id="category" name="category" required>
+              <option value="">Select Category</option>
+              <option>Service Concern</option>
+              <option>Feedback</option>
+              <option>Suggestion</option>
+              <option>Escalation Request</option>
+            </select>
           </div>
-        </form>
-
-        <div class="actions" style="margin-top:14px;">
-          <a class="btn secondary" href="<?= htmlspecialchars(site_href('/support/status.php')) ?>">Track Ticket Status</a>
+          <div class="field">
+            <label for="priority">Priority</label>
+            <select class="input" id="priority" name="priority" required>
+              <option>Normal</option>
+              <option>High</option>
+              <option>Urgent</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="name">Client Name</label>
+            <input class="input" id="name" name="name" />
+          </div>
+          <div class="field">
+            <label for="mobile">Registered Mobile Number</label>
+            <input class="input" id="mobile" name="mobile" required />
+          </div>
+          <div class="field full-span">
+            <label for="email">Email Address</label>
+            <input class="input" id="email" name="email" />
+          </div>
+          <div class="field full-span">
+            <label for="subject">Subject</label>
+            <input class="input" id="subject" name="subject" required />
+          </div>
+          <div class="field full-span">
+            <label for="message">Describe the issue or feedback</label>
+            <textarea class="input" id="message" name="message" required></textarea>
+          </div>
+          <div class="field full-span">
+            <button class="btn btn-primary" type="submit">Submit Ticket</button>
+          </div>
         </div>
-      </div>
+      </form>
     </div>
   </section>
 </main>
 
-<?php include __DIR__.'/includes/footer.php'; ?>
+<?php include __DIR__ . '/includes/footer.php'; ?>

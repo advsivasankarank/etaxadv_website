@@ -1,43 +1,44 @@
 <?php
-$page_title = "About | E Tax Advisors Private Limited";
-include __DIR__.'/includes/header.php';
+$page_title = "About the Firm | E Tax Advisors Private Limited";
+$page_description = "Learn how E Tax Advisors Private Limited delivers tax, legal, compliance and bookkeeping support through disciplined workflows, review controls and client communication standards.";
+$page_path = '/about.php';
+include __DIR__ . '/includes/header.php';
 ?>
 
 <main id="main-content">
-  <section class="hero" style="padding-bottom:36px;">
-    <div class="container">
-      <div class="grid">
-        <div>
-          <div class="kicker">About us and our delivery model</div>
-          <h1>About E Tax Advisors Private Limited</h1>
-          <p class="tagline">Tax &middot; Compliance &middot; Finance &middot; Litigation under one roof</p>
-          <p>
-            We provide structured services across Direct Tax, Indirect Tax, regulatory compliance,
-            bookkeeping through e-Kanakan, financial documentation, and representation support.
-            Our model is process-driven, document-backed, and timeline-controlled.
-          </p>
-          <div class="actions">
-            <a class="btn primary" href="services.php">Explore Services</a>
-            <a class="btn secondary" href="contact.php#consult">Connect</a>
-          </div>
+  <section class="hero">
+    <div class="container hero-shell">
+      <div class="hero-copy">
+        <div class="eyebrow">About the Firm</div>
+        <h1>Built to combine professional advisory quality with dependable execution control.</h1>
+        <p>
+          E Tax Advisors Private Limited is positioned as an integrated advisory platform for tax, compliance,
+          bookkeeping and representation support. We focus on structured workflows, defensible documentation
+          and professional response discipline.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="contact.php#consult">Speak With Our Team</a>
+          <a class="btn btn-outline" href="services.php">Review Services</a>
         </div>
+      </div>
 
-        <div class="heroCard">
-          <div class="item">
-            <div class="badge">DOC</div>
-            <div><b>Documentation</b><div class="small">Scope clarity and checklists</div></div>
+      <div class="hero-visual">
+        <div class="hero-stack">
+          <div class="hero-panel">
+            <h2>What defines our operating model.</h2>
+            <p>
+              Scope clarity, client communication, input validation, review control and actionable closure are treated as part of the service itself.
+            </p>
           </div>
-          <div class="item">
-            <div class="badge">CMP</div>
-            <div><b>Compliance</b><div class="small">Timely filings and reconciliations</div></div>
-          </div>
-          <div class="item">
-            <div class="badge">ADV</div>
-            <div><b>Advisory</b><div class="small">Practical, risk-aware guidance</div></div>
-          </div>
-          <div class="item">
-            <div class="badge">SUP</div>
-            <div><b>Support</b><div class="small">Notices, orders and appeals assistance</div></div>
+          <div class="hero-grid">
+            <div class="hero-metric">
+              <strong>Review-led</strong>
+              <span>Internal checkpoints before submissions and closures.</span>
+            </div>
+            <div class="hero-metric">
+              <strong>Document-backed</strong>
+              <span>Advice and filing support aligned to available records and facts.</span>
+            </div>
           </div>
         </div>
       </div>
@@ -46,61 +47,83 @@ include __DIR__.'/includes/header.php';
 
   <section class="section">
     <div class="container">
-      <div class="grid2">
-        <div class="card">
-          <h3>Our Methodology</h3>
-          <p class="lead" style="margin-bottom:10px;">
-            We follow a structured approach to ensure compliance outcomes are traceable and defensible.
+      <div class="grid-2">
+        <article class="card">
+          <h3>Our positioning</h3>
+          <p>
+            We are designed for clients who need more than standalone filing support. The firm is structured to
+            support statutory compliance, response management, bookkeeping hygiene and ongoing advisory interpretation.
           </p>
-          <ul class="list">
-            <li>Scope confirmation and engagement documentation</li>
-            <li>Document checklist and validation</li>
-            <li>Internal review with exception reporting</li>
-            <li>Filing or submission with acknowledgements</li>
-            <li>Post-filing follow-up and representation support</li>
-          </ul>
-        </div>
-
-        <div class="card">
-          <h3>Service Coverage</h3>
-          <ul class="list">
-            <li>Income Tax - returns, notices, scrutiny and appeals</li>
-            <li>GST - registration, returns, notices and assessments</li>
-            <li>TDS and payroll - returns, TRACES support and Form 16/16A</li>
-            <li>Company and LLP compliance - ROC filings and annual compliance</li>
-            <li>Trust and society registration and compliance</li>
-            <li>Project reports and CMA preparation</li>
-            <li>Digital signature assistance with API expansion later</li>
-          </ul>
-        </div>
-
-        <div class="card">
-          <h3>e-Kanakan Division</h3>
-          <p class="lead" style="margin-bottom:10px;">
-            e-Kanakan is our bookkeeping division built for corporate-grade discipline and reconciliation.
+        </article>
+        <article class="card">
+          <h3>Our client promise</h3>
+          <p>
+            Clients receive professional communication, practical action steps, controlled handling of records
+            and a clear path for support, escalation and follow-through.
           </p>
-          <p><b>Structured Accounting. Powered by Tally.</b></p>
-          <ul class="list">
-            <li>Bookkeeping and ledger hygiene</li>
-            <li>Bank, GST and TDS reconciliations</li>
-            <li>MIS summaries and periodic reviews</li>
-            <li>Year-end readiness support</li>
-          </ul>
-          <a class="btn primary" href="ekanakan.php">View e-Kanakan</a>
-        </div>
+        </article>
+      </div>
+    </div>
+  </section>
 
-        <div class="card">
-          <h3>Disclaimer</h3>
-          <p class="lead">
-            This website is for general guidance. Services are provided subject to engagement scope,
-            documents furnished, and applicable law. Outcomes depend on facts, evidence, statutory provisions,
-            and authority discretion.
-          </p>
-          <a class="btn secondary" href="client-support.php">Client Support</a>
-        </div>
+  <section class="section section-muted">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-label">Methodology</p>
+        <h2 class="section-title">A disciplined engagement cycle for advisory and compliance work.</h2>
+      </div>
+
+      <div class="process-timeline">
+        <article class="timeline-step">
+          <span class="timeline-number">1</span>
+          <h3>Scope articulation</h3>
+          <p>Commercial scope, filing objective, deadline sensitivity and record expectations are aligned first.</p>
+        </article>
+        <article class="timeline-step">
+          <span class="timeline-number">2</span>
+          <h3>Information validation</h3>
+          <p>Documents and data are checked for completeness, gaps are flagged and assumptions are avoided.</p>
+        </article>
+        <article class="timeline-step">
+          <span class="timeline-number">3</span>
+          <h3>Execution & review</h3>
+          <p>Outputs move through drafting, verification, maker-checker review and client clarification when needed.</p>
+        </article>
+        <article class="timeline-step">
+          <span class="timeline-number">4</span>
+          <h3>Closure & next actions</h3>
+          <p>Acknowledgements, pending points and advisory next steps are communicated in structured form.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-label">Where We Add Value</p>
+        <h2 class="section-title">Particularly effective when the matter needs coordination, not just filing.</h2>
+      </div>
+
+      <div class="grid-3">
+        <article class="card card-muted">
+          <div class="feature-icon">A</div>
+          <h3>Entity and promoter compliance</h3>
+          <p>When filings, records and responses must stay aligned across management and entity obligations.</p>
+        </article>
+        <article class="card card-muted">
+          <div class="feature-icon">B</div>
+          <h3>Representation-sensitive matters</h3>
+          <p>When notices, clarifications or assessments need careful drafting and supporting documentation.</p>
+        </article>
+        <article class="card card-muted">
+          <div class="feature-icon">C</div>
+          <h3>Bookkeeping-backed compliance</h3>
+          <p>When tax or compliance outcomes depend on stronger ledger hygiene, reconciliations and reporting discipline.</p>
+        </article>
       </div>
     </div>
   </section>
 </main>
 
-<?php include __DIR__.'/includes/footer.php'; ?>
+<?php include __DIR__ . '/includes/footer.php'; ?>
