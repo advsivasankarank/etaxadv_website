@@ -27,6 +27,7 @@
   --header-height: 80px;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
   --font-display: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-serif: 'Playfair Display', 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -1035,88 +1036,100 @@ textarea.input { min-height: 120px; resize: vertical; }
 }
 
 /* ============================================
-   FOUNDER'S MESSAGE
+   FOUNDER'S MESSAGE — Executive Layout
    ============================================ */
 .founder-message {
   padding: 40px 0 0;
 }
 .founder-message-shell {
   position: relative;
+  display: grid;
+  grid-template-columns: 3fr 7fr;
+  gap: 60px;
+  align-items: center;
   background: #115E59;
   color: #FFFFFF;
-  padding: 60px 50px 56px;
-  border-radius: 16px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+  padding: 80px 60px;
+  border-radius: 18px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.14);
+}
+
+/* Executive Profile Panel — Left Column */
+.founder-profile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
 }
-.founder-message-shell::before {
-  content: "\201C";
+.founder-profile::after {
+  content: "";
   position: absolute;
-  top: -10px;
-  right: 40px;
-  font-size: 200px;
-  line-height: 1;
-  font-family: var(--font-display);
-  color: rgba(212,175,55,0.08);
+  right: -31px;
+  top: 10%;
+  width: 1px;
+  height: 80%;
+  background: rgba(212,175,55,0.30);
   pointer-events: none;
 }
 
-.founder-message-photo {
-  width: 90px;
-  height: 90px;
+.founder-profile-photo {
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   overflow: hidden;
-  border: 3px solid rgba(255,255,255,0.25);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-  margin: 0 auto 20px;
+  border: 4px solid rgba(255,255,255,0.25);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
 }
-.founder-message-photo img {
+.founder-profile-photo img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
-.founder-message-name {
-  margin: 0 0 6px;
+.founder-profile-name {
+  margin: 20px 0 0;
   font-family: var(--font-display);
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 700;
   color: #D4AF37;
   line-height: 1.2;
 }
-.founder-message-title {
-  margin: 0 0 18px;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 2.5px;
+.founder-profile-qual {
+  margin: 8px 0 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.90);
+  line-height: 1.4;
+}
+.founder-profile-title {
+  margin: 8px 0 0;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
   color: rgba(255,255,255,0.75);
-}
-.founder-message-note {
-  margin: 0 auto 28px;
-  max-width: 650px;
-  font-size: 14px;
-  line-height: 1.7;
-  color: rgba(255,255,255,0.65);
+  line-height: 1.4;
 }
 
+/* Leadership Message — Right Column */
 .founder-message-content {
-  position: relative;
-  z-index: 1;
+  text-align: center;
 }
-.founder-message-label {
-  margin: 0 0 16px;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 3px;
+.founder-message-heading {
+  margin: 0 0 24px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 2px;
   text-transform: uppercase;
   color: #D4AF37;
 }
 .founder-message-content blockquote {
   margin: 0 auto;
-  max-width: 850px;
-  font-family: var(--font-display);
-  font-size: clamp(19px, 2.5vw, 30px);
+  max-width: 700px;
+  font-family: var(--font-serif);
+  font-size: clamp(22px, 2.8vw, 34px);
   font-weight: 500;
   font-style: italic;
   line-height: 1.8;
@@ -1125,37 +1138,37 @@ textarea.input { min-height: 120px; resize: vertical; }
 
 @media (max-width: 860px) {
   .founder-message-shell {
-    padding: 44px 32px 40px;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    padding: 60px 40px;
+    text-align: center;
   }
-  .founder-message-photo {
-    width: 80px;
-    height: 80px;
-  }
-  .founder-message-name {
-    font-size: 22px;
-  }
-  .founder-message-title {
-    font-size: 12px;
-  }
-  .founder-message-note {
-    font-size: 13px;
-  }
-  .founder-message-shell::before {
+  .founder-profile::after {
     display: none;
+  }
+  .founder-profile-photo {
+    width: 100px;
+    height: 100px;
+  }
+  .founder-message-content blockquote {
+    font-size: 28px;
   }
 }
 
 @media (max-width: 620px) {
   .founder-message-shell {
-    padding: 36px 24px 32px;
+    padding: 48px 28px;
+    gap: 32px;
   }
-  .founder-message-photo {
-    width: 70px;
-    height: 70px;
-    margin-bottom: 16px;
+  .founder-profile-photo {
+    width: 90px;
+    height: 90px;
   }
-  .founder-message-name {
-    font-size: 20px;
+  .founder-profile-name {
+    font-size: 22px;
+  }
+  .founder-message-content blockquote {
+    font-size: 22px;
   }
 }
 

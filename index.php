@@ -11,14 +11,16 @@ require_once __DIR__ . '/includes/header.php';
   <section class="founder-message">
     <div class="container">
       <div class="founder-message-shell">
-        <div class="founder-message-photo">
-          <img src="/assets/img/ks-sivasankaran.jpg" alt="K. Sivasankaran" />
+        <div class="founder-profile">
+          <div class="founder-profile-photo">
+            <img src="/assets/img/ks-sivasankaran.jpg" alt="K. Sivasankaran" />
+          </div>
+          <p class="founder-profile-name">K. Sivasankaran</p>
+          <p class="founder-profile-qual">B.Com., LL.B., C.T.Pr.</p>
+          <p class="founder-profile-title">Founder &amp; Principal Advisor</p>
         </div>
-        <p class="founder-message-name">K. Sivasankaran</p>
-        <p class="founder-message-title">Founder &amp; Principal Advisor</p>
-        <p class="founder-message-note">Consultations are scheduled through our advisory team based on availability and the nature of engagement.</p>
         <div class="founder-message-content">
-          <p class="founder-message-label">Founder's Message</p>
+          <p class="founder-message-heading">From the Founder&rsquo;s Desk</p>
           <blockquote>
             &ldquo;Professional advisory is not merely about compliance. It is about helping clients make informed decisions, manage risks proactively, and build systems that support sustainable growth.&rdquo;
           </blockquote>
