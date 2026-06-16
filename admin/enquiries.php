@@ -73,12 +73,12 @@ if ($is_admin && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_s
         $e['status'] = $new_status;
 
         if ($new_status === 'consultation_completed') {
-          $e['appointment_outcome'] = clean_input($_POST['appointment_outcome'] ?? '', 100);
+          $e['appointment_outcome'] = mb_substr(strip_tags(trim($_POST['appointment_outcome'] ?? '')), 0, 100, 'UTF-8');
           if (($e['appointment_outcome'] ?? '') === 'Converted to Client') {
-            $e['service_order_no'] = clean_input($_POST['service_order_no'] ?? '', 50);
-            $e['estimated_fees'] = clean_input($_POST['estimated_fees'] ?? '', 50);
-            $e['assigned_to'] = clean_input($_POST['assigned_to'] ?? '', 100);
-            $e['expected_start_date'] = clean_input($_POST['expected_start_date'] ?? '', 20);
+            $e['service_order_no'] = mb_substr(strip_tags(trim($_POST['service_order_no'] ?? '')), 0, 50, 'UTF-8');
+            $e['estimated_fees'] = mb_substr(strip_tags(trim($_POST['estimated_fees'] ?? '')), 0, 50, 'UTF-8');
+            $e['assigned_to'] = mb_substr(strip_tags(trim($_POST['assigned_to'] ?? '')), 0, 100, 'UTF-8');
+            $e['expected_start_date'] = mb_substr(strip_tags(trim($_POST['expected_start_date'] ?? '')), 0, 20, 'UTF-8');
           } else {
             $e['service_order_no'] = null;
             $e['estimated_fees'] = null;
