@@ -212,6 +212,54 @@ body.menu-open { overflow: hidden; }
   .authority-pill { padding: 6px 12px; }
 }
 
+/* Company Journey Timeline (about page hero) */
+.journey-timeline {
+  display: grid;
+  gap: 0;
+  padding: 4px 0 4px 28px;
+  position: relative;
+}
+.journey-timeline::before {
+  content: "";
+  position: absolute;
+  left: 9px;
+  top: 14px;
+  bottom: 14px;
+  width: 2px;
+  background: linear-gradient(to bottom, #D4AF37, #115E59);
+  border-radius: 2px;
+}
+.journey-item {
+  position: relative;
+  padding: 12px 0 12px 20px;
+}
+.journey-item::before {
+  content: "";
+  position: absolute;
+  left: -22px;
+  top: 18px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #D4AF37;
+  border: 2px solid #115E59;
+}
+.journey-year {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  color: #D4AF37;
+  line-height: 1.2;
+  margin-bottom: 2px;
+}
+.journey-desc {
+  display: block;
+  color: var(--gray-600);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
 /* ============================================
    BUTTONS – Premium
    ============================================ */
@@ -776,6 +824,7 @@ textarea.input { min-height: 120px; resize: vertical; }
   .about-tiles-grid { grid-template-columns: 1fr; }
   .ft-grid { grid-template-columns: repeat(2, 1fr); }
   .footer-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
+  .industry-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 860px) {
@@ -788,6 +837,8 @@ textarea.input { min-height: 120px; resize: vertical; }
   .brand-name { font-size: 16px; }
   .brand-cin { font-size: 10px; }
   .brand-tag { font-size: 9px; }
+  .industry-grid { grid-template-columns: repeat(2, 1fr); }
+
 }
 
 @media (max-width: 620px) {
@@ -798,6 +849,7 @@ textarea.input { min-height: 120px; resize: vertical; }
   .ft-grid { grid-template-columns: 1fr; }
   .about-tile { padding: 28px; }
   .cta-band { padding: 40px 0; }
+  .industry-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
 }
 
 /* ============================================
@@ -966,6 +1018,194 @@ textarea.input { min-height: 120px; resize: vertical; }
 }
 #about-founder .founder-summary {
   max-width: none;
+}
+
+/* Founder about page — 35/65 layout */
+.founder-shell-about {
+  display: grid;
+  grid-template-columns: 35% 65%;
+  gap: 48px;
+  align-items: start;
+}
+
+/* Left panel */
+.founder-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.founder-photo-frame {
+  width: 100%;
+  max-width: 280px;
+  aspect-ratio: 5/6;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  background: var(--gray-100);
+}
+.founder-photo-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.founder-left-name {
+  margin: 20px 0 0;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--charcoal);
+  line-height: 1.2;
+}
+.founder-left-title {
+  color: var(--gold);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin: 8px 0 16px;
+  line-height: 1.4;
+}
+.founder-left-creds {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+/* Right panel */
+.founder-right .founder-summary {
+  max-width: none;
+}
+
+/* Founder timeline */
+.founder-timeline {
+  position: relative;
+  padding-left: 24px;
+  margin-bottom: 24px;
+}
+.founder-timeline::before {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  background: var(--gold-soft);
+  border-radius: 2px;
+}
+.ft-item {
+  position: relative;
+  padding: 6px 0 6px 20px;
+}
+.ft-item::before {
+  content: "";
+  position: absolute;
+  left: -20px;
+  top: 13px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--gold);
+  border: 2px solid var(--white);
+  box-shadow: 0 0 0 2px var(--gold);
+}
+.ft-year {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1.3;
+  margin-bottom: 1px;
+}
+.ft-desc {
+  display: block;
+  color: var(--gray-600);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Professional credentials grid */
+.credentials-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+.credential-card {
+  padding: 20px 16px;
+  border: 1px solid var(--gray-100);
+  border-radius: var(--radius-md);
+  background: var(--white);
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--navy);
+  transition: box-shadow .3s, transform .3s;
+}
+.credential-card:hover {
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-2px);
+}
+
+/* Quote block — about page */
+.quote-block-about {
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 40px 40px;
+  border-top: 1px solid var(--gray-100);
+  border-bottom: 1px solid var(--gray-100);
+}
+.quote-block-label {
+  margin: 0 0 20px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--gold);
+}
+.quote-block-about blockquote {
+  margin: 0;
+  color: var(--charcoal);
+  font-family: var(--font-serif);
+  font-size: clamp(20px, 2.5vw, 28px);
+  font-style: italic;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+/* Responsive for about page refinements */
+@media (max-width: 860px) {
+  .founder-shell-about {
+    grid-template-columns: 1fr;
+  }
+  .founder-photo-frame {
+    max-width: 240px;
+  }
+  .credentials-grid {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 500px;
+  }
+}
+
+@media (max-width: 620px) {
+  .credentials-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .credential-card {
+    padding: 16px 12px;
+    font-size: 13px;
+  }
+  .quote-block-about {
+    padding: 28px 20px;
+  }
 }
 
 /* Value proposition grid */
