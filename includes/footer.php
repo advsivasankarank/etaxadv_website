@@ -10,7 +10,10 @@
         Pakkamudayanpet, Lawspet,<br/>
         Puducherry – 605008
       </p>
-      <p class="footer-mobile">Mobile:<br/><a href="tel:+919894626300">+91 98946 26300</a></p>
+      <div class="footer-contact-stack">
+        <span>CRM: <a href="tel:+919500601119">+91-9500601119</a></span>
+        <span>Founder: <a href="tel:+919894626300">+91-9894626300</a></span>
+      </div>
       <p class="footer-email">Email:<br/><a href="mailto:support@etaxadv.com">support@etaxadv.com</a></p>
     </div>
 
