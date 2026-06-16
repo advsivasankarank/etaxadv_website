@@ -63,6 +63,11 @@ function h(?string $s): string {
   return htmlspecialchars($s ?? '', ENT_QUOTES, 'UTF-8');
 }
 
+function clean_input(string $value, int $maxlen = 0): string {
+  $val = strip_tags(trim($value));
+  return $maxlen > 0 ? mb_substr($val, 0, $maxlen, 'UTF-8') : $val;
+}
+
 function make_ticket_id(): string {
   return "ETA-".date('Ymd')."-".strtoupper(substr(bin2hex(random_bytes(3)),0,6));
 }
