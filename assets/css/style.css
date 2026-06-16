@@ -725,43 +725,43 @@ textarea.input { min-height: 120px; resize: vertical; }
    FOOTER – Premium
    ============================================ */
 .footer {
-  border-top: 1px solid var(--gray-100); padding: 40px 0 20px;
+  border-top: 1px solid var(--gray-100); padding: 28px 0 14px;
   background: var(--white); color: var(--gray-600);
 }
-.footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 30px; }
+.footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 24px; }
 .footer-logo { width: auto; height: 48px; margin-bottom: 16px; }
 .footer h3 {
-  margin: 0 0 10px; font-family: var(--font-display); font-size: 13px; font-weight: 700;
+  margin: 0 0 8px; font-family: var(--font-display); font-size: 13px; font-weight: 700;
   color: var(--charcoal); text-transform: uppercase; letter-spacing: .06em;
 }
-.footer p { margin: 0 0 6px; font-size: 13px; line-height: 1.15; }
+.footer p { margin: 0 0 4px; font-size: 13px; line-height: 1.35; }
 .footer p:last-child { margin-bottom: 0; }
 .footer-brand { max-width: 300px; }
 .footer-company-name {
   font-family: var(--font-display); font-size: 15px; font-weight: 700;
-  color: var(--charcoal); margin-bottom: 4px; line-height: 1.15;
+  color: var(--charcoal); margin-bottom: 2px; line-height: 1.35;
 }
-.footer-cin { color: var(--gray-400); font-size: 11px; margin-bottom: 6px; line-height: 1.15; }
-.footer-address { margin-bottom: 6px; font-size: 13px; line-height: 1.15; }
-.footer-mobile { margin-bottom: 6px; font-size: 13px; line-height: 1.15; }
+.footer-cin { color: var(--gray-400); font-size: 11px; margin-bottom: 4px; line-height: 1.35; }
+.footer-address { margin-bottom: 4px; font-size: 13px; line-height: 1.35; }
+.footer-mobile { margin-bottom: 4px; font-size: 13px; line-height: 1.35; }
 .footer-mobile a { color: var(--gray-600); }
 .footer-mobile a:hover { color: var(--navy); }
-.footer-email { margin-bottom: 0; font-size: 13px; line-height: 1.15; }
+.footer-email { margin-bottom: 0; font-size: 13px; line-height: 1.35; }
 .footer-email a { color: var(--gray-600); }
 .footer-email a:hover { color: var(--navy); }
-.footer-links { margin: 0; padding: 0; list-style: none; line-height: 1.15; }
-.footer-links li { margin-bottom: 4px; }
-.footer-links a { color: var(--gray-600); font-size: 13px; transition: color .2s; line-height: 1.15; }
+.footer-links { margin: 0; padding: 0; list-style: none; line-height: 1.35; }
+.footer-links li { margin-bottom: 2px; }
+.footer-links a { color: var(--gray-600); font-size: 13px; transition: color .2s; line-height: 1.35; }
 .footer-links a:hover { color: var(--navy); }
-.footer-contact-stack { display: grid; gap: 6px; }
+.footer-contact-stack { display: grid; gap: 4px; }
 .footer-contact-stack a { color: var(--gray-600); font-size: 13px; transition: color .2s; }
 .footer-contact-stack a:hover { color: var(--navy); }
 .footer-bottom {
   display: flex; justify-content: space-between; gap: 16px;
-  margin-top: 20px; padding-top: 10px; border-top: 1px solid var(--gray-100);
+  margin-top: 14px; padding-top: 8px; border-top: 1px solid var(--gray-100);
   font-size: 12px;
 }
-.footer-bottom p { margin: 0; line-height: 1.15; }
+.footer-bottom p { margin: 0; line-height: 1.35; }
 
 /* ============================================
    LEGACY COMPATIBILITY

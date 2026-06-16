@@ -145,7 +145,7 @@ $og_image = $og_image ?? '/assets/img/og-image.jpg';
       <div class="brand-copy">
         <span class="brand-name">E Tax Advisors Private Limited</span>
         <span class="brand-cin">CIN: U74120PY2015PTC003005</span>
-        <span class="brand-tag">Advocates | Tax Consultants | Compliance Advisors</span>
+        <span class="brand-tag">Integrated Tax, Legal &amp; Compliance Solutions</span>
       </div>
     </a>
 

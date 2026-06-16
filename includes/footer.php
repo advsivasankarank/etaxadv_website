@@ -1,20 +1,14 @@
 <footer class="footer">
   <div class="container footer-grid">
     <div class="footer-brand">
-      <img src="<?= htmlspecialchars(site_href('/assets/img/logo.png')) ?>" alt="E Tax Advisors logo" width="40" height="40" style="margin-bottom:12px;border-radius:8px;" />
       <p class="footer-company-name">E Tax Advisors Private Limited</p>
       <p class="footer-cin">CIN: U74120PY2015PTC003005</p>
-      <p class="footer-address">
-        No. 234, I Floor,<br/>
-        Lawspet Main Road,<br/>
-        Pakkamudayanpet, Lawspet,<br/>
-        Puducherry – 605008
-      </p>
+      <p class="footer-address">No. 234, I Floor, Lawspet Main Road, Pakkamudayanpet, Lawspet, Puducherry – 605008</p>
       <div class="footer-contact-stack">
         <span>CRM: <a href="tel:+919500601119">+91-9500601119</a></span>
         <span>Founder: <a href="tel:+919894626300">+91-9894626300</a></span>
       </div>
-      <p class="footer-email">Email:<br/><a href="mailto:support@etaxadv.com">support@etaxadv.com</a></p>
+      <p class="footer-email"><a href="mailto:support@etaxadv.com">support@etaxadv.com</a></p>
     </div>
 
     <div>
