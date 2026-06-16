@@ -8,19 +8,6 @@ require_once __DIR__ . '/includes/header.php';
 
 <main id="main-content">
 
-  <section class="cta-band">
-    <div class="container">
-      <h2>Need Professional Guidance?</h2>
-      <p>Whether you are facing a GST notice, Income Tax issue, Labour Compliance requirement or business regulatory challenge, our team is ready to assist.</p>
-      <div class="cta-contact-links">
-        <a class="btn btn-primary btn-lg" href="tel:+919894626300">Phone</a>
-        <a class="btn btn-primary btn-lg" href="mailto:support@etaxadv.com">Email</a>
-        <a class="btn btn-primary btn-lg" href="https://wa.me/919500601119" target="_blank" rel="noopener">WhatsApp</a>
-        <a class="btn btn-gold btn-lg" href="contact.php">Book Consultation</a>
-      </div>
-    </div>
-  </section>
-
   <section class="trust-bar">
     <div class="container">
       <div class="trust-bar-grid">
@@ -60,6 +47,19 @@ require_once __DIR__ . '/includes/header.php';
           <li><span class="about-tile-check">&#10003;</span> Trusted by Businesses, Professionals and Trusts</li>
           <li><span class="about-tile-check">&#10003;</span> Focused on Compliance, Governance and Growth</li>
         </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-band">
+    <div class="container">
+      <h2>Need Professional Guidance?</h2>
+      <p>Whether you need GST &amp; Income Tax filing support, Compliance Management, or face a regulatory challenge — our team is ready to assist.</p>
+      <div class="cta-contact-links">
+        <a class="btn btn-primary btn-lg" href="tel:+919894626300">Phone</a>
+        <a class="btn btn-primary btn-lg" href="mailto:support@etaxadv.com">Email</a>
+        <a class="btn btn-primary btn-lg" href="https://wa.me/919500601119" target="_blank" rel="noopener">WhatsApp</a>
+        <a class="btn btn-gold btn-lg" href="contact.php">Book Consultation</a>
       </div>
     </div>
   </section>
