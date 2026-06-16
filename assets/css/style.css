@@ -23,7 +23,7 @@
   --radius-md: 16px;
   --radius-lg: 24px;
   --container: 1200px;
-  --section-gap: 60px;
+  --section-gap: 90px;
   --header-height: 80px;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
   --font-display: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -243,7 +243,7 @@ main { display: block; }
 .section-muted { background: var(--gray-50); }
 .section-dark { background: var(--navy); color: var(--white); }
 
-.section-header { max-width: 720px; margin-bottom: 32px; }
+.section-header { max-width: 720px; margin-bottom: 40px; }
 .section-header.centered { text-align: center; margin-left: auto; margin-right: auto; }
 .section-label {
   margin: 0 0 12px; color: var(--gold); font-size: 12px; font-weight: 700;
@@ -580,7 +580,7 @@ main { display: block; }
    CTA BAND – Final
    ============================================ */
 .cta-band {
-  padding: 48px 0; text-align: center;
+  padding: 60px 0; text-align: center;
   background: var(--navy); color: var(--white);
 }
 .cta-band h2 {
@@ -599,24 +599,24 @@ main { display: block; }
    CONSULTATION FORM
    ============================================ */
 .consult-shell {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
-  padding: 56px; border: 1px solid var(--gray-100);
+  display: grid; grid-template-columns: 1fr 1fr; gap: 48px;
+  padding: 60px; border: 1px solid var(--gray-100);
   border-radius: var(--radius-lg); background: var(--white); box-shadow: var(--shadow-sm);
 }
 .consult-info h3 {
-  margin: 0 0 16px; font-family: var(--font-display); font-size: 24px; font-weight: 700;
+  margin: 0 0 20px; font-family: var(--font-display); font-size: 24px; font-weight: 700;
 }
-.consult-info p { color: var(--gray-600); margin: 0 0 24px; font-size: 15px; }
+.consult-info p { color: var(--gray-600); margin: 0 0 28px; font-size: 15px; }
 .consult-info ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
 .consult-info ul li { padding-left: 20px; position: relative; color: var(--gray-600); font-size: 14px; }
 .consult-info ul li::before { content: ""; position: absolute; left: 0; top: 8px; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
 
-.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 .form-grid .full-span { grid-column: 1 / -1; }
-.field { display: grid; gap: 6px; }
+.field { display: grid; gap: 8px; }
 .field label { font-size: 13px; font-weight: 600; color: var(--charcoal); }
 .input {
-  width: 100%; padding: 14px 16px; border: 1px solid var(--gray-100);
+  width: 100%; padding: 16px 20px; border: 1px solid var(--gray-100);
   border-radius: var(--radius-sm); background: var(--white); outline: none;
   font-size: 14px; transition: border-color .2s, box-shadow .2s;
 }
@@ -778,7 +778,7 @@ textarea.input { min-height: 120px; resize: vertical; }
 }
 
 @media (max-width: 860px) {
-  :root { --section-gap: 48px; }
+  :root { --section-gap: 70px; }
   .core-services-grid { grid-template-columns: 1fr; }
   .ft-grid { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr; }
@@ -790,12 +790,13 @@ textarea.input { min-height: 120px; resize: vertical; }
 }
 
 @media (max-width: 620px) {
+  :root { --section-gap: 50px; }
   .trust-bar-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .trust-bar-item strong { font-size: 20px; }
   .section-header { margin-bottom: 24px; }
   .ft-grid { grid-template-columns: 1fr; }
   .about-tile { padding: 28px; }
-  .cta-band { padding: 32px 0; }
+  .cta-band { padding: 40px 0; }
 }
 
 /* ============================================
@@ -1034,7 +1035,7 @@ textarea.input { min-height: 120px; resize: vertical; }
 }
 
 /* ============================================
-   FOUNDER'S MESSAGE (index.php)
+   FOUNDER'S MESSAGE
    ============================================ */
 .founder-message {
   padding: 40px 0 0;
@@ -1043,35 +1044,23 @@ textarea.input { min-height: 120px; resize: vertical; }
   position: relative;
   background: #115E59;
   color: #FFFFFF;
-  padding: 50px;
+  padding: 60px 50px 56px;
   border-radius: 16px;
   box-shadow: 0 20px 40px rgba(0,0,0,0.12);
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 48px;
-  align-items: center;
+  text-align: center;
 }
 .founder-message-shell::before {
   content: "\201C";
   position: absolute;
-  top: 20px;
-  right: 50px;
-  font-size: 240px;
+  top: -10px;
+  right: 40px;
+  font-size: 200px;
   line-height: 1;
   font-family: var(--font-display);
-  color: rgba(212,175,55,0.12);
+  color: rgba(212,175,55,0.08);
   pointer-events: none;
 }
 
-.founder-message-author {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 12px;
-  flex-shrink: 0;
-  max-width: 200px;
-}
 .founder-message-photo {
   width: 90px;
   height: 90px;
@@ -1079,7 +1068,7 @@ textarea.input { min-height: 120px; resize: vertical; }
   overflow: hidden;
   border: 3px solid rgba(255,255,255,0.25);
   box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-  flex-shrink: 0;
+  margin: 0 auto 20px;
 }
 .founder-message-photo img {
   width: 100%;
@@ -1088,20 +1077,27 @@ textarea.input { min-height: 120px; resize: vertical; }
   display: block;
 }
 .founder-message-name {
-  margin: 0;
+  margin: 0 0 6px;
   font-family: var(--font-display);
-  font-size: 22px;
+  font-size: 26px;
   font-weight: 700;
   color: #D4AF37;
   line-height: 1.2;
 }
 .founder-message-title {
-  margin: 0;
-  font-size: 14px;
+  margin: 0 0 18px;
+  font-size: 13px;
   font-weight: 600;
-  letter-spacing: 1px;
+  letter-spacing: 2.5px;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.85);
+  color: rgba(255,255,255,0.75);
+}
+.founder-message-note {
+  margin: 0 auto 28px;
+  max-width: 650px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.65);
 }
 
 .founder-message-content {
@@ -1110,38 +1106,39 @@ textarea.input { min-height: 120px; resize: vertical; }
 }
 .founder-message-label {
   margin: 0 0 16px;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: 2px;
+  letter-spacing: 3px;
   text-transform: uppercase;
   color: #D4AF37;
 }
 .founder-message-content blockquote {
-  margin: 0;
+  margin: 0 auto;
+  max-width: 850px;
   font-family: var(--font-display);
-  font-size: clamp(20px, 2.5vw, 32px);
-  font-weight: 600;
-  line-height: 1.6;
+  font-size: clamp(19px, 2.5vw, 30px);
+  font-weight: 500;
+  font-style: italic;
+  line-height: 1.8;
   color: #FFFFFF;
 }
 
 @media (max-width: 860px) {
   .founder-message-shell {
-    grid-template-columns: 1fr;
-    gap: 28px;
-    padding: 40px 28px;
-    text-align: center;
-  }
-  .founder-message-author {
-    max-width: none;
-    gap: 8px;
+    padding: 44px 32px 40px;
   }
   .founder-message-photo {
     width: 80px;
     height: 80px;
   }
   .founder-message-name {
-    font-size: 20px;
+    font-size: 22px;
+  }
+  .founder-message-title {
+    font-size: 12px;
+  }
+  .founder-message-note {
+    font-size: 13px;
   }
   .founder-message-shell::before {
     display: none;
@@ -1149,9 +1146,16 @@ textarea.input { min-height: 120px; resize: vertical; }
 }
 
 @media (max-width: 620px) {
+  .founder-message-shell {
+    padding: 36px 24px 32px;
+  }
   .founder-message-photo {
     width: 70px;
     height: 70px;
+    margin-bottom: 16px;
+  }
+  .founder-message-name {
+    font-size: 20px;
   }
 }
 
@@ -1165,13 +1169,13 @@ textarea.input { min-height: 120px; resize: vertical; }
   gap: 24px;
 }
 .consult-mode-card {
-  padding: 28px;
+  padding: 32px;
   border: 1px solid var(--gray-100);
   border-radius: var(--radius-md);
   background: var(--white);
 }
 .consult-mode-card h3 {
-  margin: 0 0 16px;
+  margin: 0 0 20px;
   font-family: var(--font-display);
   font-size: 18px;
   font-weight: 700;
@@ -1182,7 +1186,7 @@ textarea.input { min-height: 120px; resize: vertical; }
   padding: 0;
   list-style: none;
   display: grid;
-  gap: 10px;
+  gap: 12px;
 }
 .consult-steps li {
   color: var(--gray-600);
@@ -1201,7 +1205,7 @@ textarea.input { min-height: 120px; resize: vertical; }
   gap: 20px;
 }
 .direct-card {
-  padding: 28px;
+  padding: 32px;
   border: 1px solid var(--gray-100);
   border-radius: var(--radius-md);
   background: var(--white);
@@ -1223,14 +1227,14 @@ textarea.input { min-height: 120px; resize: vertical; }
   height: 22px;
 }
 .direct-card h3 {
-  margin: 0 0 8px;
+  margin: 0 0 10px;
   font-family: var(--font-display);
   font-size: 18px;
   font-weight: 700;
   color: var(--navy);
 }
 .direct-card p {
-  margin: 0 0 16px;
+  margin: 0 0 18px;
   color: var(--gray-600);
   font-size: 14px;
   line-height: 1.6;
@@ -1254,14 +1258,14 @@ textarea.input { min-height: 120px; resize: vertical; }
 .areas-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 12px 32px;
+  gap: 16px 40px;
   max-width: 640px;
   margin: 0 auto;
 }
 .area-item {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   color: var(--gray-700);
   font-size: 15px;
   line-height: 1.5;
@@ -1313,8 +1317,9 @@ textarea.input { min-height: 120px; resize: vertical; }
 
 @media (max-width: 860px) {
   .direct-grid { grid-template-columns: repeat(2, 1fr); }
+  .consult-shell { grid-template-columns: 1fr; padding: 40px 32px; }
   .office-shell { grid-template-columns: 1fr; }
-  .areas-grid { gap: 10px 20px; }
+  .areas-grid { gap: 14px 24px; }
 }
 
 @media (max-width: 620px) {

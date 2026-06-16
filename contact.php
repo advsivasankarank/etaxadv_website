@@ -19,13 +19,12 @@ require_once __DIR__ . '/includes/header.php';
   <section class="founder-message">
     <div class="container">
       <div class="founder-message-shell">
-        <div class="founder-message-author">
-          <div class="founder-message-photo">
-            <img src="/assets/img/ks-sivasankaran.jpg" alt="K. Sivasankaran" />
-          </div>
-          <p class="founder-message-name">K. Sivasankaran</p>
-          <p class="founder-message-title">Founder &amp; Principal Advisor</p>
+        <div class="founder-message-photo">
+          <img src="/assets/img/ks-sivasankaran.jpg" alt="K. Sivasankaran" />
         </div>
+        <p class="founder-message-name">K. Sivasankaran</p>
+        <p class="founder-message-title">Founder &amp; Principal Advisor</p>
+        <p class="founder-message-note">Consultations are scheduled through our advisory team based on availability and the nature of engagement.</p>
         <div class="founder-message-content">
           <p class="founder-message-label">Founder's Message</p>
           <blockquote>
