@@ -7,56 +7,27 @@ require_once __DIR__ . '/includes/header.php';
 
 <main id="main-content">
 
-  <section class="hero hero-services hero-about">
-    <div class="container hero-shell">
-      <div class="hero-copy">
-        <p class="hero-eyebrow">About the Company</p>
-        <h1>Building Trusted Tax, Legal and Compliance Solutions Since 2015</h1>
-        <div class="hero-blocks">
-          <div class="hero-block">
-            <strong class="hero-block-label">Who We Are</strong>
-            <p>E Tax Advisors Private Limited is a multidisciplinary professional services company providing integrated Tax, Legal, Compliance and Business Advisory solutions.</p>
-          </div>
-          <div class="hero-block">
-            <strong class="hero-block-label">Why We Were Established</strong>
-            <p>Founded by K. Sivasankaran with a vision to bridge taxation, legal compliance and business advisory services under a single professional platform.</p>
-          </div>
-          <div class="hero-block">
-            <strong class="hero-block-label">Today</strong>
-            <p>A trusted advisory organisation delivering taxation, compliance, representation and technology-enabled professional services across India.</p>
-          </div>
+  <section class="hero hero-about">
+    <div class="container">
+      <p class="hero-eyebrow">About the Company</p>
+      <h1>Building Trusted Tax, Legal and Compliance Solutions Since 2015</h1>
+      <div class="hero-cards">
+        <div class="hero-card">
+          <strong class="hero-card-label">Who We Are</strong>
+          <p>E Tax Advisors Private Limited is a multidisciplinary professional services company providing integrated Tax, Legal, Compliance and Business Advisory solutions.</p>
         </div>
-        <div class="hero-actions">
-          <a class="btn btn-primary btn-lg" href="services.php">Our Services</a>
-          <a class="btn btn-outline btn-lg" href="/team/ks-sivasankaran.php">Meet the Founder</a>
+        <div class="hero-card">
+          <strong class="hero-card-label">When We Started</strong>
+          <p>Incorporated in 2015 with the objective of creating a unified platform for taxation, legal compliance, advisory and technology-enabled professional services.</p>
+        </div>
+        <div class="hero-card">
+          <strong class="hero-card-label">Why We Exist</strong>
+          <p>To bridge the gap between taxation, legal compliance, business advisory and technology, enabling clients to receive coordinated professional support under one roof.</p>
         </div>
       </div>
-      <div class="hero-visual">
-        <div class="hero-panel">
-          <p class="journey-heading">Company Journey</p>
-          <div class="journey-track">
-            <div class="journey-node">
-              <span class="jn-year">2015</span>
-              <span class="jn-dot"></span>
-              <span class="jn-desc">Incorporation of<br>E Tax Advisors</span>
-            </div>
-            <div class="journey-node">
-              <span class="jn-year">2017</span>
-              <span class="jn-dot"></span>
-              <span class="jn-desc">GST Advisory &amp;<br>Representation</span>
-            </div>
-            <div class="journey-node">
-              <span class="jn-year">2020</span>
-              <span class="jn-dot"></span>
-              <span class="jn-desc">Technology-enabled<br>Service Delivery</span>
-            </div>
-            <div class="journey-node">
-              <span class="jn-year">2026</span>
-              <span class="jn-dot"></span>
-              <span class="jn-desc">Integrated Tax, Legal,<br>Compliance &amp; Fintech</span>
-            </div>
-          </div>
-        </div>
+      <div class="hero-actions is-centered">
+        <a class="btn btn-primary btn-lg" href="services.php">Our Services</a>
+        <a class="btn btn-outline btn-lg" href="/team/ks-sivasankaran.php">Meet the Founder</a>
       </div>
     </div>
   </section>
@@ -88,7 +59,7 @@ require_once __DIR__ . '/includes/header.php';
     </div>
   </section>
 
-  <section class="trust-bar">
+  <section class="trust-bar trust-bar-compact">
     <div class="container">
       <div class="trust-bar-grid">
         <div class="trust-bar-item"><strong>1000+</strong><span>Clients Served</span></div>
@@ -199,14 +170,38 @@ require_once __DIR__ . '/includes/header.php';
         <div class="info-merge-panel">
           <h3 class="info-merge-title">Industries We Serve</h3>
           <div class="info-merge-items">
-            <span class="info-merge-item">Manufacturing</span>
-            <span class="info-merge-item">Trading</span>
-            <span class="info-merge-item">MSMEs</span>
-            <span class="info-merge-item">Educational Institutions</span>
-            <span class="info-merge-item">Trusts &amp; NGOs</span>
-            <span class="info-merge-item">Professionals</span>
-            <span class="info-merge-item">Startups</span>
-            <span class="info-merge-item">Family-Owned Businesses</span>
+            <div class="info-merge-item">
+              <strong>Manufacturing</strong>
+              <span class="info-merge-desc">Factories, Industrial Units and Industrial Enterprises</span>
+            </div>
+            <div class="info-merge-item">
+              <strong>Trading</strong>
+              <span class="info-merge-desc">Wholesale, Retail and Distribution Businesses</span>
+            </div>
+            <div class="info-merge-item">
+              <strong>MSMEs</strong>
+              <span class="info-merge-desc">Small and Medium Businesses Across Sectors</span>
+            </div>
+            <div class="info-merge-item">
+              <strong>Educational Institutions</strong>
+              <span class="info-merge-desc">Schools, Colleges and Training Organisations</span>
+            </div>
+            <div class="info-merge-item">
+              <strong>Trusts &amp; NGOs</strong>
+              <span class="info-merge-desc">Charitable Trusts, Foundations and Non-Profits</span>
+            </div>
+            <div class="info-merge-item">
+              <strong>Professionals</strong>
+              <span class="info-merge-desc">Chartered Accountants, Lawyers and Consultants</span>
+            </div>
+            <div class="info-merge-item">
+              <strong>Startups</strong>
+              <span class="info-merge-desc">Early-Stage and Growth-Stage Ventures</span>
+            </div>
+            <div class="info-merge-item">
+              <strong>Family-Owned Businesses</strong>
+              <span class="info-merge-desc">Multi-Generational Family Enterprises</span>
+            </div>
           </div>
         </div>
       </div>

@@ -1,6 +1,5 @@
 :root {
   --navy: #004d4d;
-  --navy-light: #006666;
   --navy-mid: #005555;
   --navy-50: #e8f4f4;
   --gold: #cc6b1c;
@@ -23,7 +22,7 @@
   --radius-md: 16px;
   --radius-lg: 24px;
   --container: 1200px;
-  --section-gap: 90px;
+  --section-gap: 60px;
   --header-height: 80px;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
   --font-display: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -212,66 +211,6 @@ body.menu-open { overflow: hidden; }
   .authority-pill { padding: 6px 12px; }
 }
 
-/* Company Journey Timeline (about page hero) */
-.journey-heading {
-  font-family: var(--font-display);
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: .12em;
-  color: var(--gold);
-  text-align: center;
-  margin: 0 0 20px;
-}
-.journey-track {
-  display: flex;
-  justify-content: space-between;
-  position: relative;
-  padding: 0 8px;
-}
-.journey-track::before {
-  content: "";
-  position: absolute;
-  top: 26px;
-  left: 18px;
-  right: 18px;
-  height: 2px;
-  background: linear-gradient(to right, #D4AF37, #115E59);
-  border-radius: 2px;
-}
-.journey-node {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  position: relative;
-  flex: 1;
-  gap: 8px;
-}
-.jn-year {
-  font-family: var(--font-display);
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--navy);
-  line-height: 1.2;
-}
-.jn-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #D4AF37;
-  border: 2px solid var(--white);
-  box-shadow: 0 0 0 2px #D4AF37;
-  position: relative;
-  z-index: 1;
-  flex-shrink: 0;
-}
-.jn-desc {
-  color: var(--gray-600);
-  font-size: 11px;
-  line-height: 1.4;
-  max-width: 100px;
-}
 
 /* ============================================
    BUTTONS – Premium
@@ -328,7 +267,58 @@ main { display: block; }
   background: linear-gradient(180deg, var(--navy-50) 0%, var(--white) 100%);
 }
 .hero-about {
-  padding: 56px 0 48px;
+  padding: 48px 0 40px;
+  text-align: center;
+}
+.hero-about .hero-eyebrow {
+  margin-bottom: 16px;
+}
+.hero-about h1 {
+  margin: 0 auto 28px;
+  font-size: clamp(26px, 3vw, 36px);
+  max-width: 800px;
+}
+.hero-about .hero-actions {
+  justify-content: center;
+}
+
+/* Hero cards — 3-column compact */
+.hero-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 28px;
+  text-align: left;
+}
+.hero-card {
+  padding: 24px 20px;
+  border: 1px solid var(--gray-100);
+  border-radius: var(--radius-md);
+  background: var(--white);
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-xs);
+}
+.hero-card-label {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+.hero-card p {
+  margin: 0;
+  color: var(--gray-600);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Centered hero actions */
+.hero-actions.is-centered {
+  justify-content: center;
 }
 .hero-shell {
   display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
@@ -348,28 +338,6 @@ main { display: block; }
   margin: 0; color: var(--gray-600); font-size: 18px; line-height: 1.7;
 }
 .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
-.hero-blocks {
-  display: grid;
-  gap: 16px;
-  margin-bottom: 28px;
-}
-.hero-block {
-  padding: 0;
-}
-.hero-block-label {
-  display: block;
-  font-family: var(--font-display);
-  font-size: 13px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: .06em;
-  color: var(--gold);
-  margin-bottom: 4px;
-}
-.hero-block p {
-  font-size: 15px;
-  line-height: 1.6;
-}
 .hero-image {
   position: relative; border-radius: var(--radius-lg); overflow: hidden;
   background: var(--gray-100); aspect-ratio: 4/3;
@@ -399,6 +367,10 @@ main { display: block; }
   color: var(--navy); line-height: 1.1; margin-bottom: 4px;
 }
 .trust-bar-item span { color: var(--gray-600); font-size: 13px; font-weight: 500; }
+
+.trust-bar-compact {
+  padding: 16px 0;
+}
 
 /* ============================================
    ABOUT TILES — Premium Two-Column
@@ -881,11 +853,12 @@ textarea.input { min-height: 120px; resize: vertical; }
   .footer-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
   .industry-grid { grid-template-columns: repeat(2, 1fr); }
   .ecosystem-grid { grid-template-columns: repeat(3, 1fr); }
+  .hero-cards { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 860px) {
-  :root { --section-gap: 60px; }
-  .section-compact { padding: 44px 0; }
+  :root { --section-gap: 50px; }
+  .section-compact { padding: 36px 0; }
   .core-services-grid { grid-template-columns: 1fr; }
   .ft-grid { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr; }
@@ -897,17 +870,14 @@ textarea.input { min-height: 120px; resize: vertical; }
   .industry-grid { grid-template-columns: repeat(2, 1fr); }
   .ecosystem-grid { grid-template-columns: repeat(2, 1fr); }
   .info-merge-grid { grid-template-columns: 1fr; }
-  .hero-about { padding: 40px 0 32px; }
-  .hero-blocks { gap: 12px; margin-bottom: 20px; }
-  .hero-block p { font-size: 14px; }
-  .journey-track { padding: 0; }
-  .journey-track::before { left: 10px; right: 10px; }
-  .jn-desc { font-size: 10px; max-width: 80px; }
+  .hero-about { padding: 32px 0 28px; }
+  .hero-cards { grid-template-columns: 1fr; gap: 16px; margin-bottom: 20px; }
+  .hero-about h1 { font-size: clamp(22px, 4vw, 28px); margin-bottom: 20px; }
 }
 
 @media (max-width: 620px) {
   :root { --section-gap: 40px; }
-  .section-compact { padding: 32px 0; }
+  .section-compact { padding: 28px 0; }
   .trust-bar-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .trust-bar-item strong { font-size: 20px; }
   .section-header { margin-bottom: 24px; }
@@ -920,15 +890,9 @@ textarea.input { min-height: 120px; resize: vertical; }
   .eco-card { padding: 20px 16px; min-height: 120px; }
   .about-vmc-grid .about-tile { padding: 28px; }
   .info-merge-panel { padding: 24px; }
-  .hero-about { padding: 32px 0 24px; }
-  .hero-blocks { gap: 10px; }
-  .hero-block-label { font-size: 12px; }
-  .hero-block p { font-size: 13px; }
-  .journey-track { flex-wrap: wrap; gap: 12px; justify-content: center; }
-  .journey-track::before { display: none; }
-  .journey-node { flex: 0 0 calc(50% - 12px); gap: 4px; }
-  .jn-year { font-size: 13px; }
-  .jn-desc { font-size: 10px; max-width: none; }
+  .hero-about { padding: 24px 0 20px; }
+  .hero-card { padding: 20px 16px; }
+  .hero-card p { font-size: 13px; }
 }
 
 /* ============================================
@@ -1172,6 +1136,12 @@ textarea.input { min-height: 120px; resize: vertical; }
 }
 
 /* Right panel */
+.founder-right {
+  padding: 24px;
+  border-radius: var(--radius-md);
+  background: var(--gray-50);
+  border: 1px solid var(--gray-100);
+}
 .founder-right .founder-summary {
   max-width: none;
 }
@@ -1254,7 +1224,7 @@ textarea.input { min-height: 120px; resize: vertical; }
   max-width: 900px;
   margin: 0 auto;
   text-align: center;
-  padding: 40px 40px;
+  padding: 30px 40px;
   border-top: 1px solid var(--gray-100);
   border-bottom: 1px solid var(--gray-100);
 }
@@ -1280,9 +1250,13 @@ textarea.input { min-height: 120px; resize: vertical; }
 @media (max-width: 860px) {
   .founder-shell-about {
     grid-template-columns: 1fr;
+    gap: 28px;
   }
   .founder-photo-frame {
     max-width: 240px;
+  }
+  .founder-right {
+    padding: 20px;
   }
   .credentials-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -1340,6 +1314,9 @@ textarea.input { min-height: 120px; resize: vertical; }
   color: var(--gray-600);
   font-size: 15px;
   line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
 }
 .info-merge-item::before {
   content: "";
@@ -1350,6 +1327,15 @@ textarea.input { min-height: 120px; resize: vertical; }
   height: 6px;
   border-radius: 50%;
   background: var(--gold);
+}
+.info-merge-item strong {
+  font-weight: 600;
+  color: var(--charcoal);
+}
+.info-merge-item .info-merge-desc {
+  font-size: 13px;
+  color: var(--gray-400);
+  line-height: 1.4;
 }
 
 /* Service ecosystem — 5 cards */
