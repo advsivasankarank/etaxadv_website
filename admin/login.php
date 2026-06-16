@@ -12,8 +12,17 @@ if (!empty($_SESSION['enq_auth'])) {
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  if (password_verify($_POST['password'] ?? '', ENQUIRIES_PASSWORD_HASH)) {
+  $pwd = $_POST['password'] ?? '';
+  if (password_verify($pwd, ADMIN_PASSWORD_HASH)) {
     $_SESSION['enq_auth'] = true;
+    $_SESSION['enq_role'] = 'admin';
+    $_SESSION['enq_time'] = time();
+    header('Location: enquiries.php');
+    exit;
+  }
+  if (password_verify($pwd, BO_PASSWORD_HASH)) {
+    $_SESSION['enq_auth'] = true;
+    $_SESSION['enq_role'] = 'bo';
     $_SESSION['enq_time'] = time();
     header('Location: enquiries.php');
     exit;

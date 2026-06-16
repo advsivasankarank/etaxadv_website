@@ -15,6 +15,7 @@ if (empty($_SESSION['enq_auth'])) {
   header('Location: login.php');
   exit;
 }
+$is_admin = ($_SESSION['enq_role'] ?? '') === 'admin';
 $enquiries_file = __DIR__ . '/../support/data/enquiries.json';
 $enquiries = [];
 if (file_exists($enquiries_file)) {
@@ -22,7 +23,7 @@ if (file_exists($enquiries_file)) {
   $enquiries = is_array($data) ? array_reverse($data) : [];
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
+if ($is_admin && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
   $id = (int)($_POST['id'] ?? 0);
   $new_status = $_POST['status'] ?? '';
   if (in_array($new_status, ['new', 'contacted', 'converted', 'closed'], true)) {
@@ -67,7 +68,7 @@ require_once __DIR__ . '/../includes/header.php';
     <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:32px;">
       <div>
         <h1 style="margin:0;font-family:var(--font-display);font-size:28px;font-weight:700;color:var(--navy);">Enquiries</h1>
-        <p style="margin:4px 0 0;color:var(--gray-600);font-size:14px;"><?= count($enquiries) ?> total submission<?= count($enquiries) !== 1 ? 's' : '' ?></p>
+        <p style="margin:4px 0 0;color:var(--gray-600);font-size:14px;"><?= count($enquiries) ?> total submission<?= count($enquiries) !== 1 ? 's' : '' ?> &middot; <span style="text-transform:capitalize;"><?= $is_admin ? 'Admin' : 'BO' ?></span></p>
       </div>
       <div style="display:flex;gap:8px;">
         <a class="btn btn-outline" href="?export=1">Export CSV</a>
@@ -90,7 +91,7 @@ require_once __DIR__ . '/../includes/header.php';
               <th style="padding:10px 12px;text-align:left;font-weight:600;color:var(--charcoal);border-bottom:2px solid var(--gray-100);white-space:nowrap;">Service</th>
               <th style="padding:10px 12px;text-align:left;font-weight:600;color:var(--charcoal);border-bottom:2px solid var(--gray-100);white-space:nowrap;">Mode</th>
               <th style="padding:10px 12px;text-align:left;font-weight:600;color:var(--charcoal);border-bottom:2px solid var(--gray-100);white-space:nowrap;">Status</th>
-              <th style="padding:10px 12px;text-align:left;font-weight:600;color:var(--charcoal);border-bottom:2px solid var(--gray-100);white-space:nowrap;">Action</th>
+              <?php if ($is_admin): ?><th style="padding:10px 12px;text-align:left;font-weight:600;color:var(--charcoal);border-bottom:2px solid var(--gray-100);white-space:nowrap;">Action</th><?php endif; ?>
             </tr>
           </thead>
           <tbody>
@@ -112,6 +113,7 @@ require_once __DIR__ . '/../includes/header.php';
                   else echo 'background:#f8d7da;color:#721c24;';
                 ?>"><?= $s ?></span>
               </td>
+              <?php if ($is_admin): ?>
               <td style="padding:10px 12px;vertical-align:top;">
                 <form method="post" style="display:flex;gap:4px;">
                   <input type="hidden" name="id" value="<?= $e['id'] ?? 0 ?>">
@@ -124,10 +126,11 @@ require_once __DIR__ . '/../includes/header.php';
                   <button class="btn btn-sm btn-primary" type="submit" name="update_status" style="min-height:auto;padding:4px 10px;font-size:12px;">Update</button>
                 </form>
               </td>
+              <?php endif; ?>
             </tr>
             <?php if ($e['message'] ?? ''): ?>
             <tr style="border-bottom:1px solid var(--gray-100);">
-              <td colspan="9" style="padding:0 12px 10px;color:var(--gray-600);font-size:12px;line-height:1.5;white-space:pre-wrap;"><?= htmlspecialchars($e['message'] ?? '') ?></td>
+              <td colspan="<?= $is_admin ? 9 : 8 ?>" style="padding:0 12px 10px;color:var(--gray-600);font-size:12px;line-height:1.5;white-space:pre-wrap;"><?= htmlspecialchars($e['message'] ?? '') ?></td>
             </tr>
             <?php endif; ?>
             <?php endforeach; ?>
