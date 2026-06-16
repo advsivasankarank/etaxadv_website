@@ -1032,3 +1032,125 @@ textarea.input { min-height: 120px; resize: vertical; }
     grid-template-columns: 1fr;
   }
 }
+
+/* ============================================
+   FOUNDER'S MESSAGE (index.php)
+   ============================================ */
+.founder-message {
+  padding: 40px 0 0;
+}
+.founder-message-shell {
+  position: relative;
+  background: #115E59;
+  color: #FFFFFF;
+  padding: 50px;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 48px;
+  align-items: center;
+}
+.founder-message-shell::before {
+  content: "\201C";
+  position: absolute;
+  top: 20px;
+  right: 50px;
+  font-size: 240px;
+  line-height: 1;
+  font-family: var(--font-display);
+  color: rgba(212,175,55,0.12);
+  pointer-events: none;
+}
+
+.founder-message-author {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+  flex-shrink: 0;
+  max-width: 200px;
+}
+.founder-message-photo {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid rgba(255,255,255,0.25);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  flex-shrink: 0;
+}
+.founder-message-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.founder-message-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: #D4AF37;
+  line-height: 1.2;
+}
+.founder-message-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.85);
+}
+
+.founder-message-content {
+  position: relative;
+  z-index: 1;
+}
+.founder-message-label {
+  margin: 0 0 16px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #D4AF37;
+}
+.founder-message-content blockquote {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(20px, 2.5vw, 32px);
+  font-weight: 600;
+  line-height: 1.6;
+  color: #FFFFFF;
+}
+
+@media (max-width: 860px) {
+  .founder-message-shell {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding: 40px 28px;
+    text-align: center;
+  }
+  .founder-message-author {
+    max-width: none;
+    gap: 8px;
+  }
+  .founder-message-photo {
+    width: 80px;
+    height: 80px;
+  }
+  .founder-message-name {
+    font-size: 20px;
+  }
+  .founder-message-shell::before {
+    display: none;
+  }
+}
+
+@media (max-width: 620px) {
+  .founder-message-photo {
+    width: 70px;
+    height: 70px;
+  }
+}

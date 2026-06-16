@@ -8,6 +8,26 @@ require_once __DIR__ . '/includes/header.php';
 
 <main id="main-content">
 
+  <section class="founder-message">
+    <div class="container">
+      <div class="founder-message-shell">
+        <div class="founder-message-author">
+          <div class="founder-message-photo">
+            <img src="/assets/img/ks-sivasankaran.jpg" alt="K. Sivasankaran" />
+          </div>
+          <p class="founder-message-name">K. Sivasankaran</p>
+          <p class="founder-message-title">Founder &amp; Principal Advisor</p>
+        </div>
+        <div class="founder-message-content">
+          <p class="founder-message-label">Founder's Message</p>
+          <blockquote>
+            &ldquo;Professional advisory is not merely about compliance. It is about helping clients make informed decisions, manage risks proactively, and build systems that support sustainable growth.&rdquo;
+          </blockquote>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="trust-bar">
     <div class="container">
       <div class="trust-bar-grid">
