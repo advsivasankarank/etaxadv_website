@@ -915,3 +915,120 @@ textarea.input { min-height: 120px; resize: vertical; }
   margin-top: auto;
   align-self: flex-start;
 }
+
+/* ============================================
+   ABOUT PAGE
+   ============================================ */
+
+/* Founder credentials */
+.founder-credentials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.credential-badge {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 999px;
+  background: var(--navy-50);
+  color: var(--navy);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .02em;
+}
+
+/* Founder milestones */
+.founder-milestones {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+.milestone-item {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+.milestone-year {
+  flex-shrink: 0;
+  width: 44px;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gold);
+}
+.milestone-desc {
+  color: var(--gray-600);
+  font-size: 14px;
+  line-height: 1.6;
+}
+#about-founder .founder-summary {
+  max-width: none;
+}
+
+/* Value proposition grid */
+.value-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.value-card {
+  display: flex;
+  flex-direction: column;
+}
+.value-card h3 {
+  margin: 0 0 10px;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--navy);
+}
+.value-card p {
+  margin: 0;
+  color: var(--gray-600);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Leadership quote */
+.quote-block {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 48px 40px;
+  background: var(--gray-50);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--gray-100);
+}
+.quote-block blockquote {
+  margin: 0 0 24px;
+  color: var(--navy);
+  font-family: var(--font-display);
+  font-size: clamp(20px, 2.5vw, 28px);
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -.01em;
+}
+.quote-attribution strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--gold);
+}
+.quote-attribution span {
+  font-size: 13px;
+  color: var(--gray-600);
+}
+
+@media (max-width: 860px) {
+  .founder-shell {
+    grid-template-columns: 1fr;
+  }
+  .founder-photo {
+    max-width: 360px;
+  }
+  .value-grid {
+    grid-template-columns: 1fr;
+  }
+}
