@@ -5,27 +5,17 @@ $page_path = '/services.php';
 require_once __DIR__ . '/includes/header.php';
 ?>
 
-<main id="main-content">
+<main id="main-content" class="services-page">
 
   <section class="hero hero-services">
-    <div class="container hero-shell">
-      <div class="hero-copy">
-        <p class="hero-eyebrow">Services</p>
-        <h1>Integrated Tax, Legal, Compliance &amp; Advisory Services</h1>
-        <p>E Tax Advisors Private Limited provides professional services in taxation, compliance, regulatory representation, business advisory and financial reporting support.</p>
-        <p>With nearly three decades of professional experience, we assist businesses, professionals, trusts, educational institutions and entrepreneurs in managing statutory obligations and regulatory requirements with confidence.</p>
-        <div class="hero-actions">
-          <a class="btn btn-primary btn-lg" href="contact.php">Book Consultation</a>
-          <a class="btn btn-outline btn-lg" href="contact.php">Contact Us</a>
-        </div>
-      </div>
-      <div class="hero-visual">
-        <div class="hero-stack">
-          <div class="hero-panel">
-            <h2>Nearly 30 Years of Professional Excellence</h2>
-            <p>Trusted by 1000+ clients across India for integrated tax, legal and compliance advisory services.</p>
-          </div>
-        </div>
+    <div class="container">
+      <p class="hero-eyebrow">Services</p>
+      <h1>Integrated Tax, Legal, Compliance &amp; Advisory Services</h1>
+      <p>E Tax Advisors Private Limited provides professional services in taxation, compliance, regulatory representation, business advisory and financial reporting support.</p>
+      <p>With nearly three decades of professional experience, we assist businesses, professionals, trusts, educational institutions and entrepreneurs in managing statutory obligations and regulatory requirements with confidence.</p>
+      <div class="hero-actions is-centered">
+        <a class="btn btn-primary btn-lg" href="contact.php">Book Consultation</a>
+        <a class="btn btn-outline btn-lg" href="contact.php">Contact Us</a>
       </div>
     </div>
   </section>
@@ -43,7 +33,7 @@ require_once __DIR__ . '/includes/header.php';
 
   <section class="section">
     <div class="container">
-      <div class="section-header">
+      <div class="section-header centered">
         <p class="section-label">Service Categories</p>
         <h2 class="section-title">Comprehensive advisory across four key domains</h2>
       </div>
@@ -119,7 +109,7 @@ require_once __DIR__ . '/includes/header.php';
 
   <section class="section section-alt" id="detailed-services">
     <div class="container">
-      <div class="section-header">
+      <div class="section-header centered">
         <p class="section-label">Detailed Services</p>
         <h2 class="section-title">Explore our full range of professional services</h2>
       </div>
@@ -271,7 +261,7 @@ require_once __DIR__ . '/includes/header.php';
 
   <section class="section">
     <div class="container">
-      <div class="section-header">
+      <div class="section-header centered">
         <p class="section-label">Why Businesses Engage Us</p>
         <h2 class="section-title">What makes E Tax Advisors the preferred choice</h2>
       </div>

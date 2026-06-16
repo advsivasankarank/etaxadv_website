@@ -1002,7 +1002,19 @@ textarea.input { min-height: 120px; resize: vertical; }
    SERVICES PAGE POLISH
    ============================================ */
 .hero-services {
-  padding: 75px 0 56px;
+  padding: 60px 0;
+  text-align: center;
+}
+.hero-services h1 {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.hero-services p:not(.hero-eyebrow) {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 20px;
 }
 
 .feature-icon svg {
@@ -1024,6 +1036,14 @@ textarea.input { min-height: 120px; resize: vertical; }
 #detailed-services .service-link {
   margin-top: auto;
   align-self: flex-start;
+}
+
+/* Services page - paragraph justification */
+.services-page .hero-services p:not(.hero-eyebrow),
+.services-page .service-cat-card p,
+.services-page .card p,
+.services-page .cta-band p {
+  text-align: justify;
 }
 
 /* ============================================
