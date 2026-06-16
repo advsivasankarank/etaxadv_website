@@ -41,7 +41,7 @@ $page_title = 'Admin Login | E Tax Advisors';
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="<?= htmlspecialchars(site_href('/assets/css/style.css')) ?>">
+  <link rel="stylesheet" href="<?= htmlspecialchars(app_href('/assets/css/style.css')) ?>">
   <style>
     html, body { height: 100%; }
     body { display:flex;align-items:center;justify-content:center;background:var(--gray-50);margin:0;padding:20px; }
@@ -59,7 +59,7 @@ $page_title = 'Admin Login | E Tax Advisors';
 </head>
 <body>
   <div class="login-card">
-    <img src="<?= htmlspecialchars(site_href('/assets/img/logo.png')) ?>" alt="E Tax Advisors logo">
+    <img src="<?= htmlspecialchars(app_href('/assets/img/logo.png')) ?>" alt="E Tax Advisors logo">
     <h1>Admin Login</h1>
     <p>Back office enquiries dashboard</p>
     <?php if ($error): ?>
@@ -72,7 +72,7 @@ $page_title = 'Admin Login | E Tax Advisors';
       </div>
       <button class="btn btn-primary btn-lg" type="submit">Login</button>
     </form>
-    <div class="login-back"><a href="<?= htmlspecialchars(site_href('/index.php')) ?>">&larr; Back to website</a></div>
+    <div class="login-back"><a href="<?= htmlspecialchars(app_href('/index.php')) ?>">&larr; Back to website</a></div>
   </div>
 </body>
 </html>
