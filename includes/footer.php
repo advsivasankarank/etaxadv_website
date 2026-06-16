@@ -58,6 +58,21 @@
   </div>
 </footer>
 
+<div class="mobile-action-bar">
+  <a href="tel:+919894626300">Call</a>
+  <a href="https://wa.me/919500601119" target="_blank" rel="noopener">WhatsApp</a>
+  <a href="<?= htmlspecialchars(site_href('/contact.php')) ?>">Consult</a>
+</div>
+
+<a href="https://wa.me/919500601119" target="_blank" rel="noopener" class="whatsapp-float" aria-label="Chat on WhatsApp">
+  <svg viewBox="0 0 32 32" fill="white" width="28" height="28"><path d="M16 2C8.2 2 2 8.2 2 16c0 3.1.9 6 2.5 8.5L2 30l5.8-2.3C10.3 29.2 13 30 16 30c7.8 0 14-6.2 14-14S23.8 2 16 2zm6.5 19.8c-.4 1-1.5 1.8-2.5 2-1 .2-2 .2-3.2-.6-1.7-.8-3.2-2.4-4.4-3.8-1.2-1.4-2-3-2.3-4.5-.2-1.2.1-2.2.6-2.8.4-.6 1-.8 1.3-.8h.8c.3 0 .5 0 .8.6.3.6 1 2.2 1 2.4s0 .4-.2.6c-.2.2-.4.5-.6.7-.2.2-.4.4-.2.8.2.4 1 1.7 2 2.6 1.2 1.2 2.2 1.6 2.6 1.8.4.2.6.2.8 0 .2-.2.8-.8 1-1.2.2-.4.4-.4.6-.3.2.2 1.4.7 1.6.8.2.2.4.2.5.3 0 .4 0 1-.2 1.4z"/></svg>
+</a>
+
+<a href="<?= htmlspecialchars(site_href('/contact.php')) ?>" class="float-consult" aria-label="Book consultation">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+  Book Consultation
+</a>
+
 <script src="<?= htmlspecialchars(app_href('/assets/js/main.js')) ?>"></script>
 </body>
 </html>
