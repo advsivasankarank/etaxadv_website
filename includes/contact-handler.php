@@ -15,6 +15,8 @@ function contact_ensure_schema(): void {
         email VARCHAR(190) NOT NULL,
         organisation VARCHAR(190) DEFAULT NULL,
         service VARCHAR(190) NOT NULL,
+        consultation_mode VARCHAR(50) DEFAULT NULL,
+        preferred_date VARCHAR(20) DEFAULT NULL,
         preferred_time VARCHAR(190) DEFAULT NULL,
         message TEXT NOT NULL,
         source_page VARCHAR(190) NOT NULL DEFAULT '',
@@ -68,6 +70,9 @@ function contact_process_submission(): array {
   $email = clean_input($_POST['email'] ?? '', 190);
   $organisation = clean_input($_POST['organisation'] ?? '', 190);
   $service = clean_input($_POST['service'] ?? '', 190);
+  $consultation_mode = clean_input($_POST['consultation_mode'] ?? '', 50);
+  $preferred_date = clean_input($_POST['preferred_date'] ?? '', 20);
+  $preferred_time = clean_input($_POST['preferred_time'] ?? '', 190);
   $msg = clean_multiline($_POST['message'] ?? '', 5000);
 
   $errors = [];
@@ -75,6 +80,7 @@ function contact_process_submission(): array {
   if ($mobile === '' || !validate_mobile($mobile)) $errors[] = 'Valid mobile number is required.';
   if ($email === '' || !validate_email($email)) $errors[] = 'Valid email address is required.';
   if ($service === '') $errors[] = 'Service field is required.';
+  if ($consultation_mode === '') $errors[] = 'Consultation mode is required.';
   if ($msg === '') $errors[] = 'Message is required.';
 
   if (!empty($errors)) {
@@ -88,14 +94,16 @@ function contact_process_submission(): array {
 
   try {
     $stmt = db()->prepare("
-      INSERT INTO enquiries (enquiry_date, name, mobile, email, organisation, service, preferred_time, message, source_page, ip_address, status)
-      VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, 'new')
+      INSERT INTO enquiries (enquiry_date, name, mobile, email, organisation, service, consultation_mode, preferred_date, preferred_time, message, source_page, ip_address, status)
+      VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'new')
     ");
     $stmt->execute([
       $name, $mobile, $email,
       $organisation !== '' ? $organisation : null,
       $service,
-      $_POST['preferred_time'] ?? null,
+      $consultation_mode !== '' ? $consultation_mode : null,
+      $preferred_date !== '' ? $preferred_date : null,
+      $preferred_time !== '' ? $preferred_time : null,
       $msg, $source, $ip
     ]);
 
@@ -106,12 +114,15 @@ function contact_process_submission(): array {
       . "Email: {$email}\n"
       . "Organisation: " . ($organisation ?: '-') . "\n"
       . "Service: {$service}\n"
+      . "Consultation Mode: {$consultation_mode}\n"
+      . "Preferred Date: " . ($preferred_date ?: '-') . "\n"
+      . "Preferred Time: " . ($preferred_time ?: '-') . "\n"
       . "Message:\n{$msg}\n\n"
       . "Source: {$source}\n"
       . "IP: {$ip}\n";
     send_mail_safe(OFFICE_EMAIL, $subject, $body);
 
-    return ['success' => true, 'message' => 'Thank you! Your enquiry has been received. We will contact you shortly.'];
+    return ['success' => true, 'message' => 'Thank you! Your consultation request has been received. We will review and contact you shortly.'];
   } catch (Throwable $e) {
     error_log('Contact insert error: ' . $e->getMessage());
     return ['success' => false, 'error' => 'Something went wrong. Please try again or call us directly.'];

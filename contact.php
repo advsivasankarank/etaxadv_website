@@ -15,142 +15,252 @@ require_once __DIR__ . '/includes/header.php';
 ?>
 
 <main id="main-content">
-  <section class="hero">
-    <div class="container hero-shell">
-      <div class="hero-copy">
-        <div class="eyebrow">Contact</div>
-        <h1>Start with a structured consultation, not a fragmented conversation.</h1>
-        <p>
-          Use this channel for consultation requests, quotations and first-stage advisory discussions. For existing service issues,
-          feedback or escalation, please use Client Support so the matter remains documented.
-        </p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="#consult">Request Consultation</a>
-          <a class="btn btn-outline" href="client-support.php">Client Support</a>
-        </div>
-      </div>
 
-      <div class="hero-visual">
-        <div class="hero-stack">
-          <div class="hero-panel">
-            <h2>Preferred channels for faster routing.</h2>
-            <p>Call for urgent conversations, WhatsApp for quick initiation and the form below for structured consultation intake.</p>
+  <section class="founder-message">
+    <div class="container">
+      <div class="founder-message-shell">
+        <div class="founder-message-author">
+          <div class="founder-message-photo">
+            <img src="/assets/img/ks-sivasankaran.jpg" alt="K. Sivasankaran" />
           </div>
-          <div class="hero-grid">
-            <div class="hero-metric">
-              <strong>Consult First</strong>
-              <span>Useful for notices, representation, compliance setup and decision-sensitive reviews.</span>
-            </div>
-            <div class="hero-metric">
-              <strong>Structured Intake</strong>
-              <span>Service line, timing, organisation and requirement captured in one consultation brief.</span>
-            </div>
-          </div>
+          <p class="founder-message-name">K. Sivasankaran</p>
+          <p class="founder-message-title">Founder &amp; Principal Advisor</p>
+        </div>
+        <div class="founder-message-content">
+          <p class="founder-message-label">Founder's Message</p>
+          <blockquote>
+            &ldquo;Professional advisory is not merely about compliance. It is about helping clients make informed decisions, manage risks proactively, and build systems that support sustainable growth.&rdquo;
+          </blockquote>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="section" id="consult">
-    <div class="container contact-grid">
-      <div class="contact-card">
-        <h3>Direct contact options</h3>
-        <p>Use the route that best matches the urgency and nature of your requirement.</p>
-        <div class="contact-stack">
-          <div class="contact-item">
-            <strong>Call</strong>
-            <a href="tel:+919894626300">+91 98946 26300</a>
-          </div>
-          <div class="contact-item">
-            <strong>WhatsApp</strong>
-            <a href="https://wa.me/919500601119" target="_blank" rel="noopener">Start WhatsApp consultation</a>
-          </div>
-          <div class="contact-item">
-            <strong>Email</strong>
-            <a href="mailto:support@etaxadv.com">support@etaxadv.com</a>
-          </div>
-          <div class="contact-item">
-            <strong>Office</strong>
-            No. 234, I Floor, Lawspet Main Road, Pakkamudayanpet, Lawspet, Puducherry - 605008
-          </div>
-        </div>
-
-        <div class="consult-note">
-          <strong>Recommended for</strong>
-          <span>GST notices, income tax notices, labour compliance matters, company &amp; LLP compliance, bookkeeping cleanup and representation support.</span>
-        </div>
+  <section class="section section-alt" id="consult">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-label">Consultation Request</p>
+        <h2 class="section-title">How Can We Assist You?</h2>
+        <p class="section-intro">Select the service area and consultation mode that best suits your requirement.</p>
       </div>
 
-      <div class="contact-card consult-form-card">
-        <h3>Book a Consultation</h3>
-        <p>Complete the form and our team will review your requirement and contact you.</p>
+      <div class="consult-shell">
+        <div class="consult-info">
+          <h3>Book a Consultation</h3>
+          <p>Complete the form and our team will review your requirement and contact you.</p>
 
 <?php if ($consult_result && $consult_result['success']): ?>
-        <?= contact_render_success($consult_result['message']) ?>
+          <?= contact_render_success($consult_result['message']) ?>
 <?php elseif ($consult_result && !$consult_result['success']): ?>
-        <?= contact_render_error($consult_result['error']) ?>
+          <?= contact_render_error($consult_result['error']) ?>
 <?php endif; ?>
 
-        <form method="post" action="<?= htmlspecialchars(site_href('/contact.php')) ?>#consult">
-          <?= csrf_field() ?>
-          <input type="hidden" name="action" value="contact_consult">
-          <input type="hidden" name="source_page" value="/contact.php">
-          <div class="form-grid">
-            <div class="field">
-              <label for="c_name">Name</label>
-              <input class="input" id="c_name" name="name" required />
+          <form method="post" action="<?= htmlspecialchars(site_href('/contact.php')) ?>#consult">
+            <?= csrf_field() ?>
+            <input type="hidden" name="action" value="contact_consult">
+            <input type="hidden" name="source_page" value="/contact.php">
+            <div class="form-grid">
+              <div class="field">
+                <label for="c_name">Name</label>
+                <input class="input" id="c_name" name="name" required />
+              </div>
+              <div class="field">
+                <label for="c_mobile">Mobile</label>
+                <input class="input" id="c_mobile" name="mobile" required />
+              </div>
+              <div class="field">
+                <label for="c_email">Email</label>
+                <input class="input" id="c_email" name="email" type="email" required />
+              </div>
+              <div class="field">
+                <label for="c_org">Organisation</label>
+                <input class="input" id="c_org" name="organisation" />
+              </div>
+              <div class="field">
+                <label for="c_service">Service Required</label>
+                <select class="input" id="c_service" name="service" required>
+                  <option value="">Select a service</option>
+                  <option value="Income Tax Advisory">Income Tax Advisory</option>
+                  <option value="GST Advisory & Representation">GST Advisory &amp; Representation</option>
+                  <option value="TDS & Payroll Compliance">TDS &amp; Payroll Compliance</option>
+                  <option value="Labour Law & HR Compliance">Labour Law &amp; HR Compliance</option>
+                  <option value="Corporate Compliance">Corporate Compliance</option>
+                  <option value="Trust & NGO Advisory">Trust &amp; NGO Advisory</option>
+                  <option value="Litigation & Representation">Litigation &amp; Representation</option>
+                  <option value="Project Reports & CMA">Project Reports &amp; CMA</option>
+                  <option value="Business Advisory">Business Advisory</option>
+                  <option value="e-Pani">e-Pani</option>
+                  <option value="e-HR">e-HR</option>
+                  <option value="e-Kanakan">e-Kanakan</option>
+                  <option value="e-Bal">e-Bal</option>
+                  <option value="SalPro">SalPro</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="c_mode">Consultation Mode</label>
+                <select class="input" id="c_mode" name="consultation_mode" required>
+                  <option value="">Select mode</option>
+                  <option value="Online Consultation">Online Consultation</option>
+                  <option value="Office Consultation">Office Consultation</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="c_date">Preferred Date</label>
+                <input class="input" id="c_date" name="preferred_date" type="date" />
+              </div>
+              <div class="field">
+                <label for="c_time">Preferred Time</label>
+                <input class="input" id="c_time" name="preferred_time" type="time" />
+              </div>
+              <div class="field full-span">
+                <label for="c_msg">Brief Requirement</label>
+                <textarea class="input" id="c_msg" name="message" required></textarea>
+              </div>
+              <div class="field full-span">
+                <button class="btn btn-primary btn-lg" type="submit">Request Consultation</button>
+              </div>
             </div>
-            <div class="field">
-              <label for="c_mobile">Mobile</label>
-              <input class="input" id="c_mobile" name="mobile" required />
+          </form>
+        </div>
+
+        <div class="consult-info">
+          <div id="consult-mode-info">
+            <div class="consult-mode-card" data-mode="Online Consultation">
+              <h3>Online Consultation Process</h3>
+              <ol class="consult-steps">
+                <li><strong>1.</strong> Submit Consultation Request</li>
+                <li><strong>2.</strong> Our Team Reviews the Request</li>
+                <li><strong>3.</strong> Consultation Time is Confirmed</li>
+                <li><strong>4.</strong> Meeting Link is Shared</li>
+                <li><strong>5.</strong> Consultation Conducted through Google Meet or Zoom</li>
+              </ol>
             </div>
-            <div class="field">
-              <label for="c_email">Email</label>
-              <input class="input" id="c_email" name="email" type="email" required />
-            </div>
-            <div class="field">
-              <label for="c_org">Organisation</label>
-              <input class="input" id="c_org" name="organisation" />
-            </div>
-            <div class="field">
-              <label for="c_service">Service Required</label>
-              <input class="input" id="c_service" name="service" placeholder="Income Tax, GST, TDS, e-Kanakan, company compliance, notices, DSC, etc." required />
-            </div>
-            <div class="field">
-              <label for="c_time">Preferred Consultation Time</label>
-              <input class="input" id="c_time" name="preferred_time" placeholder="Today evening / Tomorrow morning / Specific date & time" />
-            </div>
-            <div class="field full-span">
-              <label for="c_msg">Brief Requirement</label>
-              <textarea class="input" id="c_msg" name="message" required></textarea>
-            </div>
-            <div class="field full-span">
-              <button class="btn btn-primary" type="submit">Submit Enquiry</button>
+            <div class="consult-mode-card" data-mode="Office Consultation">
+              <h3>Office Consultation Process</h3>
+              <ol class="consult-steps">
+                <li><strong>1.</strong> Submit Appointment Request</li>
+                <li><strong>2.</strong> Time Slot Confirmation</li>
+                <li><strong>3.</strong> Office Visit as Scheduled</li>
+                <li><strong>4.</strong> Consultation Conducted at E Tax Advisors Office</li>
+              </ol>
             </div>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="section section-muted">
+  <section class="section">
     <div class="container">
-      <div class="grid-3">
-        <article class="card card-muted">
-          <h3>For new mandates</h3>
-          <p>Use consultation booking for business planning, compliance onboarding, notice review and advisory scoping.</p>
-        </article>
-        <article class="card card-muted">
-          <h3>For existing matters</h3>
-          <p>Use Client Support to raise service concerns, feedback or escalation requests with ticket tracking.</p>
-        </article>
-        <article class="card card-muted">
-          <h3>For urgent discussions</h3>
-          <p>Use call or WhatsApp first, then formalise the matter through consultation or ticketing as required.</p>
-        </article>
+      <div class="section-header centered">
+        <p class="section-label">Direct Contact</p>
+        <h2 class="section-title">Reach Us Directly</h2>
+      </div>
+      <div class="direct-grid">
+        <div class="direct-card">
+          <div class="direct-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+          </div>
+          <h3>Call Us</h3>
+          <p>Speak directly with our team for urgent matters or quick inquiries.</p>
+          <a class="direct-link" href="tel:+919894626300">+91 98946 26300</a>
+        </div>
+        <div class="direct-card">
+          <div class="direct-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+          </div>
+          <h3>WhatsApp Consultation</h3>
+          <p>Quick messaging for initial inquiries and document sharing.</p>
+          <a class="direct-link" href="https://wa.me/919500601119" target="_blank" rel="noopener">Start WhatsApp Conversation</a>
+        </div>
+        <div class="direct-card">
+          <div class="direct-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+          </div>
+          <h3>Email Us</h3>
+          <p>Send a detailed message and we will respond within one business day.</p>
+          <a class="direct-link" href="mailto:support@etaxadv.com">support@etaxadv.com</a>
+        </div>
+        <div class="direct-card">
+          <div class="direct-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+          </div>
+          <h3>Visit Our Office</h3>
+          <p>Schedule an appointment for an in-person consultation at our Puducherry office.</p>
+          <span class="direct-address">Puducherry Office</span>
+        </div>
       </div>
     </div>
   </section>
+
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-header centered">
+        <p class="section-label">Consultation Areas</p>
+        <h2 class="section-title">What Can We Help You With?</h2>
+      </div>
+      <div class="areas-grid">
+        <div class="area-item"><span class="area-check">&#10003;</span> GST Notices</div>
+        <div class="area-item"><span class="area-check">&#10003;</span> Income Tax Notices</div>
+        <div class="area-item"><span class="area-check">&#10003;</span> TDS &amp; Payroll Compliance</div>
+        <div class="area-item"><span class="area-check">&#10003;</span> Labour Law Compliance</div>
+        <div class="area-item"><span class="area-check">&#10003;</span> Corporate Compliance</div>
+        <div class="area-item"><span class="area-check">&#10003;</span> Trust &amp; NGO Advisory</div>
+        <div class="area-item"><span class="area-check">&#10003;</span> Business Registrations</div>
+        <div class="area-item"><span class="area-check">&#10003;</span> Project Reports &amp; CMA</div>
+        <div class="area-item"><span class="area-check">&#10003;</span> Representation Matters</div>
+        <div class="area-item"><span class="area-check">&#10003;</span> Business Advisory</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-header centered">
+        <p class="section-label">Office Location</p>
+        <h2 class="section-title">Visit Our Office</h2>
+      </div>
+      <div class="office-shell">
+        <div class="office-map">
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3901.123456789!2d79.829!3d11.934!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTHCsDU2JzAyLjQiTiA3OcKwNDknNDQuNCJF!5e0!3m2!1sen!2sin!4v1" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+        <div class="office-info">
+          <h3>E Tax Advisors Private Limited</h3>
+          <p>
+            No. 234, I Floor,<br/>
+            Lawspet Main Road,<br/>
+            Pakkamudayanpet,<br/>
+            Lawspet,<br/>
+            Puducherry – 605008
+          </p>
+          <a class="btn btn-primary" href="https://maps.google.com/?q=11.934,79.829" target="_blank" rel="noopener">Get Directions</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-band">
+    <div class="container">
+      <h2>Need Professional Guidance?</h2>
+      <p>Whether you require assistance with taxation, compliance, labour law, representation or business advisory matters, our team is ready to assist.</p>
+      <div class="cta-contact-links">
+        <a class="btn btn-gold btn-lg" href="#consult">Book Consultation</a>
+        <a class="btn btn-primary btn-lg" href="https://wa.me/919500601119" target="_blank" rel="noopener">WhatsApp Consultation</a>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

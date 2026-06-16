@@ -1154,3 +1154,170 @@ textarea.input { min-height: 120px; resize: vertical; }
     height: 70px;
   }
 }
+
+/* ============================================
+   CONSULTATION & CONTACT PAGE
+   ============================================ */
+
+/* Consultation mode info cards */
+#consult-mode-info {
+  display: grid;
+  gap: 24px;
+}
+.consult-mode-card {
+  padding: 28px;
+  border: 1px solid var(--gray-100);
+  border-radius: var(--radius-md);
+  background: var(--white);
+}
+.consult-mode-card h3 {
+  margin: 0 0 16px;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--navy);
+}
+.consult-steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+.consult-steps li {
+  color: var(--gray-600);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.consult-steps li strong {
+  color: var(--gold);
+  font-weight: 700;
+}
+
+/* Direct contact grid */
+.direct-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+.direct-card {
+  padding: 28px;
+  border: 1px solid var(--gray-100);
+  border-radius: var(--radius-md);
+  background: var(--white);
+  display: flex;
+  flex-direction: column;
+}
+.direct-icon {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--navy-50);
+  color: var(--navy);
+  margin-bottom: 14px;
+}
+.direct-icon svg {
+  width: 22px;
+  height: 22px;
+}
+.direct-card h3 {
+  margin: 0 0 8px;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--navy);
+}
+.direct-card p {
+  margin: 0 0 16px;
+  color: var(--gray-600);
+  font-size: 14px;
+  line-height: 1.6;
+  flex: 1 0 auto;
+}
+.direct-link {
+  color: var(--navy);
+  font-size: 14px;
+  font-weight: 600;
+}
+.direct-link:hover {
+  text-decoration: underline;
+}
+.direct-address {
+  color: var(--navy);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Consultation areas grid */
+.areas-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px 32px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+.area-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--gray-700);
+  font-size: 15px;
+  line-height: 1.5;
+}
+.area-check {
+  color: var(--gold);
+  font-weight: 700;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+/* Office location */
+.office-shell {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: center;
+  max-width: 960px;
+  margin: 0 auto;
+}
+.office-map {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.office-map iframe {
+  width: 100%;
+  height: 300px;
+  border: 0;
+  display: block;
+}
+.office-info h3 {
+  margin: 0 0 16px;
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--navy);
+}
+.office-info p {
+  margin: 0 0 24px;
+  color: var(--gray-600);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+@media (max-width: 1120px) {
+  .direct-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 860px) {
+  .direct-grid { grid-template-columns: repeat(2, 1fr); }
+  .office-shell { grid-template-columns: 1fr; }
+  .areas-grid { gap: 10px 20px; }
+}
+
+@media (max-width: 620px) {
+  .direct-grid { grid-template-columns: 1fr; }
+  .areas-grid { grid-template-columns: 1fr; }
+}
