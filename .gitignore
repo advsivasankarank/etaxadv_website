@@ -78,6 +78,7 @@
 !/admin/
 /admin/*
 !/admin/enquiries.php
+!/admin/login.php
 !/team/
 /team/*
 !/team/ks-sivasankaran.php

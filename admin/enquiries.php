@@ -4,53 +4,42 @@ require_once __DIR__ . '/../support/config.php';
 session_name('ENQUIRIES_ADMIN');
 session_start();
 
-$error = '';
-
 if (isset($_GET['logout'])) {
   session_unset();
   session_destroy();
+  header('Location: login.php');
+  exit;
+}
+
+if (empty($_SESSION['enq_auth'])) {
+  header('Location: login.php');
+  exit;
+}
+$enquiries_file = __DIR__ . '/../support/data/enquiries.json';
+$enquiries = [];
+if (file_exists($enquiries_file)) {
+  $data = json_decode(file_get_contents($enquiries_file), true);
+  $enquiries = is_array($data) ? array_reverse($data) : [];
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
+  $id = (int)($_POST['id'] ?? 0);
+  $new_status = $_POST['status'] ?? '';
+  if (in_array($new_status, ['new', 'contacted', 'converted', 'closed'], true)) {
+    $all = json_decode(file_get_contents($enquiries_file), true) ?: [];
+    foreach ($all as &$e) {
+      if (($e['id'] ?? 0) === $id) {
+        $e['status'] = $new_status;
+        break;
+      }
+    }
+    file_put_contents($enquiries_file, json_encode($all, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE), LOCK_EX);
+  }
   header('Location: enquiries.php');
   exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
-  if (password_verify($_POST['password'] ?? '', ENQUIRIES_PASSWORD_HASH)) {
-    $_SESSION['enq_auth'] = true;
-    $_SESSION['enq_time'] = time();
-    header('Location: enquiries.php');
-    exit;
-  }
-  $error = 'Invalid password.';
-}
-
-$authenticated = !empty($_SESSION['enq_auth']);
-
-if ($authenticated) {
-  $enquiries_file = __DIR__ . '/../support/data/enquiries.json';
-  $enquiries = [];
-  if (file_exists($enquiries_file)) {
-    $data = json_decode(file_get_contents($enquiries_file), true);
-    $enquiries = is_array($data) ? array_reverse($data) : [];
-  }
-
-  if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
-    $id = (int)($_POST['id'] ?? 0);
-    $new_status = $_POST['status'] ?? '';
-    if (in_array($new_status, ['new', 'contacted', 'converted', 'closed'], true)) {
-      $all = json_decode(file_get_contents($enquiries_file), true) ?: [];
-      foreach ($all as &$e) {
-        if (($e['id'] ?? 0) === $id) {
-          $e['status'] = $new_status;
-          break;
-        }
-      }
-      file_put_contents($enquiries_file, json_encode($all, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE), LOCK_EX);
-    }
-    header('Location: enquiries.php');
-    exit;
-  }
-
-  if (isset($_GET['export'])) {
+if (isset($_GET['export'])) {
     header('Content-Type: text/csv; charset=utf-8');
     header('Content-Disposition: attachment; filename="enquiries.csv"');
     $out = fopen('php://output', 'w');
@@ -66,36 +55,12 @@ if ($authenticated) {
     fclose($out);
     exit;
   }
-}
 
-$page_title = $authenticated ? 'Enquiries Dashboard' : 'Admin Login';
+$page_title = 'Enquiries Dashboard';
 require_once __DIR__ . '/../includes/header.php';
 ?>
 
 <main id="main-content">
-
-<?php if (!$authenticated): ?>
-
-<section class="section" style="min-height:60vh;display:flex;align-items:center;">
-  <div class="container" style="max-width:420px;">
-    <div style="background:var(--white);border:1px solid var(--gray-100);border-radius:var(--radius-md);padding:40px;box-shadow:var(--shadow-md);">
-      <h1 style="margin:0 0 8px;font-family:var(--font-display);font-size:24px;font-weight:700;color:var(--navy);text-align:center;">Enquiries Dashboard</h1>
-      <p style="margin:0 0 28px;color:var(--gray-600);font-size:14px;text-align:center;">Enter the admin password to continue.</p>
-      <?php if ($error): ?>
-        <div class="alert err" style="margin-bottom:20px;"><?= htmlspecialchars($error) ?></div>
-      <?php endif; ?>
-      <form method="post">
-        <div class="field">
-          <label for="pwd">Password</label>
-          <input class="input" id="pwd" name="password" type="password" required autofocus />
-        </div>
-        <button class="btn btn-primary btn-lg" type="submit" name="login" style="width:100%;margin-top:8px;">Login</button>
-      </form>
-    </div>
-  </div>
-</section>
-
-<?php else: ?>
 
 <section class="section">
   <div class="container">
@@ -172,8 +137,6 @@ require_once __DIR__ . '/../includes/header.php';
     <?php endif; ?>
   </div>
 </section>
-
-<?php endif; ?>
 
 </main>
 

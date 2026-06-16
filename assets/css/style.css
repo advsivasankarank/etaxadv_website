@@ -675,8 +675,6 @@ textarea.input { min-height: 120px; resize: vertical; }
   font-size: 12px;
 }
 .footer-bottom p { margin: 0; line-height: 1.15; }
-.footer-bo-link { color: var(--gray-400); font-size: 11px; }
-.footer-bo-link:hover { color: var(--navy); }
 
 /* ============================================
    LEGACY COMPATIBILITY

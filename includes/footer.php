@@ -40,6 +40,7 @@
         <li><a href="<?= htmlspecialchars(site_href('/fintech-tools.php')) ?>">e-Bal</a></li>
         <li><a href="<?= htmlspecialchars(site_href('/fintech-tools.php')) ?>">SalPro</a></li>
         <li><a href="<?= htmlspecialchars(site_href('/fintech-tools.php')) ?>">E Tax Academy</a></li>
+        <li style="margin-top:8px;padding-top:8px;border-top:1px solid var(--gray-100);"><a href="<?= htmlspecialchars(site_href('/admin/login.php')) ?>">Admin Login</a></li>
       </ul>
     </div>
 
@@ -59,7 +60,6 @@
   <div class="container footer-bottom">
     <p>&copy; 2026 E Tax Advisors Private Limited. All Rights Reserved.</p>
     <p>CIN: U74120PY2015PTC003005</p>
-    <p><a class="footer-bo-link" href="<?= htmlspecialchars(site_href('/admin/enquiries.php')) ?>">BO Login</a></p>
   </div>
 </footer>
 
