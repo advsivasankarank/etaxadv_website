@@ -887,3 +887,31 @@ textarea.input { min-height: 120px; resize: vertical; }
   .service-cat-grid { grid-template-columns: 1fr; }
   .reasons-grid { grid-template-columns: 1fr; }
 }
+
+/* ============================================
+   SERVICES PAGE POLISH
+   ============================================ */
+.hero-services {
+  padding: 75px 0 56px;
+}
+
+.feature-icon svg {
+  width: 24px;
+  height: 24px;
+}
+.service-cat-card .feature-icon svg {
+  width: 26px;
+  height: 26px;
+}
+
+#detailed-services .card {
+  display: flex;
+  flex-direction: column;
+}
+#detailed-services .card .list-clean {
+  flex: 1 0 auto;
+}
+#detailed-services .service-link {
+  margin-top: auto;
+  align-self: flex-start;
+}
