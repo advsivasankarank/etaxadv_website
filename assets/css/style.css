@@ -213,51 +213,64 @@ body.menu-open { overflow: hidden; }
 }
 
 /* Company Journey Timeline (about page hero) */
-.journey-timeline {
-  display: grid;
-  gap: 0;
-  padding: 4px 0 4px 28px;
-  position: relative;
+.journey-heading {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--gold);
+  text-align: center;
+  margin: 0 0 20px;
 }
-.journey-timeline::before {
+.journey-track {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  padding: 0 8px;
+}
+.journey-track::before {
   content: "";
   position: absolute;
-  left: 9px;
-  top: 14px;
-  bottom: 14px;
-  width: 2px;
-  background: linear-gradient(to bottom, #D4AF37, #115E59);
+  top: 26px;
+  left: 18px;
+  right: 18px;
+  height: 2px;
+  background: linear-gradient(to right, #D4AF37, #115E59);
   border-radius: 2px;
 }
-.journey-item {
+.journey-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
   position: relative;
-  padding: 12px 0 12px 20px;
+  flex: 1;
+  gap: 8px;
 }
-.journey-item::before {
-  content: "";
-  position: absolute;
-  left: -22px;
-  top: 18px;
+.jn-year {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1.2;
+}
+.jn-dot {
   width: 10px;
   height: 10px;
   border-radius: 50%;
   background: #D4AF37;
-  border: 2px solid #115E59;
+  border: 2px solid var(--white);
+  box-shadow: 0 0 0 2px #D4AF37;
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
 }
-.journey-year {
-  display: block;
-  font-family: var(--font-display);
-  font-size: 16px;
-  font-weight: 700;
-  color: #D4AF37;
-  line-height: 1.2;
-  margin-bottom: 2px;
-}
-.journey-desc {
-  display: block;
+.jn-desc {
   color: var(--gray-600);
-  font-size: 13px;
-  line-height: 1.5;
+  font-size: 11px;
+  line-height: 1.4;
+  max-width: 100px;
 }
 
 /* ============================================
@@ -311,8 +324,11 @@ main { display: block; }
    HERO – Premium
    ============================================ */
 .hero {
-  padding: 100px 0 80px;
+  padding: 72px 0 56px;
   background: linear-gradient(180deg, var(--navy-50) 0%, var(--white) 100%);
+}
+.hero-about {
+  padding: 56px 0 48px;
 }
 .hero-shell {
   display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
@@ -329,9 +345,31 @@ main { display: block; }
   font-weight: 700; color: var(--navy);
 }
 .hero p {
-  margin: 0 0 32px; color: var(--gray-600); font-size: 18px; line-height: 1.7;
+  margin: 0; color: var(--gray-600); font-size: 18px; line-height: 1.7;
 }
 .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.hero-blocks {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.hero-block {
+  padding: 0;
+}
+.hero-block-label {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--gold);
+  margin-bottom: 4px;
+}
+.hero-block p {
+  font-size: 15px;
+  line-height: 1.6;
+}
 .hero-image {
   position: relative; border-radius: var(--radius-lg); overflow: hidden;
   background: var(--gray-100); aspect-ratio: 4/3;
@@ -378,7 +416,7 @@ main { display: block; }
   margin: 0 0 16px; color: #FFFFFF;
 }
 .about-tile-text {
-  color: rgba(255,255,255,0.85); font-size: 15px; line-height: 1.6; margin: 0 0 20px;
+  color: rgba(255,255,255,0.85); font-size: 15px; line-height: 1.6; margin: 0 0 16px;
 }
 .about-tile-list {
   margin: 0; padding: 0; list-style: none; display: grid; gap: 8px;
@@ -388,6 +426,22 @@ main { display: block; }
   color: rgba(255,255,255,0.9); font-size: 14px; font-weight: 500;
 }
 .about-tile-check { color: #D4AF37; font-weight: 700; font-size: 16px; flex-shrink: 0; }
+
+/* Vision / Mission / Core Values — 3 equal tiles */
+.about-vmc-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.about-vmc-grid .about-tile {
+  padding: 36px;
+}
+.about-vmc-grid .about-tile-list {
+  margin-top: auto;
+}
+.about-vmc-grid .about-tile-list li {
+  font-size: 15px;
+}
 
 /* ============================================
    CORE SERVICES
@@ -822,13 +876,16 @@ textarea.input { min-height: 120px; resize: vertical; }
   .trust-bar-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
   .core-services-grid { grid-template-columns: repeat(2, 1fr); }
   .about-tiles-grid { grid-template-columns: 1fr; }
+  .about-vmc-grid { grid-template-columns: 1fr; }
   .ft-grid { grid-template-columns: repeat(2, 1fr); }
   .footer-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
   .industry-grid { grid-template-columns: repeat(2, 1fr); }
+  .ecosystem-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
 @media (max-width: 860px) {
-  :root { --section-gap: 70px; }
+  :root { --section-gap: 60px; }
+  .section-compact { padding: 44px 0; }
   .core-services-grid { grid-template-columns: 1fr; }
   .ft-grid { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr; }
@@ -838,18 +895,40 @@ textarea.input { min-height: 120px; resize: vertical; }
   .brand-cin { font-size: 10px; }
   .brand-tag { font-size: 9px; }
   .industry-grid { grid-template-columns: repeat(2, 1fr); }
-
+  .ecosystem-grid { grid-template-columns: repeat(2, 1fr); }
+  .info-merge-grid { grid-template-columns: 1fr; }
+  .hero-about { padding: 40px 0 32px; }
+  .hero-blocks { gap: 12px; margin-bottom: 20px; }
+  .hero-block p { font-size: 14px; }
+  .journey-track { padding: 0; }
+  .journey-track::before { left: 10px; right: 10px; }
+  .jn-desc { font-size: 10px; max-width: 80px; }
 }
 
 @media (max-width: 620px) {
-  :root { --section-gap: 50px; }
+  :root { --section-gap: 40px; }
+  .section-compact { padding: 32px 0; }
   .trust-bar-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .trust-bar-item strong { font-size: 20px; }
   .section-header { margin-bottom: 24px; }
   .ft-grid { grid-template-columns: 1fr; }
   .about-tile { padding: 28px; }
+  .about-tile-text { font-size: 14px; }
   .cta-band { padding: 40px 0; }
   .industry-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .ecosystem-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .eco-card { padding: 20px 16px; min-height: 120px; }
+  .about-vmc-grid .about-tile { padding: 28px; }
+  .info-merge-panel { padding: 24px; }
+  .hero-about { padding: 32px 0 24px; }
+  .hero-blocks { gap: 10px; }
+  .hero-block-label { font-size: 12px; }
+  .hero-block p { font-size: 13px; }
+  .journey-track { flex-wrap: wrap; gap: 12px; justify-content: center; }
+  .journey-track::before { display: none; }
+  .journey-node { flex: 0 0 calc(50% - 12px); gap: 4px; }
+  .jn-year { font-size: 13px; }
+  .jn-desc { font-size: 10px; max-width: none; }
 }
 
 /* ============================================
@@ -1067,6 +1146,23 @@ textarea.input { min-height: 120px; resize: vertical; }
   margin: 8px 0 16px;
   line-height: 1.4;
 }
+.founder-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  margin: 4px 0 14px;
+}
+.founder-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--navy);
+  color: var(--white);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .02em;
+}
 .founder-left-creds {
   display: flex;
   flex-wrap: wrap;
@@ -1206,6 +1302,134 @@ textarea.input { min-height: 120px; resize: vertical; }
   .quote-block-about {
     padding: 28px 20px;
   }
+}
+
+/* Merged credentials + industries — two-column */
+.info-merge-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.info-merge-panel {
+  padding: 32px;
+  border: 1px solid var(--gray-100);
+  border-radius: var(--radius-md);
+  background: var(--white);
+  display: flex;
+  flex-direction: column;
+}
+.info-merge-title {
+  margin: 0 0 16px;
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--navy);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.info-merge-items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.info-merge-item {
+  position: relative;
+  padding-left: 16px;
+  color: var(--gray-600);
+  font-size: 15px;
+  line-height: 1.5;
+}
+.info-merge-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 9px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+}
+
+/* Service ecosystem — 5 cards */
+.ecosystem-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+}
+.eco-card {
+  padding: 28px 20px;
+  border: 1px solid var(--gray-100);
+  border-radius: var(--radius-md);
+  background: var(--white);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 160px;
+  transition: box-shadow .3s, transform .3s;
+}
+.eco-card:hover {
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-2px);
+}
+.eco-title {
+  margin: 0 0 8px;
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--navy);
+}
+.eco-desc {
+  margin: 0;
+  color: var(--gray-600);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Value card highlight numbers */
+.value-card-num {
+  display: inline-block;
+  margin-bottom: 10px;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--gold);
+}
+
+/* Compact section variant */
+.section-compact {
+  padding: 60px 0;
+}
+
+/* ET watermark on quote */
+.quote-block-about {
+  position: relative;
+  overflow: hidden;
+}
+.quote-block-about::before {
+  content: "ET";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-display);
+  font-size: clamp(120px, 20vw, 240px);
+  font-weight: 700;
+  color: var(--charcoal);
+  opacity: 0.035;
+  line-height: 1;
+  pointer-events: none;
+  z-index: 0;
+}
+.quote-block-label,
+.quote-block-about blockquote {
+  position: relative;
+  z-index: 1;
 }
 
 /* Value proposition grid */

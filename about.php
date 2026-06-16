@@ -7,39 +7,53 @@ require_once __DIR__ . '/includes/header.php';
 
 <main id="main-content">
 
-  <section class="hero hero-services">
+  <section class="hero hero-services hero-about">
     <div class="container hero-shell">
       <div class="hero-copy">
         <p class="hero-eyebrow">About the Company</p>
         <h1>Building Trusted Tax, Legal and Compliance Solutions Since 2015</h1>
-        <p>E Tax Advisors Private Limited is a multidisciplinary professional services company incorporated in the year 2015 with the objective of providing integrated Tax, Legal, Compliance and Business Advisory solutions under a single professional platform.</p>
-        <p>The company was founded by K. Sivasankaran, Advocate and Income Tax Practitioner, with a vision to bridge the gap between taxation, legal compliance and business advisory services. The objective was to create a professional organization capable of delivering practical, coordinated and technology-enabled solutions for businesses, professionals, trusts, educational institutions and entrepreneurs.</p>
-        <p>Over the years, E Tax Advisors Private Limited has evolved into a trusted professional services company supporting clients across multiple sectors through taxation, compliance management, legal support, labour law advisory and technology-enabled service delivery.</p>
+        <div class="hero-blocks">
+          <div class="hero-block">
+            <strong class="hero-block-label">Who We Are</strong>
+            <p>E Tax Advisors Private Limited is a multidisciplinary professional services company providing integrated Tax, Legal, Compliance and Business Advisory solutions.</p>
+          </div>
+          <div class="hero-block">
+            <strong class="hero-block-label">Why We Were Established</strong>
+            <p>Founded by K. Sivasankaran with a vision to bridge taxation, legal compliance and business advisory services under a single professional platform.</p>
+          </div>
+          <div class="hero-block">
+            <strong class="hero-block-label">Today</strong>
+            <p>A trusted advisory organisation delivering taxation, compliance, representation and technology-enabled professional services across India.</p>
+          </div>
+        </div>
         <div class="hero-actions">
           <a class="btn btn-primary btn-lg" href="services.php">Our Services</a>
           <a class="btn btn-outline btn-lg" href="/team/ks-sivasankaran.php">Meet the Founder</a>
         </div>
       </div>
       <div class="hero-visual">
-        <div class="hero-stack">
-          <div class="hero-panel">
-            <div class="journey-timeline">
-              <div class="journey-item">
-                <span class="journey-year">2015</span>
-                <span class="journey-desc">Incorporation of<br>E Tax Advisors Private Limited</span>
-              </div>
-              <div class="journey-item">
-                <span class="journey-year">2017</span>
-                <span class="journey-desc">Expansion into GST Advisory &amp; Representation</span>
-              </div>
-              <div class="journey-item">
-                <span class="journey-year">2020</span>
-                <span class="journey-desc">Technology-enabled Professional Service Delivery</span>
-              </div>
-              <div class="journey-item">
-                <span class="journey-year">2026</span>
-                <span class="journey-desc">Integrated Tax, Legal, Compliance &amp; Fintech Platform</span>
-              </div>
+        <div class="hero-panel">
+          <p class="journey-heading">Company Journey</p>
+          <div class="journey-track">
+            <div class="journey-node">
+              <span class="jn-year">2015</span>
+              <span class="jn-dot"></span>
+              <span class="jn-desc">Incorporation of<br>E Tax Advisors</span>
+            </div>
+            <div class="journey-node">
+              <span class="jn-year">2017</span>
+              <span class="jn-dot"></span>
+              <span class="jn-desc">GST Advisory &amp;<br>Representation</span>
+            </div>
+            <div class="journey-node">
+              <span class="jn-year">2020</span>
+              <span class="jn-dot"></span>
+              <span class="jn-desc">Technology-enabled<br>Service Delivery</span>
+            </div>
+            <div class="journey-node">
+              <span class="jn-year">2026</span>
+              <span class="jn-dot"></span>
+              <span class="jn-desc">Integrated Tax, Legal,<br>Compliance &amp; Fintech</span>
             </div>
           </div>
         </div>
@@ -50,16 +64,25 @@ require_once __DIR__ . '/includes/header.php';
   <section class="section">
     <div class="container">
       <div class="section-header">
-        <p class="section-label">Our Vision &amp; Mission</p>
+        <p class="section-label">Our Vision, Mission &amp; Values</p>
       </div>
-      <div class="about-tiles-grid">
+      <div class="about-vmc-grid">
         <div class="about-tile">
           <h3 class="about-tile-title">Our Vision</h3>
-          <p class="about-tile-text">To build a technology-enabled professional services platform delivering practical, coordinated and reliable Tax, Legal, Compliance and Business Advisory solutions to organisations across India.</p>
+          <p class="about-tile-text">To build a technology-enabled professional services platform delivering practical, coordinated and reliable Tax, Legal, Compliance and Business Advisory solutions across India.</p>
         </div>
         <div class="about-tile">
           <h3 class="about-tile-title">Our Mission</h3>
-          <p class="about-tile-text">To simplify compliance, support informed decision-making and help businesses, professionals, trusts and institutions build sustainable and compliant organisations.</p>
+          <p class="about-tile-text">To simplify compliance, support informed decision-making and help organisations build sustainable and compliant systems.</p>
+        </div>
+        <div class="about-tile">
+          <h3 class="about-tile-title">Core Values</h3>
+          <ul class="about-tile-list">
+            <li><span class="about-tile-check">&#10003;</span> Integrity</li>
+            <li><span class="about-tile-check">&#10003;</span> Professional Excellence</li>
+            <li><span class="about-tile-check">&#10003;</span> Practical Solutions</li>
+            <li><span class="about-tile-check">&#10003;</span> Client-Centric Approach</li>
+          </ul>
         </div>
       </div>
     </div>
@@ -89,12 +112,16 @@ require_once __DIR__ . '/includes/header.php';
           </div>
           <p class="founder-left-name">K. Sivasankaran</p>
           <p class="founder-left-title">Founder &amp; Principal Advisor</p>
+          <div class="founder-badges">
+            <span class="founder-badge">30 Years Experience</span>
+            <span class="founder-badge">1000+ Clients Served</span>
+            <span class="founder-badge">Advocate</span>
+            <span class="founder-badge">Income Tax Practitioner</span>
+          </div>
           <div class="founder-left-creds">
-            <span class="credential-badge">Advocate</span>
-            <span class="credential-badge">Income Tax Practitioner</span>
-            <span class="credential-badge">GST Practitioner</span>
+            <span class="credential-badge">B.Com., LL.B., C.T.Pr.</span>
             <span class="credential-badge">Certified POSH IC Trainer</span>
-            <span class="credential-badge">Consultant Chartered Tax Practitioner (CTPr)</span>
+            <span class="credential-badge">Founder – E Tax Academy</span>
           </div>
           <a class="btn btn-primary" href="/team/ks-sivasankaran.php">View Full Profile &rarr;</a>
         </div>
@@ -113,15 +140,15 @@ require_once __DIR__ . '/includes/header.php';
             </div>
             <div class="ft-item">
               <span class="ft-year">2007</span>
-              <span class="ft-desc">Appointed as Tax Return Preparer by CBDT</span>
+              <span class="ft-desc">Tax Return Preparer – CBDT</span>
             </div>
             <div class="ft-item">
               <span class="ft-year">2009</span>
-              <span class="ft-desc">Appointed as Service Tax Return Preparer by CBEC</span>
+              <span class="ft-desc">Service Tax Return Preparer – CBEC</span>
             </div>
             <div class="ft-item">
               <span class="ft-year">2011</span>
-              <span class="ft-desc">Appointed as Income Tax Practitioner</span>
+              <span class="ft-desc">Income Tax Practitioner</span>
             </div>
             <div class="ft-item">
               <span class="ft-year">2015</span>
@@ -129,11 +156,11 @@ require_once __DIR__ . '/includes/header.php';
             </div>
             <div class="ft-item">
               <span class="ft-year">2017</span>
-              <span class="ft-desc">Enrolled as GST Practitioner</span>
+              <span class="ft-desc">GST Practitioner</span>
             </div>
             <div class="ft-item">
               <span class="ft-year">2018</span>
-              <span class="ft-desc">Graduated LL.B and commenced legal practice</span>
+              <span class="ft-desc">Advocate</span>
             </div>
             <div class="ft-item">
               <span class="ft-year">2022</span>
@@ -141,7 +168,7 @@ require_once __DIR__ . '/includes/header.php';
             </div>
             <div class="ft-item">
               <span class="ft-year">2026</span>
-              <span class="ft-desc">Qualified as Consultant Chartered Tax Practitioner (CTPr)</span>
+              <span class="ft-desc">Consultant Chartered Tax Practitioner (CTPr)</span>
             </div>
           </div>
           <p class="founder-summary">With nearly three decades of professional experience, he continues to advise businesses, professionals, trusts, educational institutions and entrepreneurs on taxation, compliance, governance and legal matters.</p>
@@ -150,44 +177,74 @@ require_once __DIR__ . '/includes/header.php';
     </div>
   </section>
 
-  <section class="section section-alt">
+  <section class="section section-compact">
     <div class="container">
       <div class="section-header centered">
-        <p class="section-label">Professional Credentials</p>
+        <p class="section-label">Professional Credentials &amp; Industries</p>
       </div>
-      <div class="credentials-grid">
-        <div class="credential-card">B.Com.</div>
-        <div class="credential-card">LL.B.</div>
-        <div class="credential-card">Advocate</div>
-        <div class="credential-card">Income Tax Practitioner</div>
-        <div class="credential-card">GST Practitioner</div>
-        <div class="credential-card">Certified POSH Internal Committee Trainer</div>
-        <div class="credential-card">Consultant Chartered Tax Practitioner (CTPr)</div>
-        <div class="credential-card">Founder – E Tax Academy</div>
+      <div class="info-merge-grid">
+        <div class="info-merge-panel">
+          <h3 class="info-merge-title">Professional Credentials</h3>
+          <div class="info-merge-items">
+            <span class="info-merge-item">B.Com.</span>
+            <span class="info-merge-item">LL.B.</span>
+            <span class="info-merge-item">Advocate</span>
+            <span class="info-merge-item">Income Tax Practitioner</span>
+            <span class="info-merge-item">GST Practitioner</span>
+            <span class="info-merge-item">Certified POSH Internal Committee Trainer</span>
+            <span class="info-merge-item">Consultant Chartered Tax Practitioner</span>
+            <span class="info-merge-item">Founder – E Tax Academy</span>
+          </div>
+        </div>
+        <div class="info-merge-panel">
+          <h3 class="info-merge-title">Industries We Serve</h3>
+          <div class="info-merge-items">
+            <span class="info-merge-item">Manufacturing</span>
+            <span class="info-merge-item">Trading</span>
+            <span class="info-merge-item">MSMEs</span>
+            <span class="info-merge-item">Educational Institutions</span>
+            <span class="info-merge-item">Trusts &amp; NGOs</span>
+            <span class="info-merge-item">Professionals</span>
+            <span class="info-merge-item">Startups</span>
+            <span class="info-merge-item">Family-Owned Businesses</span>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="section">
+  <section class="section section-compact section-alt">
     <div class="container">
       <div class="section-header centered">
-        <p class="section-label">Industries We Serve</p>
-        <h2 class="section-title">Sectors We Partner With</h2>
+        <p class="section-label">Our Service Ecosystem</p>
+        <h2 class="section-title">Integrated Solutions Across Every Domain</h2>
       </div>
-      <div class="industry-grid">
-        <div class="industry-card"><h3>Manufacturing</h3></div>
-        <div class="industry-card"><h3>Trading</h3></div>
-        <div class="industry-card"><h3>MSMEs</h3></div>
-        <div class="industry-card"><h3>Educational Institutions</h3></div>
-        <div class="industry-card"><h3>Trusts &amp; NGOs</h3></div>
-        <div class="industry-card"><h3>Professionals</h3></div>
-        <div class="industry-card"><h3>Startups</h3></div>
-        <div class="industry-card"><h3>Family-Owned Businesses</h3></div>
+      <div class="ecosystem-grid">
+        <div class="eco-card">
+          <h3 class="eco-title">Tax Advisory</h3>
+          <p class="eco-desc">Income Tax, GST, TDS and Representation</p>
+        </div>
+        <div class="eco-card">
+          <h3 class="eco-title">Legal Support</h3>
+          <p class="eco-desc">Replies, Appeals and Litigation Assistance</p>
+        </div>
+        <div class="eco-card">
+          <h3 class="eco-title">Compliance Management</h3>
+          <p class="eco-desc">Labour Law, Corporate and Regulatory Compliance</p>
+        </div>
+        <div class="eco-card">
+          <h3 class="eco-title">Fintech Solutions</h3>
+          <p class="eco-desc">e-Pani, e-HR, e-Kanakan, e-Bal and SalPro</p>
+        </div>
+        <div class="eco-card">
+          <h3 class="eco-title">Professional Training</h3>
+          <p class="eco-desc">E Tax Academy and Skill Development Initiatives</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="section section-alt">
+  <section class="section section-compact">
     <div class="container">
       <div class="section-header">
         <p class="section-label">Why E Tax Advisors Is Different</p>
@@ -196,34 +253,40 @@ require_once __DIR__ . '/includes/header.php';
       </div>
       <div class="value-grid">
         <div class="card value-card">
+          <span class="value-card-num">Integrated</span>
           <h3>Integrated Tax &amp; Legal Expertise</h3>
           <p>Taxation, compliance and legal support under one professional platform.</p>
         </div>
         <div class="card value-card">
-          <h3>Nearly Three Decades of Experience</h3>
+          <span class="value-card-num">30+ Years</span>
+          <h3>Professional Experience</h3>
           <p>Practical exposure across taxation, advisory, compliance and representation matters.</p>
         </div>
         <div class="card value-card">
-          <h3>Technology Enabled Service Delivery</h3>
+          <span class="value-card-num">Technology</span>
+          <h3>Enabled Service Delivery</h3>
           <p>Combining professional expertise with workflow-driven execution and digital tools.</p>
         </div>
         <div class="card value-card">
-          <h3>Single Point Professional Coordination</h3>
+          <span class="value-card-num">Single Point</span>
+          <h3>Professional Coordination</h3>
           <p>Reducing the need to engage multiple service providers.</p>
         </div>
         <div class="card value-card">
+          <span class="value-card-num">Life Cycle</span>
           <h3>Support Across Business Life Cycle</h3>
           <p>From registrations and compliance to representation and advisory support.</p>
         </div>
         <div class="card value-card">
-          <h3>PAN India Service Capability</h3>
+          <span class="value-card-num">PAN India</span>
+          <h3>Service Capability</h3>
           <p>Serving clients across India through technology-enabled processes and structured workflows.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="section">
+  <section class="section section-compact">
     <div class="container">
       <div class="quote-block-about">
         <p class="quote-block-label">From the Founder&rsquo;s Desk</p>
