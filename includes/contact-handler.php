@@ -2,33 +2,37 @@
 require_once __DIR__ . '/../support/config.php';
 require_once __DIR__ . '/security.php';
 
-function contact_ensure_schema(): void {
-  static $ready = false;
-  if ($ready) return;
-  try {
-    db()->exec("
-      CREATE TABLE IF NOT EXISTS enquiries (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        enquiry_date DATETIME NOT NULL,
-        name VARCHAR(120) NOT NULL,
-        mobile VARCHAR(20) NOT NULL,
-        email VARCHAR(190) NOT NULL,
-        organisation VARCHAR(190) DEFAULT NULL,
-        service VARCHAR(190) NOT NULL,
-        consultation_mode VARCHAR(50) DEFAULT NULL,
-        preferred_date VARCHAR(20) DEFAULT NULL,
-        preferred_time VARCHAR(190) DEFAULT NULL,
-        message TEXT NOT NULL,
-        source_page VARCHAR(190) NOT NULL DEFAULT '',
-        ip_address VARCHAR(45) NOT NULL DEFAULT '',
-        status ENUM('new','contacted','converted','closed') NOT NULL DEFAULT 'new',
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
-    ");
-    $ready = true;
-  } catch (Throwable $e) {
-    error_log('Contact schema error: ' . $e->getMessage());
+define('ENQUIRIES_FILE', __DIR__ . '/../support/data/enquiries.json');
+
+function contact_ensure_storage(): string {
+  $dir = dirname(ENQUIRIES_FILE);
+  if (!is_dir($dir)) {
+    @mkdir($dir, 0755, true);
   }
+  if (!file_exists(ENQUIRIES_FILE)) {
+    @file_put_contents(ENQUIRIES_FILE, '[]', LOCK_EX);
+  }
+  return ENQUIRIES_FILE;
+}
+
+function contact_load_enquiries(): array {
+  $file = contact_ensure_storage();
+  $fh = @fopen($file, 'r');
+  if (!$fh) return [];
+  flock($fh, LOCK_SH);
+  $contents = stream_get_contents($fh);
+  fclose($fh);
+  $data = json_decode($contents, true);
+  return is_array($data) ? $data : [];
+}
+
+function contact_save_enquiries(array $enquiries): void {
+  $file = contact_ensure_storage();
+  $fh = @fopen($file, 'w');
+  if (!$fh) return;
+  flock($fh, LOCK_EX);
+  fwrite($fh, json_encode($enquiries, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+  fclose($fh);
 }
 
 function contact_register_form(): void {
@@ -90,22 +94,25 @@ function contact_process_submission(): array {
   $source = clean_input($_POST['source_page'] ?? $_SERVER['HTTP_REFERER'] ?? '', 190);
   $ip = $_SERVER['REMOTE_ADDR'] ?? '';
 
-  contact_ensure_schema();
-
   try {
-    $stmt = db()->prepare("
-      INSERT INTO enquiries (enquiry_date, name, mobile, email, organisation, service, consultation_mode, preferred_date, preferred_time, message, source_page, ip_address, status)
-      VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'new')
-    ");
-    $stmt->execute([
-      $name, $mobile, $email,
-      $organisation !== '' ? $organisation : null,
-      $service,
-      $consultation_mode !== '' ? $consultation_mode : null,
-      $preferred_date !== '' ? $preferred_date : null,
-      $preferred_time !== '' ? $preferred_time : null,
-      $msg, $source, $ip
-    ]);
+    $enquiries = contact_load_enquiries();
+    $enquiries[] = [
+      'id' => count($enquiries) + 1,
+      'enquiry_date' => date('Y-m-d H:i:s'),
+      'name' => $name,
+      'mobile' => $mobile,
+      'email' => $email,
+      'organisation' => $organisation ?: null,
+      'service' => $service,
+      'consultation_mode' => $consultation_mode ?: null,
+      'preferred_date' => $preferred_date ?: null,
+      'preferred_time' => $preferred_time ?: null,
+      'message' => $msg,
+      'source_page' => $source,
+      'ip_address' => $ip,
+      'status' => 'new',
+    ];
+    contact_save_enquiries($enquiries);
 
     $subject = "New Enquiry from etaxadv.com - " . $service;
     $body = "New Enquiry Received\n\n"
@@ -124,7 +131,7 @@ function contact_process_submission(): array {
 
     return ['success' => true, 'message' => 'Thank you! Your consultation request has been received. We will review and contact you shortly.'];
   } catch (Throwable $e) {
-    error_log('Contact insert error: ' . $e->getMessage());
+    error_log('Contact save error: ' . $e->getMessage());
     return ['success' => false, 'error' => 'Something went wrong. Please try again or call us directly.'];
   }
 }

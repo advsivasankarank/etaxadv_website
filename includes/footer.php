@@ -59,6 +59,7 @@
   <div class="container footer-bottom">
     <p>&copy; 2026 E Tax Advisors Private Limited. All Rights Reserved.</p>
     <p>CIN: U74120PY2015PTC003005</p>
+    <p><a class="footer-bo-link" href="<?= htmlspecialchars(site_href('/admin/enquiries.php')) ?>">BO Login</a></p>
   </div>
 </footer>
 
