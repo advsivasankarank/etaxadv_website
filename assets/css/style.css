@@ -277,6 +277,7 @@ main { display: block; }
   margin: 0 auto 28px;
   font-size: clamp(26px, 3vw, 36px);
   max-width: 800px;
+  text-align: center;
 }
 .hero-about .hero-actions {
   justify-content: center;
