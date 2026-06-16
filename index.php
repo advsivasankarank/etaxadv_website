@@ -1,5 +1,5 @@
 <?php
-$page_title = "Tax. Legal. Compliance. — E Tax Advisors Private Limited";
+$page_title = "E Tax Advisors Private Limited — Tax, Legal & Compliance Advisory";
 $page_description = "Integrated Tax, Legal, Compliance and Business Advisory services across India. Led by Advocate K. Sivasankaran with nearly three decades of experience.";
 $page_path = '/index.php';
 
@@ -7,34 +7,6 @@ require_once __DIR__ . '/includes/header.php';
 ?>
 
 <main id="main-content">
-
-  <section class="hero">
-    <div class="container hero-shell">
-      <div class="hero-copy">
-        <h1>Tax. Legal. Compliance.</h1>
-        <p class="hero-tagline">Trusted Professional Advisory Since 1996.</p>
-        <p>
-          E Tax Advisors Private Limited provides integrated Tax, Legal, Compliance and Business Advisory services to businesses, professionals, trusts, educational institutions and entrepreneurs across India.
-        </p>
-        <p>
-          Led by Advocate K. Sivasankaran, our practice combines nearly three decades of experience in taxation, regulatory compliance, litigation support and business advisory.
-        </p>
-        <div class="hero-actions">
-          <a class="btn btn-primary btn-lg" href="contact.php">Book Consultation</a>
-          <a class="btn btn-secondary btn-lg" href="services.php">Explore Services</a>
-        </div>
-      </div>
-      <div class="hero-image">
-        <img
-          src="<?= htmlspecialchars(site_href('/assets/img/ks-sivasankaran.jpg')) ?>"
-          alt="K. Sivasankaran — Advocate & Founder"
-          width="600"
-          height="450"
-          style="width:100%;height:100%;object-fit:cover;"
-        />
-      </div>
-    </div>
-  </section>
 
   <section class="trust-bar">
     <div class="container">
@@ -94,68 +66,6 @@ require_once __DIR__ . '/includes/header.php';
         <div class="core-service-card">
           <h3>Business Advisory</h3>
           <p>Business Structuring, Registrations and Governance.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="fintech-tools">
-    <div class="container">
-      <div class="section-header">
-        <p class="section-label">Fintech Tools</p>
-        <h2 class="section-title">Technology Enabled Services</h2>
-      </div>
-      <div class="fintech-grid">
-        <div class="fintech-card">
-          <h3>e-Pani</h3>
-          <p class="fintech-subtitle">Office Management Suite</p>
-        </div>
-        <div class="fintech-card">
-          <h3>e-HR</h3>
-          <p class="fintech-subtitle">HR &amp; Labour Compliance Platform</p>
-        </div>
-        <div class="fintech-card">
-          <h3>e-Kanakan</h3>
-          <p class="fintech-subtitle">Bookkeeping Automation</p>
-        </div>
-        <div class="fintech-card">
-          <h3>e-Bal</h3>
-          <p class="fintech-subtitle">Financial Reporting Automation</p>
-          <p class="fintech-desc">Preparation of Schedule III compliant financial statements under the Companies Act, 2013 including Balance Sheet, Statement of Profit &amp; Loss, Notes to Accounts, statutory disclosures and auditor-ready financial reporting.</p>
-        </div>
-        <div class="fintech-card">
-          <h3>SalPro</h3>
-          <p class="fintech-subtitle">Salary Tax Planning</p>
-        </div>
-        <div class="fintech-card">
-          <h3>E Tax Academy</h3>
-          <p class="fintech-subtitle">Professional Learning Platform</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section section-alt" id="leadership">
-    <div class="container">
-      <div class="section-header">
-        <p class="section-label">Leadership</p>
-        <h2 class="section-title">Meet the Founder</h2>
-      </div>
-      <div class="founder-shell">
-        <div class="founder-photo">
-          <img
-            src="<?= htmlspecialchars(site_href('/assets/img/ks-sivasankaran.jpg')) ?>"
-            alt="K. Sivasankaran — Advocate"
-            width="400"
-            height="480"
-            style="width:100%;height:100%;object-fit:cover;"
-          />
-        </div>
-        <div class="founder-info">
-          <h3>K. Sivasankaran</h3>
-          <p class="founder-designation">Advocate | Income Tax Practitioner | GST Practitioner | Certified POSH Internal Committee Trainer</p>
-          <p class="founder-summary">Nearly three decades of experience in Taxation, Compliance, Business Advisory and Legal Practice.</p>
-          <a class="btn btn-primary" href="<?= htmlspecialchars(site_href('/team/ks-sivasankaran.php')) ?>">View Full Profile</a>
         </div>
       </div>
     </div>
