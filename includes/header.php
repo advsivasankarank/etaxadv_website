@@ -26,7 +26,7 @@ if ($document_root !== '' && str_starts_with($project_root, $document_root)) {
 $nav_items = [
   ['href' => '/index.php', 'label' => 'Home', 'match' => ['index.php']],
   ['href' => '/services.php', 'label' => 'Services', 'match' => ['services.php', 'digital-signature.php', 'gst-consultant-puducherry.php', 'gst-consultant-chennai.php', 'income-tax-consultant-puducherry.php', 'income-tax-consultant-chennai.php', 'tds-return-filing.php', 'labour-law-compliance.php', 'labour-law-hr-compliance.php', 'roc-company-compliance.php', 'trust-society-registration.php', 'trust-ngo-advisory.php', 'manufacturing-compliance.php', 'litigation-representation.php', 'project-report-cma.php']],
-  ['href' => '/index.php#fintech-tools', 'label' => 'Fintech Tools', 'match' => []],
+  ['href' => '/fintech-tools.php', 'label' => 'Fintech Tools', 'match' => ['fintech-tools.php']],
   ['href' => '/about.php', 'label' => 'About', 'match' => ['about.php', 'team.php', 'why-choose-us.php', 'ks-sivasankaran.php', 'success-stories.php', 'faq.php']],
   ['href' => '/contact.php', 'label' => 'Contact', 'match' => ['contact.php']],
 ];
@@ -183,12 +183,7 @@ $og_image = $og_image ?? '/assets/img/og-image.jpg';
         <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/litigation-representation.php')) ?>">Litigation Support</a>
         <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/project-report-cma.php')) ?>">Project Reports</a>
 
-        <a class="mobile-primary-link" href="<?= htmlspecialchars(site_href('/index.php#fintech-tools')) ?>">Fintech Tools</a>
-        <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/e-pani.php')) ?>">e-Pani</a>
-        <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/e-hr.php')) ?>">e-HR</a>
-        <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/ekanakan.php')) ?>">e-Kanakan</a>
-        <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/salpro.php')) ?>">SalPro</a>
-        <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/etax-academy.php')) ?>">E Tax Academy</a>
+        <a class="mobile-primary-link" href="<?= htmlspecialchars(site_href('/fintech-tools.php')) ?>">Fintech Tools</a>
 
         <a class="mobile-primary-link" href="<?= htmlspecialchars(site_href('/about.php')) ?>">About</a>
         <a class="mobile-primary-link" href="<?= htmlspecialchars(site_href('/contact.php')) ?>">Contact</a>

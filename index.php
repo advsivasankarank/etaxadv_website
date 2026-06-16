@@ -21,31 +21,6 @@ require_once __DIR__ . '/includes/header.php';
     </div>
   </section>
 
-  <section class="section" id="about-company">
-    <div class="container">
-      <div class="section-header">
-        <p class="section-label">About the Company</p>
-        <h2 class="section-title">Integrated Tax, Legal, Compliance and Technology Solutions</h2>
-      </div>
-      <p class="about-intro">
-        E Tax Advisors Private Limited is a multidisciplinary professional services company providing integrated Tax, Legal, Compliance, Payroll, HR and Technology-enabled solutions to businesses, professionals, trusts, educational institutions and entrepreneurs across India.
-      </p>
-      <p class="about-intro">
-        Our services are designed to help organisations manage statutory compliance, regulatory obligations, taxation matters, labour law requirements and business governance through a single professional platform.
-      </p>
-      <div class="about-services-grid">
-        <div class="about-service-item"><span class="about-check">&#10003;</span> Income Tax Advisory &amp; Compliance</div>
-        <div class="about-service-item"><span class="about-check">&#10003;</span> GST Advisory &amp; Representation</div>
-        <div class="about-service-item"><span class="about-check">&#10003;</span> TDS &amp; Payroll Services</div>
-        <div class="about-service-item"><span class="about-check">&#10003;</span> Labour Law &amp; HR Compliance</div>
-        <div class="about-service-item"><span class="about-check">&#10003;</span> Corporate Compliance</div>
-        <div class="about-service-item"><span class="about-check">&#10003;</span> Trust &amp; NGO Advisory</div>
-        <div class="about-service-item"><span class="about-check">&#10003;</span> Litigation Support</div>
-        <div class="about-service-item"><span class="about-check">&#10003;</span> Business Advisory Services</div>
-      </div>
-    </div>
-  </section>
-
   <section class="trust-bar">
     <div class="container">
       <div class="trust-bar-grid">
@@ -53,6 +28,38 @@ require_once __DIR__ . '/includes/header.php';
         <div class="trust-bar-item"><strong>Nearly 30 Years</strong><span>Professional Experience</span></div>
         <div class="trust-bar-item"><strong>GST & Income Tax</strong><span>Representation</span></div>
         <div class="trust-bar-item"><strong>PAN India</strong><span>Service Coverage</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="about-tiles">
+    <div class="container about-tiles-grid">
+      <div class="about-tile">
+        <h3 class="about-tile-title">About E Tax Advisors</h3>
+        <p class="about-tile-text">E Tax Advisors Private Limited is a multidisciplinary professional services company providing integrated Tax, Legal, Compliance, Payroll, HR and Technology-enabled solutions to businesses, professionals, trusts, educational institutions and entrepreneurs across India.</p>
+        <ul class="about-tile-list">
+          <li><span class="about-tile-check">&#10003;</span> Income Tax Advisory</li>
+          <li><span class="about-tile-check">&#10003;</span> GST Advisory &amp; Representation</li>
+          <li><span class="about-tile-check">&#10003;</span> TDS &amp; Payroll</li>
+          <li><span class="about-tile-check">&#10003;</span> Labour Law Compliance</li>
+          <li><span class="about-tile-check">&#10003;</span> Corporate Compliance</li>
+          <li><span class="about-tile-check">&#10003;</span> Trust &amp; NGO Advisory</li>
+          <li><span class="about-tile-check">&#10003;</span> Litigation Support</li>
+          <li><span class="about-tile-check">&#10003;</span> Business Advisory</li>
+        </ul>
+      </div>
+      <div class="about-tile">
+        <h3 class="about-tile-title">Why Clients Choose Us</h3>
+        <ul class="about-tile-list">
+          <li><span class="about-tile-check">&#10003;</span> Nearly 30 Years Experience</li>
+          <li><span class="about-tile-check">&#10003;</span> Integrated Tax &amp; Legal Expertise</li>
+          <li><span class="about-tile-check">&#10003;</span> Technology Enabled Service Delivery</li>
+          <li><span class="about-tile-check">&#10003;</span> PAN India Client Support</li>
+          <li><span class="about-tile-check">&#10003;</span> Single Point Professional Coordination</li>
+          <li><span class="about-tile-check">&#10003;</span> Practical Business-Oriented Solutions</li>
+          <li><span class="about-tile-check">&#10003;</span> Trusted by Businesses, Professionals and Trusts</li>
+          <li><span class="about-tile-check">&#10003;</span> Focused on Compliance, Governance and Growth</li>
+        </ul>
       </div>
     </div>
   </section>

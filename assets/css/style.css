@@ -314,21 +314,31 @@ main { display: block; }
 .trust-bar-item span { color: var(--gray-600); font-size: 13px; font-weight: 500; }
 
 /* ============================================
-   ABOUT THE COMPANY
+   ABOUT TILES — Premium Two-Column
    ============================================ */
-#about-company .section-header {
-  text-align: center; margin-left: auto; margin-right: auto;
+.about-tiles-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
 }
-.about-intro {
-  max-width: 720px; color: var(--gray-600); font-size: 15px; line-height: 1.6; margin: 0 auto 12px;
+.about-tile {
+  background: #115E59; color: #FFFFFF; border-radius: 16px; padding: 40px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+  display: flex; flex-direction: column;
 }
-.about-services-grid {
-  display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 40px; margin: 24px auto 0; max-width: 640px;
+.about-tile-title {
+  font-family: var(--font-display); font-size: 22px; font-weight: 700;
+  margin: 0 0 16px; color: #FFFFFF;
 }
-.about-service-item {
-  display: flex; align-items: center; gap: 10px; color: var(--gray-600); font-size: 15px; font-weight: 500;
+.about-tile-text {
+  color: rgba(255,255,255,0.85); font-size: 15px; line-height: 1.6; margin: 0 0 20px;
 }
-.about-check { color: var(--navy); font-weight: 700; font-size: 18px; }
+.about-tile-list {
+  margin: 0; padding: 0; list-style: none; display: grid; gap: 8px;
+}
+.about-tile-list li {
+  display: flex; align-items: center; gap: 10px;
+  color: rgba(255,255,255,0.9); font-size: 14px; font-weight: 500;
+}
+.about-tile-check { color: #D4AF37; font-weight: 700; font-size: 16px; flex-shrink: 0; }
 
 /* ============================================
    CORE SERVICES
@@ -356,6 +366,36 @@ main { display: block; }
 .fintech-card h3 { margin: 0 0 2px; font-family: var(--font-display); font-size: 18px; font-weight: 700; color: var(--navy); }
 .fintech-subtitle { color: var(--gold); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; margin: 0 0 10px; }
 .fintech-desc { color: var(--gray-600); font-size: 13px; line-height: 1.6; margin: 10px 0 0; }
+
+/* Fintech Tools Page */
+.ft-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.ft-card {
+  display: flex; flex-direction: column; padding: 32px;
+  border: 1px solid var(--gray-100); border-radius: 16px;
+  background: var(--white); box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  text-decoration: none; color: inherit;
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.ft-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.1); }
+.ft-card h3 {
+  margin: 0 0 2px; font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--navy);
+}
+.ft-subtitle {
+  color: var(--gold); font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: .06em; margin: 0 0 12px;
+}
+.ft-desc { color: var(--gray-600); font-size: 14px; line-height: 1.6; margin: 0 0 auto; }
+.ft-status {
+  display: inline-block; align-self: flex-start; margin-top: 16px;
+  padding: 4px 12px; border-radius: 999px;
+  background: var(--gold-soft); color: var(--gold);
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em;
+}
+.ft-btn {
+  display: inline-block; align-self: flex-start; margin-top: 12px;
+  color: var(--navy); font-size: 14px; font-weight: 600;
+}
+.ft-card:hover .ft-btn { text-decoration: underline; }
 
 /* ============================================
    LEADERSHIP — FOUNDER
@@ -732,13 +772,15 @@ textarea.input { min-height: 120px; resize: vertical; }
   .hamburger { display: block; }
   .trust-bar-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
   .core-services-grid { grid-template-columns: repeat(2, 1fr); }
+  .about-tiles-grid { grid-template-columns: 1fr; }
+  .ft-grid { grid-template-columns: repeat(2, 1fr); }
   .footer-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
-  .about-services-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 860px) {
   :root { --section-gap: 48px; }
   .core-services-grid { grid-template-columns: 1fr; }
+  .ft-grid { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr; }
   .footer-bottom { flex-direction: column; text-align: center; }
   .header-actions .header-link { display: none; }
@@ -751,6 +793,7 @@ textarea.input { min-height: 120px; resize: vertical; }
   .trust-bar-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .trust-bar-item strong { font-size: 20px; }
   .section-header { margin-bottom: 24px; }
-  .about-services-grid { grid-template-columns: 1fr; }
+  .ft-grid { grid-template-columns: 1fr; }
+  .about-tile { padding: 28px; }
   .cta-band { padding: 32px 0; }
 }

@@ -31,11 +31,7 @@
     <div>
       <h3>Fintech Tools</h3>
       <ul class="footer-links">
-        <li><a href="<?= htmlspecialchars(site_href('/e-pani.php')) ?>">e-Pani</a></li>
-        <li><a href="<?= htmlspecialchars(site_href('/e-hr.php')) ?>">e-HR</a></li>
-        <li><a href="<?= htmlspecialchars(site_href('/ekanakan.php')) ?>">e-Kanakan</a></li>
-        <li><a href="<?= htmlspecialchars(site_href('/salpro.php')) ?>">SalPro</a></li>
-        <li><a href="<?= htmlspecialchars(site_href('/etax-academy.php')) ?>">E Tax Academy</a></li>
+        <li><a href="<?= htmlspecialchars(site_href('/fintech-tools.php')) ?>">All Products</a></li>
       </ul>
     </div>
 
