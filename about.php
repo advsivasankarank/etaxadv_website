@@ -148,6 +148,47 @@ require_once __DIR__ . '/includes/header.php';
     </div>
   </section>
 
+  <section class="section" id="about-md">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-label">Leadership</p>
+        <h2 class="section-title">About the Managing Director</h2>
+      </div>
+      <div class="md-shell-about">
+        <div class="md-left">
+          <div class="md-photo-frame">
+            <img src="/assets/img/s-muthulakshmi.jpg" alt="S. Muthulakshmi, Managing Director" />
+          </div>
+          <p class="md-left-name">S. Muthulakshmi</p>
+          <p class="md-left-qual">M.Sc., B.Ed.</p>
+          <p class="founder-left-title">Managing Director</p>
+          <p class="md-left-company">E Tax Advisors Private Limited</p>
+        </div>
+        <div class="md-right">
+          <h3 class="md-right-heading">S. Muthulakshmi</h3>
+          <p class="md-right-role">Managing Director</p>
+          <p>S. Muthulakshmi serves as the Managing Director of E Tax Advisors Private Limited and provides strategic leadership for the organisation's administration, client engagement, business operations and long-term growth initiatives.</p>
+          <p>With an academic background in Science and Education, she brings a structured, people-centric and process-oriented approach to organisational management. She actively supports operational excellence, service quality, client relationship management and organisational development across the company.</p>
+          <p>She also plays a key role in strengthening professional training initiatives, business process management and technology-enabled service delivery systems that support the company's long-term vision.</p>
+          <h4 class="md-focus-title">Leadership Focus</h4>
+          <div class="md-focus-grid">
+            <span class="md-focus-item">Strategic Planning</span>
+            <span class="md-focus-item">Client Relationship Management</span>
+            <span class="md-focus-item">Human Resource Development</span>
+            <span class="md-focus-item">Business Administration</span>
+            <span class="md-focus-item">Quality Management</span>
+            <span class="md-focus-item">Professional Training</span>
+            <span class="md-focus-item">Technology Adoption</span>
+            <span class="md-focus-item">Organisational Development</span>
+          </div>
+          <div class="md-philosophy-card">
+            <blockquote>&ldquo;Strong organisations are built through disciplined systems, continuous learning and a commitment to serving clients with professionalism, accountability and integrity.&rdquo;</blockquote>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="section section-compact">
     <div class="container">
       <div class="section-header centered">
