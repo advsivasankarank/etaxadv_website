@@ -24,75 +24,11 @@ if ($document_root !== '' && str_starts_with($project_root, $document_root)) {
 }
 
 $nav_items = [
+  ['href' => '/index.php', 'label' => 'Home', 'match' => ['index.php']],
   ['href' => '/services.php', 'label' => 'Services', 'match' => ['services.php', 'digital-signature.php', 'gst-consultant-puducherry.php', 'gst-consultant-chennai.php', 'income-tax-consultant-puducherry.php', 'income-tax-consultant-chennai.php', 'tds-return-filing.php', 'labour-law-compliance.php', 'labour-law-hr-compliance.php', 'roc-company-compliance.php', 'trust-society-registration.php', 'trust-ngo-advisory.php', 'manufacturing-compliance.php', 'litigation-representation.php', 'project-report-cma.php']],
-  ['href' => '/index.php#technology-driven-advisory', 'label' => 'Products', 'match' => ['ekanakan.php', 'e-task.php', 'tools.php', 'e-hr.php', 'e-pani.php', 'salpro.php', 'etax-academy.php']],
-  ['href' => '/index.php#who-we-advise', 'label' => 'Industries', 'match' => []],
-  ['href' => '/index.php#insights-updates', 'label' => 'Resources', 'match' => []],
+  ['href' => '/index.php#fintech-tools', 'label' => 'Fintech Tools', 'match' => []],
   ['href' => '/about.php', 'label' => 'About', 'match' => ['about.php', 'team.php', 'why-choose-us.php', 'ks-sivasankaran.php', 'success-stories.php', 'faq.php']],
   ['href' => '/contact.php', 'label' => 'Contact', 'match' => ['contact.php']],
-];
-
-$service_mega_menu = [
-  [
-    'heading' => 'Tax Services',
-    'items' => [
-      ['href' => '/income-tax-consultant-puducherry.php', 'title' => 'Income Tax', 'description' => 'Advisory, planning and representation for businesses and promoters.'],
-      ['href' => '/gst-consultant-puducherry.php', 'title' => 'GST', 'description' => 'Return, review and notice support for evolving GST obligations.'],
-      ['href' => '/tds-return-filing.php', 'title' => 'TDS & Payroll', 'description' => 'Structured withholding, reconciliations and payroll-linked compliance.'],
-      ['href' => '/litigation-representation.php', 'title' => 'Tax Litigation', 'description' => 'Replies, appeals and coordinated tax matter handling.'],
-    ],
-  ],
-  [
-    'heading' => 'Business Services',
-    'items' => [
-      ['href' => '/ekanakan.php', 'title' => 'Accounting', 'description' => 'Bookkeeping visibility through disciplined reporting and controls.'],
-      ['href' => '/salpro.php', 'title' => 'Payroll & Salary', 'description' => 'Payroll execution linked to tax and labour compliance.'],
-      ['href' => '/roc-company-compliance.php', 'title' => 'Registrations', 'description' => 'Business, tax and regulatory registrations under one advisory desk.'],
-      ['href' => '/roc-company-compliance.php', 'title' => 'Compliance', 'description' => 'Company, LLP and recurring statutory compliance support.'],
-    ],
-  ],
-  [
-    'heading' => 'Legal Services',
-    'items' => [
-      ['href' => '/labour-law-hr-compliance.php', 'title' => 'Labour Law & HR', 'description' => 'ESI, PF, contract labour, factory act and employer compliance advisory.'],
-      ['href' => '/roc-company-compliance.php', 'title' => 'Corporate Law', 'description' => 'Entity governance, records and statutory decision support.'],
-      ['href' => '/trust-ngo-advisory.php', 'title' => 'Trust & NGO', 'description' => 'Registration, FCRA, 12A/80G and governance for charitable institutions.'],
-      ['href' => '/litigation-representation.php', 'title' => 'Litigation', 'description' => 'Matter preparation, responses and professional representation support.'],
-    ],
-  ],
-  [
-    'heading' => 'Industry Solutions',
-    'items' => [
-      ['href' => '/manufacturing-compliance.php', 'title' => 'Manufacturing', 'description' => 'Factory compliance, GST input credit, labour law and inspection readiness.'],
-      ['href' => '/project-report-cma.php', 'title' => 'Project Reports', 'description' => 'CMA data, DPR and bank loan documentation support.'],
-      ['href' => '/digital-signature.php', 'title' => 'Digital Signature', 'description' => 'DSC issuance and renewal assistance.'],
-      ['href' => '/team/ks-sivasankaran.php', 'title' => 'Our Team', 'description' => 'Meet our experienced professionals and practice leads.'],
-    ],
-  ],
-];
-
-$product_mega_menu = [
-  ['href' => '/e-pani.php', 'title' => 'e-Pani', 'subtitle' => 'Office Management Suite', 'description' => 'Workflow visibility, task routing and service delivery control.'],
-  ['href' => '/e-hr.php', 'title' => 'e-HR', 'subtitle' => 'HR & Compliance Platform', 'description' => 'Labour law support, payroll coordination and HR compliance discipline.'],
-  ['href' => '/ekanakan.php', 'title' => 'e-Kanakan', 'subtitle' => 'Bookkeeping Automation', 'description' => 'Structured accounting execution with management-ready outputs.'],
-  ['href' => '/salpro.php', 'title' => 'SalPro', 'subtitle' => 'Salary Tax Planning', 'description' => 'Salary tax planning support aligned to payroll and TDS handling.'],
-  ['href' => '/etax-academy.php', 'title' => 'E Tax Academy', 'subtitle' => 'Professional Training', 'description' => 'Knowledge-led training and process awareness for client teams.'],
-];
-
-$industry_links = [
-  ['href' => '/index.php#who-we-advise', 'label' => 'MSMEs'],
-  ['href' => '/index.php#who-we-advise', 'label' => 'Manufacturers'],
-  ['href' => '/index.php#who-we-advise', 'label' => 'Traders'],
-  ['href' => '/index.php#who-we-advise', 'label' => 'Startups'],
-];
-
-$resource_links = [
-  ['href' => '/index.php#insights-updates', 'label' => 'Insights & Updates'],
-  ['href' => '/testimonial/', 'label' => 'Client Testimonials'],
-  ['href' => '/tools.php', 'label' => 'Client Tools'],
-  ['href' => '/client-support.php', 'label' => 'Client Support'],
-  ['href' => '/team.php', 'label' => 'Our Team'],
-  ['href' => '/why-choose-us.php', 'label' => 'Why Choose Us'],
 ];
 
 if (!function_exists('app_href')) {
@@ -156,9 +92,6 @@ $organization_schema = [
 require_once __DIR__ . '/security.php';
 send_security_headers();
 
-$services_active = in_array($current_page, ['services.php', 'digital-signature.php', 'gst-consultant-puducherry.php', 'gst-consultant-chennai.php', 'income-tax-consultant-puducherry.php', 'income-tax-consultant-chennai.php', 'tds-return-filing.php', 'labour-law-compliance.php', 'labour-law-hr-compliance.php', 'roc-company-compliance.php', 'trust-society-registration.php', 'trust-ngo-advisory.php', 'manufacturing-compliance.php', 'litigation-representation.php', 'project-report-cma.php'], true);
-$products_active = in_array($current_page, ['ekanakan.php', 'e-task.php', 'tools.php', 'e-hr.php', 'e-pani.php', 'salpro.php', 'etax-academy.php'], true);
-
 $og_image = $og_image ?? '/assets/img/og-image.jpg';
 ?>
 <!doctype html>
@@ -210,75 +143,18 @@ $og_image = $og_image ?? '/assets/img/og-image.jpg';
     <a class="brand" href="<?= htmlspecialchars(site_href('/index.php')) ?>" aria-label="E Tax Advisors home">
       <img class="brand-mark" src="<?= htmlspecialchars(site_href('/assets/img/logo.png')) ?>" alt="E Tax Advisors logo" width="44" height="44" />
       <div class="brand-copy">
-        <span class="brand-name"><span class="brand-name-full">E Tax Advisors Private Limited</span><span class="brand-name-short">E Tax Advisors</span></span>
+        <span class="brand-name">E Tax Advisors Private Limited</span>
+        <span class="brand-cin">CIN: U74120PY2015PTC003005</span>
         <span class="brand-tag">Advocates | Tax Consultants | Compliance Advisors</span>
       </div>
     </a>
 
     <nav class="nav" aria-label="Primary">
-      <div class="nav-item nav-item-has-panel">
-        <button
-          class="nav-link nav-panel-toggle<?= $services_active ? ' is-active' : '' ?>"
-          type="button"
-          aria-expanded="false"
-          aria-controls="servicesMegaMenu"
-          data-nav-panel="servicesMegaMenu"
-        >
-          <span>Services</span>
-          <span class="nav-caret" aria-hidden="true">
-            <svg viewBox="0 0 16 16" focusable="false"><path d="M4 6.25 8 10l4-3.75" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"/></svg>
-          </span>
-        </button>
-        <div class="mega-menu" id="servicesMegaMenu">
-          <div class="mega-menu-grid">
-<?php foreach ($service_mega_menu as $column): ?>
-            <section class="mega-menu-column">
-              <h3><?= htmlspecialchars($column['heading']) ?></h3>
-<?php foreach ($column['items'] as $service): ?>
-              <a class="mega-menu-link" href="<?= htmlspecialchars(site_href($service['href'])) ?>">
-                <strong><?= htmlspecialchars($service['title']) ?></strong>
-                <span><?= htmlspecialchars($service['description']) ?></span>
-              </a>
-<?php endforeach; ?>
-            </section>
-<?php endforeach; ?>
-          </div>
-        </div>
-      </div>
-
-      <div class="nav-item nav-item-has-panel">
-        <button
-          class="nav-link nav-panel-toggle<?= $products_active ? ' is-active' : '' ?>"
-          type="button"
-          aria-expanded="false"
-          aria-controls="productsMegaMenu"
-          data-nav-panel="productsMegaMenu"
-        >
-          <span>Products</span>
-          <span class="nav-caret" aria-hidden="true">
-            <svg viewBox="0 0 16 16" focusable="false"><path d="M4 6.25 8 10l4-3.75" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"/></svg>
-          </span>
-        </button>
-        <div class="mega-menu mega-menu-products" id="productsMegaMenu">
-          <div class="product-menu-grid">
-<?php foreach ($product_mega_menu as $product): ?>
-            <a class="product-card" href="<?= htmlspecialchars(site_href($product['href'])) ?>">
-              <span class="product-card-title"><?= htmlspecialchars($product['title']) ?></span>
-              <span class="product-card-subtitle"><?= htmlspecialchars($product['subtitle']) ?></span>
-              <span class="product-card-description"><?= htmlspecialchars($product['description']) ?></span>
-              <span class="product-card-link">Learn more</span>
-            </a>
-<?php endforeach; ?>
-          </div>
-        </div>
-      </div>
-
 <?php foreach ($nav_items as $item): ?>
       <?= render_nav_link($item, $current_page) . PHP_EOL ?>
 <?php endforeach; ?>
+      <a class="btn btn-primary btn-sm nav-cta" href="<?= htmlspecialchars(site_href('/contact.php')) ?>">Book Consultation</a>
     </nav>
-
-
 
     <button
       class="hamburger"
@@ -296,40 +172,29 @@ $og_image = $og_image ?? '/assets/img/og-image.jpg';
   <div class="mobile-nav-panel" id="mobileNav">
     <div class="container mobile-nav-shell">
       <nav class="mobileNav" aria-label="Mobile">
+        <a class="mobile-primary-link" href="<?= htmlspecialchars(site_href('/index.php')) ?>">Home</a>
         <a class="mobile-primary-link" href="<?= htmlspecialchars(site_href('/services.php')) ?>">Services</a>
         <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/income-tax-consultant-puducherry.php')) ?>">Income Tax</a>
         <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/gst-consultant-puducherry.php')) ?>">GST</a>
         <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/tds-return-filing.php')) ?>">TDS & Payroll</a>
-        <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/litigation-representation.php')) ?>">Tax Litigation</a>
-        <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/roc-company-compliance.php')) ?>">Company / LLP Compliance</a>
         <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/labour-law-hr-compliance.php')) ?>">Labour Law & HR</a>
+        <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/roc-company-compliance.php')) ?>">Corporate Compliance</a>
         <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/trust-ngo-advisory.php')) ?>">Trust & NGO Advisory</a>
-        <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/manufacturing-compliance.php')) ?>">Manufacturing Compliance</a>
-        <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/project-report-cma.php')) ?>">Project Reports & CMA</a>
-        <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/digital-signature.php')) ?>">Digital Signature</a>
+        <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/litigation-representation.php')) ?>">Litigation Support</a>
+        <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/project-report-cma.php')) ?>">Project Reports</a>
 
-        <a class="mobile-primary-link" href="<?= htmlspecialchars(site_href('/index.php#technology-driven-advisory')) ?>">Products</a>
-<?php foreach ($product_mega_menu as $product): ?>
-        <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href($product['href'])) ?>"><?= htmlspecialchars($product['title']) ?></a>
-<?php endforeach; ?>
-
-        <a class="mobile-primary-link" href="<?= htmlspecialchars(site_href('/index.php#who-we-advise')) ?>">Industries</a>
-<?php foreach ($industry_links as $industry_link): ?>
-        <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href($industry_link['href'])) ?>"><?= htmlspecialchars($industry_link['label']) ?></a>
-<?php endforeach; ?>
-
-        <a class="mobile-primary-link" href="<?= htmlspecialchars(site_href('/index.php#insights-updates')) ?>">Resources</a>
-<?php foreach ($resource_links as $resource_link): ?>
-        <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href($resource_link['href'])) ?>"><?= htmlspecialchars($resource_link['label']) ?></a>
-<?php endforeach; ?>
+        <a class="mobile-primary-link" href="<?= htmlspecialchars(site_href('/index.php#fintech-tools')) ?>">Fintech Tools</a>
+        <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/e-pani.php')) ?>">e-Pani</a>
+        <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/e-hr.php')) ?>">e-HR</a>
+        <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/ekanakan.php')) ?>">e-Kanakan</a>
+        <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/salpro.php')) ?>">SalPro</a>
+        <a class="mobile-secondary-link" href="<?= htmlspecialchars(site_href('/etax-academy.php')) ?>">E Tax Academy</a>
 
         <a class="mobile-primary-link" href="<?= htmlspecialchars(site_href('/about.php')) ?>">About</a>
         <a class="mobile-primary-link" href="<?= htmlspecialchars(site_href('/contact.php')) ?>">Contact</a>
-        <a class="mobile-primary-link" href="<?= htmlspecialchars(site_href('/client-support.php')) ?>">Client Login</a>
 
         <div class="mobile-nav-actions">
-          <a class="btn btn-outline" href="tel:+919894626300">Call Now</a>
-          <a class="btn btn-primary" href="<?= htmlspecialchars(site_href('/contact.php#consult')) ?>">Book Consultation</a>
+          <a class="btn btn-primary" href="<?= htmlspecialchars(site_href('/contact.php')) ?>">Book Consultation</a>
         </div>
       </nav>
     </div>

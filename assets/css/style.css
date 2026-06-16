@@ -78,14 +78,13 @@ body.menu-open { overflow: hidden; }
 .brand-mark {
   width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0; object-fit: contain;
 }
-.brand-copy { display: flex; flex-direction: column; gap: 2px; }
+.brand-copy { display: flex; flex-direction: column; gap: 0; line-height: 1.15; }
 .brand-name {
-  font-family: var(--font-display); font-size: 22px; font-weight: 700;
-  line-height: 1.1; letter-spacing: -.01em; white-space: nowrap;
+  font-family: var(--font-display); font-size: 20px; font-weight: 700;
+  line-height: 1.15; letter-spacing: -.01em; white-space: nowrap;
 }
-.brand-name-full { display: inline; }
-.brand-name-short { display: none; }
-.brand-tag { color: var(--gray-600); font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
+.brand-cin { color: var(--gray-400); font-size: 11px; font-weight: 500; white-space: nowrap; }
+.brand-tag { color: var(--gray-600); font-size: 10px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
 
 .nav { display: flex; align-items: center; gap: 4px; }
 .nav-item { position: relative; }
@@ -98,6 +97,8 @@ body.menu-open { overflow: hidden; }
 .nav-link:hover, .nav-link:focus-visible, .nav-link.is-active { color: var(--navy); background: var(--navy-50); outline: none; }
 .nav-caret { display: inline-flex; width: 12px; height: 12px; color: var(--gray-400); transition: transform .2s; }
 .nav-item.is-open .nav-caret svg { transform: rotate(180deg); }
+
+.nav-cta { margin-left: 8px; }
 
 .header-actions { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
 .header-link { color: var(--gray-600); font-size: 13px; font-weight: 500; transition: color .2s; }
@@ -286,28 +287,98 @@ main { display: block; }
   background: var(--gray-100); aspect-ratio: 4/3;
   box-shadow: var(--shadow-lg);
 }
-.hero-image-placeholder {
-  width: 100%; height: 100%; display: grid; place-items: center;
-  background: linear-gradient(135deg, var(--navy), var(--navy-light));
-  color: var(--white); font-family: var(--font-display); font-size: 20px; font-weight: 600;
-  text-align: center; padding: 40px;
+.hero-image img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+
+.hero-tagline {
+  font-family: var(--font-display); font-size: 18px; font-weight: 600;
+  color: var(--gold); margin: -12px 0 20px;
 }
 
 /* ============================================
-   CREDIBILITY STRIP
+   TRUST BAR
    ============================================ */
-.credibility-strip {
+.trust-bar {
   padding: 32px 0; border-top: 1px solid var(--gray-100); border-bottom: 1px solid var(--gray-100);
   background: var(--white);
 }
-.credibility-grid {
-  display: grid; grid-template-columns: repeat(6, 1fr); gap: 24px; text-align: center;
+.trust-bar-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; text-align: center;
 }
-.credibility-item strong {
-  display: block; font-family: var(--font-display); font-size: 28px; font-weight: 700;
+.trust-bar-item strong {
+  display: block; font-family: var(--font-display); font-size: 26px; font-weight: 700;
   color: var(--navy); line-height: 1.1; margin-bottom: 4px;
 }
-.credibility-item span { color: var(--gray-600); font-size: 13px; font-weight: 500; }
+.trust-bar-item span { color: var(--gray-600); font-size: 13px; font-weight: 500; }
+
+/* ============================================
+   ABOUT THE COMPANY
+   ============================================ */
+.about-intro {
+  max-width: 800px; color: var(--gray-600); font-size: 16px; line-height: 1.7; margin: 0 0 16px;
+}
+.about-services-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px 40px; margin-top: 28px; max-width: 700px;
+}
+.about-service-item {
+  display: flex; align-items: center; gap: 10px; color: var(--gray-600); font-size: 15px; font-weight: 500;
+}
+.about-check { color: var(--navy); font-weight: 700; font-size: 18px; }
+
+/* ============================================
+   CORE SERVICES
+   ============================================ */
+.core-services-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.core-service-card {
+  padding: 32px; border: 1px solid var(--gray-100); border-radius: var(--radius-md);
+  background: var(--white); transition: box-shadow .3s;
+}
+.core-service-card:hover { box-shadow: var(--shadow-md); }
+.core-service-card h3 {
+  margin: 0 0 10px; font-family: var(--font-display); font-size: 18px; font-weight: 700; color: var(--navy);
+}
+.core-service-card p { margin: 0; color: var(--gray-600); font-size: 14px; line-height: 1.6; }
+
+/* ============================================
+   FINTECH TOOLS
+   ============================================ */
+.fintech-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.fintech-card {
+  padding: 28px; border: 1px solid var(--gray-100); border-radius: var(--radius-md);
+  background: var(--white); transition: box-shadow .3s;
+}
+.fintech-card:hover { box-shadow: var(--shadow-sm); }
+.fintech-card h3 { margin: 0 0 2px; font-family: var(--font-display); font-size: 18px; font-weight: 700; color: var(--navy); }
+.fintech-subtitle { color: var(--gold); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; margin: 0 0 10px; }
+.fintech-desc { color: var(--gray-600); font-size: 13px; line-height: 1.6; margin: 10px 0 0; }
+
+/* ============================================
+   LEADERSHIP — FOUNDER
+   ============================================ */
+.founder-shell {
+  display: grid; grid-template-columns: 360px 1fr; gap: 48px; align-items: start;
+}
+.founder-photo {
+  width: 100%; aspect-ratio: 5/6; border-radius: var(--radius-md); overflow: hidden;
+  box-shadow: var(--shadow-md); background: var(--gray-100);
+}
+.founder-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.founder-info h3 {
+  margin: 0 0 8px; font-family: var(--font-display); font-size: 32px; font-weight: 700; line-height: 1.15;
+}
+.founder-designation {
+  color: var(--gold); font-size: 13px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: .06em; margin: 0 0 16px; line-height: 1.5;
+}
+.founder-summary {
+  color: var(--gray-600); font-size: 16px; line-height: 1.7; margin: 0 0 24px; max-width: 520px;
+}
+
+/* ============================================
+   CTA CONTACT
+   ============================================ */
+.cta-contact-links { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
 /* ============================================
    GRIDS
@@ -522,30 +593,41 @@ textarea.input { min-height: 120px; resize: vertical; }
    FOOTER – Premium
    ============================================ */
 .footer {
-  border-top: 1px solid var(--gray-100); padding: 64px 0 32px;
+  border-top: 1px solid var(--gray-100); padding: 48px 0 24px;
   background: var(--white); color: var(--gray-600);
 }
 .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 40px; }
 .footer-logo { width: auto; height: 48px; margin-bottom: 16px; }
 .footer h3 {
-  margin: 0 0 16px; font-family: var(--font-display); font-size: 14px; font-weight: 700;
+  margin: 0 0 12px; font-family: var(--font-display); font-size: 13px; font-weight: 700;
   color: var(--charcoal); text-transform: uppercase; letter-spacing: .06em;
 }
-.footer p { margin: 0; font-size: 14px; line-height: 1.7; }
-.footer-brand p { max-width: 340px; margin-bottom: 20px; }
-.footer-links { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
-.footer-links a { color: var(--gray-600); font-size: 14px; transition: color .2s; }
+.footer p { margin: 0; font-size: 13px; line-height: 1.15; }
+.footer-brand { max-width: 300px; }
+.footer-company-name {
+  font-family: var(--font-display); font-size: 15px; font-weight: 700;
+  color: var(--charcoal); margin-bottom: 4px !important; line-height: 1.15 !important;
+}
+.footer-cin { color: var(--gray-400); font-size: 11px; margin-bottom: 6px !important; line-height: 1.15 !important; }
+.footer-address { margin-bottom: 6px !important; font-size: 13px; line-height: 1.15 !important; }
+.footer-mobile { margin-bottom: 6px !important; font-size: 13px; line-height: 1.15 !important; }
+.footer-mobile a { color: var(--gray-600); }
+.footer-mobile a:hover { color: var(--navy); }
+.footer-email { margin-bottom: 0 !important; font-size: 13px; line-height: 1.15 !important; }
+.footer-email a { color: var(--gray-600); }
+.footer-email a:hover { color: var(--navy); }
+.footer-links { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.footer-links a { color: var(--gray-600); font-size: 13px; transition: color .2s; line-height: 1.15; }
 .footer-links a:hover { color: var(--navy); }
-.footer-contact-stack { display: grid; gap: 10px; }
-.footer-contact-stack a { color: var(--gray-600); font-size: 14px; transition: color .2s; }
+.footer-contact-stack { display: grid; gap: 6px; }
+.footer-contact-stack a { color: var(--gray-600); font-size: 13px; transition: color .2s; }
 .footer-contact-stack a:hover { color: var(--navy); }
-.footer-address { margin-top: 16px; font-size: 14px; line-height: 1.7; }
 .footer-bottom {
   display: flex; justify-content: space-between; gap: 16px;
-  margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--gray-100);
-  font-size: 13px;
+  margin-top: 24px; padding-top: 12px; border-top: 1px solid var(--gray-100);
+  font-size: 12px;
 }
-.footer-bottom p { margin: 0; }
+.footer-bottom p { margin: 0; line-height: 1.15; }
 
 /* ============================================
    LEGACY COMPATIBILITY
@@ -644,40 +726,37 @@ textarea.input { min-height: 120px; resize: vertical; }
   .hamburger { display: block; }
   .hero-shell { grid-template-columns: 1fr; gap: 40px; }
   .hero-copy { max-width: 100%; }
-  .credibility-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
-  .credibility-item strong { font-size: 24px; }
-  .practice-grid { grid-template-columns: repeat(2, 1fr); }
-  .industry-grid { grid-template-columns: repeat(2, 1fr); }
-  .consult-shell { grid-template-columns: 1fr; padding: 32px; }
+  .trust-bar-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .core-services-grid { grid-template-columns: repeat(2, 1fr); }
+  .fintech-grid { grid-template-columns: repeat(2, 1fr); }
+  .founder-shell { grid-template-columns: 1fr; gap: 32px; }
+  .founder-photo { max-width: 360px; }
   .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+  .about-services-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 860px) {
   :root { --section-gap: 80px; }
-  .leadership-grid { grid-template-columns: 1fr; }
-  .leader-card { grid-template-columns: 1fr; }
-  .leader-photo { width: 100%; height: 200px; }
-  .grid-3, .grid-4, .tech-grid, .reasons-grid { grid-template-columns: 1fr; }
-  .insight-grid { grid-template-columns: repeat(2, 1fr); }
+  .core-services-grid { grid-template-columns: 1fr; }
+  .fintech-grid { grid-template-columns: 1fr; }
+  .founder-photo { max-width: 100%; }
+  .founder-info h3 { font-size: 26px; }
   .footer-grid { grid-template-columns: 1fr; }
   .footer-bottom { flex-direction: column; text-align: center; }
   .header-actions .header-link { display: none; }
-  .brand-name { font-size: 18px; }
-  .brand-name-full { display: none; }
-  .brand-name-short { display: inline; }
+  .brand-name { font-size: 16px; }
+  .brand-cin { font-size: 10px; }
+  .brand-tag { font-size: 9px; }
 }
 
 @media (max-width: 620px) {
   .hero { padding: 60px 0 40px; }
   .hero h1 { font-size: clamp(28px, 10vw, 36px); }
   .hero p { font-size: 16px; }
-  .credibility-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-  .credibility-item strong { font-size: 22px; }
-  .practice-grid { grid-template-columns: 1fr; }
-  .industry-grid { grid-template-columns: 1fr; }
-  .insight-grid { grid-template-columns: 1fr; }
-  .form-grid { grid-template-columns: 1fr; }
-  .testimonial-track { grid-auto-columns: minmax(270px, 88%); }
-  .mobile-action-bar { display: grid; }
+  .hero-tagline { font-size: 15px; }
+  .trust-bar-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .trust-bar-item strong { font-size: 20px; }
   .section-header { margin-bottom: 32px; }
+  .about-services-grid { grid-template-columns: 1fr; }
+  .founder-info h3 { font-size: 22px; }
 }
