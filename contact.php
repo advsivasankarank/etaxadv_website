@@ -233,7 +233,7 @@ require_once __DIR__ . '/includes/header.php';
       </div>
       <div class="office-shell">
         <div class="office-map">
-          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3901.123456789!2d79.829!3d11.934!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTHCsDU2JzAyLjQiTiA3OcKwNDknNDQuNCJF!5e0!3m2!1sen!2sin!4v1" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3917.345!2d79.808926!3d11.945321!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTHCsDU2JzQzLjIiTiA3OcKwNDgnMzIuMSJF!5e0!3m2!1sen!2sin!4v1" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
         <div class="office-info">
           <h3>E Tax Advisors Private Limited</h3>
@@ -244,7 +244,7 @@ require_once __DIR__ . '/includes/header.php';
             Lawspet,<br/>
             Puducherry – 605008
           </p>
-          <a class="btn btn-primary" href="https://maps.google.com/?q=11.934,79.829" target="_blank" rel="noopener">Get Directions</a>
+          <a class="btn btn-primary" href="https://maps.google.com/?q=11.945321,79.808926" target="_blank" rel="noopener">Get Directions</a>
         </div>
       </div>
     </div>
