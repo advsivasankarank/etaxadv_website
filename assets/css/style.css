@@ -1197,7 +1197,7 @@ textarea.input { min-height: 120px; resize: vertical; }
 /* Direct contact grid */
 .direct-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
 }
 .direct-card {

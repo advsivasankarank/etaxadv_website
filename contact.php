@@ -36,6 +36,27 @@ require_once __DIR__ . '/includes/header.php';
     </div>
   </section>
 
+  <section class="section">
+    <div class="container">
+      <div class="section-header centered">
+        <p class="section-label">Consultation Areas</p>
+        <h2 class="section-title">What Can We Help You With?</h2>
+      </div>
+      <div class="areas-grid">
+        <div class="area-item"><span class="area-check">&#10003;</span> GST Notices</div>
+        <div class="area-item"><span class="area-check">&#10003;</span> Income Tax Notices</div>
+        <div class="area-item"><span class="area-check">&#10003;</span> TDS &amp; Payroll Compliance</div>
+        <div class="area-item"><span class="area-check">&#10003;</span> Labour Law Compliance</div>
+        <div class="area-item"><span class="area-check">&#10003;</span> Corporate Compliance</div>
+        <div class="area-item"><span class="area-check">&#10003;</span> Trust &amp; NGO Advisory</div>
+        <div class="area-item"><span class="area-check">&#10003;</span> Business Registrations</div>
+        <div class="area-item"><span class="area-check">&#10003;</span> Project Reports &amp; CMA</div>
+        <div class="area-item"><span class="area-check">&#10003;</span> Representation Matters</div>
+        <div class="area-item"><span class="area-check">&#10003;</span> Business Advisory</div>
+      </div>
+    </div>
+  </section>
+
   <section class="section section-alt" id="consult">
     <div class="container">
       <div class="section-header">
@@ -189,43 +210,11 @@ require_once __DIR__ . '/includes/header.php';
           <p>Send a detailed message and we will respond within one business day.</p>
           <a class="direct-link" href="mailto:support@etaxadv.com">support@etaxadv.com</a>
         </div>
-        <div class="direct-card">
-          <div class="direct-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-              <circle cx="12" cy="10" r="3"/>
-            </svg>
-          </div>
-          <h3>Visit Our Office</h3>
-          <p>Schedule an appointment for an in-person consultation at our Puducherry office.</p>
-          <span class="direct-address">Puducherry Office</span>
-        </div>
       </div>
     </div>
   </section>
 
   <section class="section section-alt">
-    <div class="container">
-      <div class="section-header centered">
-        <p class="section-label">Consultation Areas</p>
-        <h2 class="section-title">What Can We Help You With?</h2>
-      </div>
-      <div class="areas-grid">
-        <div class="area-item"><span class="area-check">&#10003;</span> GST Notices</div>
-        <div class="area-item"><span class="area-check">&#10003;</span> Income Tax Notices</div>
-        <div class="area-item"><span class="area-check">&#10003;</span> TDS &amp; Payroll Compliance</div>
-        <div class="area-item"><span class="area-check">&#10003;</span> Labour Law Compliance</div>
-        <div class="area-item"><span class="area-check">&#10003;</span> Corporate Compliance</div>
-        <div class="area-item"><span class="area-check">&#10003;</span> Trust &amp; NGO Advisory</div>
-        <div class="area-item"><span class="area-check">&#10003;</span> Business Registrations</div>
-        <div class="area-item"><span class="area-check">&#10003;</span> Project Reports &amp; CMA</div>
-        <div class="area-item"><span class="area-check">&#10003;</span> Representation Matters</div>
-        <div class="area-item"><span class="area-check">&#10003;</span> Business Advisory</div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
     <div class="container">
       <div class="section-header centered">
         <p class="section-label">Office Location</p>
