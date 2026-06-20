@@ -8,6 +8,9 @@
 !/e-task.php
 !/ekanakan.php
 !/fintech-tools.php
+!/fintech/
+/fintech/*
+!/fintech/etds-qc.php
 !/index.php
 !/privacy-policy.php
 !/services.php

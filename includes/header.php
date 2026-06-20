@@ -26,7 +26,7 @@ if ($document_root !== '' && str_starts_with($project_root, $document_root)) {
 $nav_items = [
   ['href' => '/index.php', 'label' => 'Home', 'match' => ['index.php']],
   ['href' => '/services.php', 'label' => 'Services', 'match' => ['services.php', 'digital-signature.php', 'gst-consultant-puducherry.php', 'gst-consultant-chennai.php', 'income-tax-consultant-puducherry.php', 'income-tax-consultant-chennai.php', 'tds-return-filing.php', 'labour-law-compliance.php', 'labour-law-hr-compliance.php', 'roc-company-compliance.php', 'trust-society-registration.php', 'trust-ngo-advisory.php', 'manufacturing-compliance.php', 'litigation-representation.php', 'project-report-cma.php']],
-  ['href' => '/fintech-tools.php', 'label' => 'Fintech Tools', 'match' => ['fintech-tools.php']],
+  ['href' => '/fintech-tools.php', 'label' => 'Fintech Tools', 'match' => ['fintech-tools.php', 'etds-qc.php']],
   ['href' => '/about.php', 'label' => 'About', 'match' => ['about.php', 'team.php', 'why-choose-us.php', 'ks-sivasankaran.php', 'success-stories.php', 'faq.php']],
   ['href' => '/contact.php', 'label' => 'Contact', 'match' => ['contact.php']],
 ];

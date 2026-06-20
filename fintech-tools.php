@@ -57,19 +57,11 @@ require_once __DIR__ . '/includes/header.php';
           <span class="ft-btn">View Product</span>
         </a>
 
-        <a class="ft-card" href="#/etds-qc">
+        <a class="ft-card" href="/fintech/etds-qc.php">
           <span class="ft-tag">TDS Automation</span>
           <h3>e-TDS QC Tool</h3>
           <p class="ft-subtitle">Data Quality Validation &amp; Excel Preparation</p>
-          <p class="ft-desc">Validate Excel, PDF and scanned TDS data, identify errors, rectify inconsistencies, and generate clean TaxPro-ready Excel outputs.</p>
-          <ul class="ft-feature-list" aria-label="e-TDS QC Tool capabilities">
-            <li>Excel Validation</li>
-            <li>PDF &amp; OCR Extraction</li>
-            <li>PAN Verification</li>
-            <li>Duplicate Detection</li>
-            <li>Error Rectification</li>
-            <li>TaxPro Ready Export</li>
-          </ul>
+          <p class="ft-desc">Validate Excel, PDF and scanned TDS data, identify errors, rectify inconsistencies, and generate clean Excel outputs.</p>
           <span class="ft-status">Coming Soon</span>
           <span class="ft-btn">Learn More</span>
         </a>
