@@ -13,6 +13,7 @@ if (!isset($page_path)) {
 
 $page_description = trim($page_description);
 $current_page = basename($_SERVER['PHP_SELF'] ?? 'index.php');
+$current_request_path = parse_url($_SERVER['REQUEST_URI'] ?? $page_path, PHP_URL_PATH) ?? $page_path;
 $site_root = '';
 $project_root = str_replace('\\', '/', realpath(dirname(__DIR__)) ?: dirname(__DIR__));
 $document_root = str_replace('\\', '/', realpath($_SERVER['DOCUMENT_ROOT'] ?? '') ?: ($_SERVER['DOCUMENT_ROOT'] ?? ''));
@@ -52,7 +53,12 @@ function page_url(string $path): string {
 }
 
 function render_nav_link(array $item, string $current_page, string $extra_classes = ''): string {
+  global $page_path, $current_request_path;
   $is_active = in_array($current_page, $item['match'], true);
+  if (!$is_active && ($item['href'] ?? '') === '/fintech-tools.php') {
+    $is_active = str_contains((string) $page_path, '/fintech/etds-qc/')
+      || str_contains((string) $current_request_path, '/fintech/etds-qc/');
+  }
   $classes = trim('nav-link ' . $extra_classes . ($is_active ? ' is-active' : ''));
   $class_attr = ' class="' . htmlspecialchars($classes) . '"';
   $aria_current = $is_active ? ' aria-current="page"' : '';
@@ -122,6 +128,9 @@ $og_image = $og_image ?? '/assets/img/og-image.jpg';
   <link rel="stylesheet" href="<?= htmlspecialchars(site_href('/assets/css/style.css')) ?>" />
 <?php if (!empty($extra_css)): ?>
   <link rel="stylesheet" href="<?= htmlspecialchars($extra_css) ?>" />
+<?php endif; ?>
+<?php if (!empty($extra_head)): ?>
+  <?= $extra_head . PHP_EOL ?>
 <?php endif; ?>
   <script type="application/ld+json"><?= json_encode($organization_schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?></script>
 

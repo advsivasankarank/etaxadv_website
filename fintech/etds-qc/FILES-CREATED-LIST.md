@@ -1,0 +1,21 @@
+# Files Created List
+
+- `C:\xampp\htdocs\etaxadv_website\fintech\etds-qc\ARCHITECTURE.md`
+- `C:\xampp\htdocs\etaxadv_website\fintech\etds-qc\FOLDER-STRUCTURE.md`
+- `C:\xampp\htdocs\etaxadv_website\fintech\etds-qc\JSON-SCHEMAS.md`
+- `C:\xampp\htdocs\etaxadv_website\fintech\etds-qc\WIREFRAMES.md`
+- `C:\xampp\htdocs\etaxadv_website\fintech\etds-qc\VALIDATION-RULE-MATRIX.md`
+- `C:\xampp\htdocs\etaxadv_website\fintech\etds-qc\RECONCILIATION-RULE-MATRIX.md`
+- `C:\xampp\htdocs\etaxadv_website\fintech\etds-qc\SECURITY-DESIGN.md`
+- `C:\xampp\htdocs\etaxadv_website\fintech\etds-qc\bootstrap_runtime.php`
+- `C:\xampp\htdocs\etaxadv_website\fintech\etds-qc\index.php`
+- `C:\xampp\htdocs\etaxadv_website\fintech\etds-qc\assets\css\etds-qc.css`
+- `C:\xampp\htdocs\etaxadv_website\fintech\etds-qc\assets\js\etds-qc.js`
+- `C:\xampp\htdocs\etaxadv_website\fintech\etds-qc\DEPLOYMENT-GUIDE.md`
+- `C:\xampp\htdocs\etaxadv_website\fintech\etds-qc\TESTING-REPORT.md`
+- `C:\xampp\htdocs\etaxadv_website\fintech\etds-qc\SECURITY-REVIEW-REPORT.md`
+- `C:\xampp\htdocs\etaxadv_website\fintech\etds-qc\FILES-CREATED-LIST.md`
+- `C:\xampp\htdocs\etaxadv_website\fintech\etds-qc\FILES-MODIFIED-LIST.md`
+- `C:\xampp\htdocs\etaxadv_website\storage\etds-qc\.htaccess`
+- `C:\xampp\htdocs\etaxadv_website\storage\etds-qc\config.json`
+- `C:\xampp\htdocs\etaxadv_website\storage\etds-qc\users.json`

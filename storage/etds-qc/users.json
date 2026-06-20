@@ -1,0 +1,12 @@
+[
+  {
+    "id": "USR-0001",
+    "name": "System Administrator",
+    "email": "admin@etaxadv.local",
+    "role": "super_admin",
+    "password_hash": "$2y$12$.zeHQgu5aE9Dkz0sfrl1ge1DCT9mwcwi/RxIYw4fO1zQrsq9GiqrG",
+    "status": "active",
+    "created_on": "2026-06-20T22:50:00+05:30",
+    "updated_on": "2026-06-20T22:50:00+05:30"
+  }
+]

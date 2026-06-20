@@ -57,7 +57,7 @@ require_once __DIR__ . '/includes/header.php';
           <span class="ft-btn">View Product</span>
         </a>
 
-        <a class="ft-card" href="/fintech/etds-qc.php">
+        <a class="ft-card" href="/fintech/etds-qc/">
           <span class="ft-tag">TDS Automation</span>
           <h3>e-TDS QC Tool</h3>
           <p class="ft-subtitle">Data Quality Validation &amp; Excel Preparation</p>

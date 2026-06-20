@@ -1,0 +1,13 @@
+{
+  "quality_threshold": 100,
+  "purge_after_days": 7,
+  "allowed_extensions": [
+    "xlsx",
+    "xls",
+    "csv",
+    "pdf",
+    "png",
+    "jpg",
+    "jpeg"
+  ]
+}

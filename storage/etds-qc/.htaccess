@@ -1,0 +1,4 @@
+Options -Indexes
+<FilesMatch "\.(json|log|xlsx|csv|pdf|png|jpe?g)$">
+  Require all denied
+</FilesMatch>
