@@ -15,7 +15,7 @@ $isAjax = (string) ($_REQUEST['ajax'] ?? '0') === '1';
 $flash = etds_qc_pull_flash();
 $user = etds_qc_current_user();
 $page_title = 'e-TDS QC Tool | E Tax Advisors';
-$page_description = 'Internal data quality validation, reconciliation and Excel preparation utility for TDS operations.';
+$page_description = 'AI-Driven Data Health Check for internal TDS intake, diagnosis, reconciliation, and processing preparation.';
 $page_path = '/fintech/etds-qc/';
 
 function etds_qc_respond(bool $isAjax, string $redirect, string $type, string $message, array $extra = []): never {
@@ -32,6 +32,8 @@ function etds_qc_respond(bool $isAjax, string $redirect, string $type, string $m
   exit;
 }
 
+try {
+
 if ($action === 'login' && $_SERVER['REQUEST_METHOD'] === 'POST') {
   if (!verify_csrf($_POST['_csrf'] ?? null)) {
     etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=login'), 'error', 'Security token expired. Please try again.');
@@ -39,7 +41,7 @@ if ($action === 'login' && $_SERVER['REQUEST_METHOD'] === 'POST') {
   $email = clean_input((string) ($_POST['email'] ?? ''), 150);
   $password = (string) ($_POST['password'] ?? '');
   if (etds_qc_login($email, $password)) {
-    etds_qc_respond($isAjax, site_href('/fintech/etds-qc/'), 'success', 'Welcome back. The command centre is ready.');
+    etds_qc_respond($isAjax, site_href('/fintech/etds-qc/'), 'success', 'Welcome back. e-TDS Doctor is ready.');
   }
   etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=login'), 'error', 'Invalid email or password.');
 }
@@ -63,16 +65,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action !== 'login') {
 if ($action === 'create_session' && $user) {
   $tan = strtoupper(clean_input((string) ($_POST['tan'] ?? ''), 10));
   if ($tan === '' || !etds_qc_tan_valid($tan)) {
-    etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=create'), 'error', 'Enter a valid TAN in the format AAAA99999A.');
+    etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?ws=intake&view=create'), 'error', 'Enter a valid TAN in the format AAAA99999A.');
   }
   $session = etds_qc_create_session($_POST, $user);
-  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=session&session=' . urlencode($session['session_id'])), 'success', 'QC session ' . $session['session_id'] . ' created.');
+  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=session&ws=intake&session=' . urlencode($session['session_id'])), 'success', 'QC session ' . $session['session_id'] . ' created.');
 }
 
 if ($action === 'upload_documents' && $user) {
   $sessionId = (string) ($_POST['session_id'] ?? '');
   $session = etds_qc_find_session($sessionId);
   if ($session && isset($_FILES['documents'])) {
+    etds_qc_ensure_session_structure($sessionId);
     $source = etds_qc_load_json(etds_qc_session_file($sessionId, 'source_data.json'), ['documents' => [], 'source_columns' => [], 'records' => []]);
     $documents = is_array($source['documents'] ?? null) ? $source['documents'] : [];
     $names = $_FILES['documents']['name'] ?? [];
@@ -99,7 +102,7 @@ if ($action === 'upload_documents' && $user) {
           'file_name' => basename((string) $originalName),
           'stored_name' => $storedName,
           'extension' => $extension,
-          'mime_type' => mime_content_type($target) ?: 'application/octet-stream',
+          'mime_type' => etds_qc_detect_mime_type($target),
           'size_bytes' => (int) ($sizes[$index] ?? 0),
           'uploaded_on' => etds_qc_now(),
           'uploaded_by' => $user['id'],
@@ -113,22 +116,22 @@ if ($action === 'upload_documents' && $user) {
     etds_qc_audit($sessionId, $user, 'documents_uploaded', 'Documents uploaded', ['count' => count($documents)]);
     $session['last_action'] = 'documents_uploaded';
     etds_qc_save_session($session);
-    etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=session&session=' . urlencode($sessionId)), 'success', 'Documents uploaded successfully.');
+    etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=session&ws=extraction&session=' . urlencode($sessionId)), 'success', 'Documents uploaded successfully.');
   }
-  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=session&session=' . urlencode($sessionId)), 'error', 'No documents were uploaded.');
+  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=session&ws=extraction&session=' . urlencode($sessionId)), 'error', 'No documents were uploaded.');
 }
 
 if ($action === 'delete_upload' && $user) {
   $sessionId = (string) ($_POST['session_id'] ?? '');
   $deleted = etds_qc_delete_upload($sessionId, (string) ($_POST['file_id'] ?? ''), $user);
-  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=session&session=' . urlencode($sessionId)), $deleted ? 'success' : 'error', $deleted ? 'Upload deleted and data refreshed.' : 'Upload could not be deleted.');
+  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=session&ws=extraction&session=' . urlencode($sessionId)), $deleted ? 'success' : 'error', $deleted ? 'Upload deleted and data refreshed.' : 'Upload could not be deleted.');
 }
 
 if ($action === 'extract_validate' && $user) {
   $sessionId = (string) ($_POST['session_id'] ?? '');
   etds_qc_reload_source_data($sessionId, $user);
   etds_qc_validate_session($sessionId, $user);
-  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=session&session=' . urlencode($sessionId)), 'success', 'Extraction and validation completed.');
+  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=session&ws=bench&tab=diagnosis&session=' . urlencode($sessionId)), 'success', 'Diagnosis complete.');
 }
 
 if ($action === 'issue_status' && $user) {
@@ -140,14 +143,14 @@ if ($action === 'issue_status' && $user) {
     (string) ($_POST['issue_status'] ?? 'resolved'),
     $user
   );
-  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=session&session=' . urlencode($sessionId)), 'success', 'Issue updated.');
+  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=session&ws=bench&tab=treatment&session=' . urlencode($sessionId)), 'success', 'Issue updated.');
 }
 
 if ($action === 'edit_record' && $user) {
   $sessionId = (string) ($_POST['session_id'] ?? '');
   etds_qc_edit_record($sessionId, (string) ($_POST['record_id'] ?? ''), $_POST, $user);
   etds_qc_validate_session($sessionId, $user);
-  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=session&session=' . urlencode($sessionId)), 'success', 'Record updated and revalidated.');
+  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=session&ws=bench&tab=treatment&session=' . urlencode($sessionId)), 'success', 'Record updated and revalidated.');
 }
 
 if ($action === 'add_challan' && $user) {
@@ -166,7 +169,7 @@ if ($action === 'add_challan' && $user) {
   ];
   etds_qc_write_json(etds_qc_session_file($sessionId, 'challans.json'), ['challans' => $rows]);
   etds_qc_audit($sessionId, $user, 'challan_added', 'Challan added', ['challan_reference' => $_POST['challan_reference'] ?? '']);
-  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=session&session=' . urlencode($sessionId) . '#reconciliation'), 'success', 'Challan saved.');
+  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=session&ws=bench&tab=reconciliation&session=' . urlencode($sessionId)), 'success', 'Challan saved.');
 }
 
 if ($action === 'run_reconciliation' && $user) {
@@ -180,7 +183,7 @@ if ($action === 'run_reconciliation' && $user) {
     }
     etds_qc_save_session($session);
   }
-  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=session&session=' . urlencode($sessionId) . '#reconciliation'), 'success', 'Reconciliation completed.');
+  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=session&ws=bench&tab=reconciliation&session=' . urlencode($sessionId)), 'success', 'Reconciliation completed.');
 }
 
 if ($action === 'export_xlsx' && $user) {
@@ -189,24 +192,24 @@ if ($action === 'export_xlsx' && $user) {
   if ($session) {
     $fileName = etds_qc_write_export_xlsx($sessionId, $session, $user);
     if ($fileName) {
-      etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=session&session=' . urlencode($sessionId) . '#export'), 'success', 'Excel file generated: ' . $fileName, ['file_name' => $fileName]);
+      etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=session&ws=excel&session=' . urlencode($sessionId)), 'success', 'Excel file generated: ' . $fileName, ['file_name' => $fileName]);
     } else {
-      etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=session&session=' . urlencode($sessionId) . '#export'), 'error', 'Export is blocked until validation and reconciliation are fully clean.');
+      etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=session&ws=bench&tab=readiness&session=' . urlencode($sessionId)), 'error', 'Export is blocked until validation and reconciliation are fully clean.');
     }
   }
-  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=session&session=' . urlencode($sessionId) . '#export'), 'error', 'Session was not found.');
+  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=session&ws=excel&session=' . urlencode($sessionId)), 'error', 'Session was not found.');
 }
 
 if ($action === 'archive_session' && $user) {
   $sessionId = (string) ($_POST['session_id'] ?? '');
   etds_qc_archive_session($sessionId, $user);
-  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=session&session=' . urlencode($sessionId)), 'success', 'Session archived.');
+  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?ws=intake'), 'success', 'Session archived.');
 }
 
 if ($action === 'purge_session' && $user) {
   $sessionId = (string) ($_POST['session_id'] ?? '');
   etds_qc_purge_session($sessionId, $user);
-  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=session&session=' . urlencode($sessionId)), 'success', 'Session purged. Metadata and audit log were retained.');
+  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?ws=intake'), 'success', 'Session purged. Metadata and audit log were retained.');
 }
 
 if ($action === 'download' && $user) {
@@ -234,7 +237,7 @@ if ($action === 'preview' && $user) {
   $file = basename((string) ($_GET['file'] ?? ''));
   $target = etds_qc_session_file($sessionId, 'uploads/original/' . $file);
   if (is_file($target)) {
-    header('Content-Type: ' . (mime_content_type($target) ?: 'application/octet-stream'));
+    header('Content-Type: ' . etds_qc_detect_mime_type($target));
     header('Content-Disposition: inline; filename="' . $file . '"');
     readfile($target);
     exit;
@@ -251,6 +254,18 @@ function etds_qc_render_flash(?array $flash): void {
   echo '<div class="' . $class . '">' . etds_qc_h((string) ($flash['message'] ?? '')) . '</div>';
 }
 
+function etds_qc_nav_icon(string $name): string {
+  return match ($name) {
+    'overview' => '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10.5V20h14v-9.5"/><path d="M9 20v-5h6v5"/></svg>',
+    'intake' => '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5h16M7 4h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/><path d="M9 11h6M9 15h4"/></svg>',
+    'extraction' => '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v10"/><path d="m8 10 4 4 4-4"/><path d="M5 18h14"/></svg>',
+    'bench' => '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h12v4H6z"/><path d="M9 8v3.5a3 3 0 0 1-.88 2.12L6 15.75V19h12v-3.25l-2.12-2.13A3 3 0 0 1 15 11.5V8"/></svg>',
+    'excel' => '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v13H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><path d="M14 3v6h6"/><path d="m9 11 6 6M15 11l-6 6"/></svg>',
+    'logout' => '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="M10 17l5-5-5-5"/><path d="M15 12H4"/></svg>',
+    default => '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/></svg>',
+  };
+}
+
 if ($view === 'login'):
 ?>
 <main id="main-content">
@@ -258,7 +273,7 @@ if ($view === 'login'):
     <div class="etds-login-card">
       <div class="eyebrow">Internal Access</div>
       <h1>e-TDS QC Tool</h1>
-      <p class="etds-subtitle">Data Quality Validation, Reconciliation &amp; Excel Preparation</p>
+      <p class="etds-subtitle">AI-Driven Data Health Check</p>
       <?php etds_qc_render_flash($flash); ?>
       <form method="post" action="<?= etds_qc_h(site_href('/fintech/etds-qc/')) ?>">
         <?= csrf_field() ?>
@@ -306,6 +321,10 @@ $counts = [
   'ready' => count(array_filter($sessionStates, static fn(array $state): bool => ($state['key'] ?? '') === 'ready')),
   'completed' => count(array_filter($sessionStates, static fn(array $state): bool => ($state['key'] ?? '') === 'completed')),
 ];
+
+require __DIR__ . '/render_app_v2.php';
+require_once dirname(__DIR__, 2) . '/includes/footer.php';
+exit;
 ?>
 <main id="main-content">
   <section class="container etds-shell">
@@ -314,9 +333,9 @@ $counts = [
     <?php if ($view === 'create'): ?>
       <div class="etds-page-head">
         <div>
-          <div class="eyebrow">Create QC Session</div>
-          <h1>New Data Quality Session</h1>
-          <p class="etds-subtitle">Generate a session ID, capture client metadata, and start the TDS command centre workflow.</p>
+          <div class="eyebrow">Create Diagnostic Session</div>
+          <h1>New e-TDS Doctor Session</h1>
+          <p class="etds-subtitle">Generate a session ID, capture client metadata, and start the diagnostic workflow.</p>
         </div>
         <div class="etds-chip-row">
           <span class="etds-chip">Operator: <?= etds_qc_h((string) ($user['name'] ?? '')) ?></span>
@@ -382,7 +401,7 @@ $counts = [
       ?>
       <div class="etds-page-head">
         <div>
-          <div class="eyebrow">QC Session</div>
+          <div class="eyebrow">Diagnostic Session</div>
           <h1><?= etds_qc_h((string) $activeSession['session_id']) ?> <span class="etds-muted"><?= etds_qc_h((string) $activeSession['client_name']) ?></span></h1>
           <p class="etds-subtitle"><?= etds_qc_h((string) $activeSession['tan']) ?> · FY <?= etds_qc_h((string) $activeSession['financial_year']) ?> · <?= etds_qc_h((string) $activeSession['quarter']) ?> · <?= etds_qc_h((string) $activeSession['return_type']) ?></p>
           <div class="etds-chip-row" style="margin-top:12px;">
@@ -392,9 +411,9 @@ $counts = [
         </div>
         <div>
           <div class="etds-score-row">
-            <span class="etds-status-chip" data-tone="<?= $quality >= 95 ? 'good' : ($quality >= 80 ? 'warning' : 'critical') ?>">Quality <?= $quality ?>%</span>
+            <span class="etds-status-chip" data-tone="<?= $quality >= 95 ? 'good' : ($quality >= 80 ? 'warning' : 'critical') ?>">Data Health Score <?= $quality ?>%</span>
             <span class="etds-status-chip" data-tone="<?= $reconScore >= 95 ? 'good' : ($reconScore >= 80 ? 'warning' : 'critical') ?>">Reconciliation <?= $reconScore ?>%</span>
-            <span class="etds-status-chip" data-tone="<?= $readiness ? 'good' : 'critical' ?>">Export <?= $readiness ? 'Ready' : 'Blocked' ?></span>
+            <span class="etds-status-chip" data-tone="<?= $readiness ? 'good' : 'critical' ?>"><?= $readiness ? 'Fit for Processing' : 'Treatment Required' ?></span>
           </div>
           <div class="etds-progress"><span style="width: <?= max($quality, 5) ?>%;"></span></div>
         </div>
@@ -403,18 +422,18 @@ $counts = [
       <div class="etds-command-grid">
         <div>
           <div class="etds-panel">
-            <h3>Document Receipt</h3>
-            <p class="etds-subtitle">Upload Excel, CSV, PDF, and image files. CSV and XLSX are extracted immediately when validation runs.</p>
+            <h3>Diagnostic Intake</h3>
+            <p class="etds-subtitle">Upload Excel, CSV, PDF, and image files. CSV and XLSX are interpreted when e-TDS Doctor runs a diagnosis.</p>
             <form method="post" enctype="multipart/form-data" action="<?= etds_qc_h(site_href('/fintech/etds-qc/')) ?>">
               <?= csrf_field() ?>
               <input type="hidden" name="action" value="upload_documents">
               <input type="hidden" name="session_id" value="<?= etds_qc_h($sessionId) ?>">
               <div class="etds-field">
-                <label for="documents">Documents</label>
+                <label for="documents">Case Files</label>
                 <input id="documents" name="documents[]" type="file" multiple required>
               </div>
               <div class="etds-action-row" style="margin-top:16px;">
-                <button class="btn btn-primary" type="submit">Upload Files</button>
+                <button class="btn btn-primary" type="submit">Upload Case Files</button>
               </div>
             </form>
             <div style="margin-top:18px;">
@@ -443,11 +462,11 @@ $counts = [
                 <p class="etds-muted">No files uploaded yet.</p>
               <?php endif; ?>
             </div>
-            <form method="post" action="<?= etds_qc_h(site_href('/fintech/etds-qc/')) ?>" style="margin-top:18px;" data-ajax="reload">
+            <form method="post" action="<?= etds_qc_h(site_href('/fintech/etds-qc/')) ?>" style="margin-top:18px;">
               <?= csrf_field() ?>
               <input type="hidden" name="action" value="extract_validate">
               <input type="hidden" name="session_id" value="<?= etds_qc_h($sessionId) ?>">
-              <button class="btn btn-gold" type="submit">Run Extraction &amp; Validation</button>
+              <button class="btn btn-gold" type="submit">Run Diagnosis</button>
             </form>
           </div>
 
@@ -502,8 +521,8 @@ $counts = [
 
         <div>
           <div class="etds-panel">
-            <h2>Error Queue</h2>
-            <p class="etds-subtitle">Only problematic records appear here. Correct records stay out of the way.</p>
+            <h2>Doctor's Findings</h2>
+            <p class="etds-subtitle">Only health issues appear here. Clean records stay out of the way.</p>
             <?php
             $visibleIssues = 0;
             foreach (($validatedData['records'] ?? []) as $record):
@@ -515,12 +534,12 @@ $counts = [
             ?>
               <article class="etds-issue-card" data-severity="<?= etds_qc_h((string) $issue['severity']) ?>">
                 <div class="etds-chip-row" style="margin-bottom:10px;">
-                  <span class="etds-status-chip" data-tone="<?= $issue['severity'] === 'critical' ? 'critical' : 'warning' ?>"><?= etds_qc_h((string) strtoupper((string) $issue['severity'])) ?></span>
+                  <span class="etds-status-chip" data-tone="<?= $issue['severity'] === 'critical' ? 'critical' : 'warning' ?>"><?= etds_qc_h($issue['severity'] === 'critical' ? 'Critical Issue' : 'Moderate Issue') ?></span>
                   <span class="etds-chip"><?= etds_qc_h((string) $record['record_id']) ?></span>
                 </div>
                 <h4><?= etds_qc_h((string) $issue['message']) ?></h4>
                 <p><strong>Deductee:</strong> <?= etds_qc_h((string) ($record['normalized']['deductee_name'] ?? 'Unknown')) ?> · <strong>PAN:</strong> <?= etds_qc_h((string) ($record['normalized']['pan'] ?? '')) ?></p>
-                <p><strong>Suggested correction:</strong> <?= etds_qc_h((string) $issue['suggested_correction']) ?></p>
+                <p><strong>Treatment suggestion:</strong> <?= etds_qc_h((string) $issue['suggested_correction']) ?></p>
                 <div class="etds-issue-actions">
                   <?php foreach (['resolved' => 'Mark Resolved', 'accepted' => 'Accept', 'ignored' => 'Ignore'] as $statusValue => $label): ?>
                     <form class="etds-inline-form" method="post" action="<?= etds_qc_h(site_href('/fintech/etds-qc/')) ?>" data-ajax="reload">
@@ -562,19 +581,19 @@ $counts = [
             endforeach;
             ?>
             <?php if ($visibleIssues === 0): ?>
-              <div class="etds-empty">No open issues are currently in the queue.</div>
+              <div class="etds-empty">Diagnosis complete. No open health issues are currently in the queue.</div>
             <?php endif; ?>
           </div>
         </div>
 
         <div>
           <div class="etds-panel">
-            <h3>Summary</h3>
+            <h3>Case Summary</h3>
             <ul class="etds-mini-list">
               <li><span>Total Records</span><strong><?= etds_qc_h((string) ($validatedData['summary']['total_records'] ?? 0)) ?></strong></li>
-              <li><span>Passed</span><strong><?= etds_qc_h((string) ($validatedData['summary']['passed_records'] ?? 0)) ?></strong></li>
-              <li><span>Failed</span><strong><?= etds_qc_h((string) ($validatedData['summary']['failed_records'] ?? 0)) ?></strong></li>
-              <li><span>Warnings</span><strong><?= etds_qc_h((string) ($validatedData['summary']['warning_records'] ?? 0)) ?></strong></li>
+              <li><span>Fit for Processing</span><strong><?= etds_qc_h((string) ($validatedData['summary']['passed_records'] ?? 0)) ?></strong></li>
+              <li><span>Critical Issues</span><strong><?= etds_qc_h((string) ($validatedData['summary']['failed_records'] ?? 0)) ?></strong></li>
+              <li><span>Moderate Issues</span><strong><?= etds_qc_h((string) ($validatedData['summary']['warning_records'] ?? 0)) ?></strong></li>
               <li><span>Source Columns</span><strong><?= etds_qc_h((string) count($sourceData['source_columns'] ?? [])) ?></strong></li>
             </ul>
           </div>
@@ -600,16 +619,16 @@ $counts = [
           </div>
 
           <div class="etds-panel" id="export">
-            <h3>Export Readiness</h3>
-            <p class="etds-subtitle">Export is allowed only when critical validation issues are closed and reconciliation difference is zero.</p>
+            <h3>Fit for Processing</h3>
+            <p class="etds-subtitle">Processing output is allowed only when critical health issues are closed and reconciliation difference is zero.</p>
             <div class="etds-chip-row" style="margin-bottom:16px;">
-              <span class="etds-status-chip" data-tone="<?= $readiness ? 'good' : 'critical' ?>"><?= $readiness ? 'Ready for Export' : 'Blocked' ?></span>
+              <span class="etds-status-chip" data-tone="<?= $readiness ? 'good' : 'critical' ?>"><?= $readiness ? 'Fit for Processing' : 'Treatment Required' ?></span>
             </div>
             <form method="post" action="<?= etds_qc_h(site_href('/fintech/etds-qc/')) ?>" data-ajax="reload">
               <?= csrf_field() ?>
               <input type="hidden" name="action" value="export_xlsx">
               <input type="hidden" name="session_id" value="<?= etds_qc_h($sessionId) ?>">
-              <button class="btn btn-primary" type="submit">Generate Clean Excel</button>
+              <button class="btn btn-primary" type="submit">Generate Processing Excel</button>
             </form>
             <?php if (!empty($exportFiles)): ?>
               <ul class="etds-mini-list" style="margin-top:16px;">
@@ -641,9 +660,9 @@ $counts = [
     <?php else: ?>
       <div class="etds-page-head">
         <div>
-          <div class="eyebrow">Data Quality Command Centre</div>
+          <div class="eyebrow">e-TDS Doctor Command Centre</div>
           <h1>e-TDS QC Tool Dashboard</h1>
-          <p class="etds-subtitle">Internal intake, validation, reconciliation, and Excel preparation for TDS processing operations.</p>
+          <p class="etds-subtitle">AI-Driven Data Health Check for TDS intake, diagnosis, reconciliation, and processing preparation.</p>
         </div>
         <div class="etds-action-row">
           <a class="btn btn-primary" href="<?= etds_qc_h(site_href('/fintech/etds-qc/?view=create')) ?>">New Session</a>
@@ -657,9 +676,9 @@ $counts = [
 
       <div class="etds-grid etds-dashboard-grid">
         <div class="etds-stat"><strong><?= $counts['sessions'] ?></strong><span>Sessions Created</span></div>
-        <div class="etds-stat"><strong><?= $counts['validation'] ?></strong><span>Pending Validation</span></div>
+        <div class="etds-stat"><strong><?= $counts['validation'] ?></strong><span>Pending Diagnosis</span></div>
         <div class="etds-stat"><strong><?= $counts['reconciliation'] ?></strong><span>Pending Reconciliation</span></div>
-        <div class="etds-stat"><strong><?= $counts['ready'] ?></strong><span>Ready For Export</span></div>
+        <div class="etds-stat"><strong><?= $counts['ready'] ?></strong><span>Fit for Processing</span></div>
         <div class="etds-stat"><strong><?= $counts['completed'] ?></strong><span>Completed</span></div>
       </div>
 
@@ -667,7 +686,7 @@ $counts = [
         <div class="etds-panel">
           <h2>Quick Actions</h2>
           <div class="etds-action-row" style="margin-top:16px;">
-            <a class="btn btn-primary" href="<?= etds_qc_h(site_href('/fintech/etds-qc/?view=create')) ?>">Create QC Session</a>
+            <a class="btn btn-primary" href="<?= etds_qc_h(site_href('/fintech/etds-qc/?view=create')) ?>">Create Diagnostic Session</a>
             <?php if (!empty($sessions)): ?>
               <a class="btn btn-outline" href="<?= etds_qc_h(site_href('/fintech/etds-qc/?view=session&session=' . urlencode((string) $sessions[0]['session_id']))) ?>">Continue Latest Session</a>
             <?php endif; ?>
@@ -697,7 +716,7 @@ $counts = [
                   <th>Client</th>
                   <th>Return</th>
                   <th>Status</th>
-                  <th>Quality</th>
+                  <th>Data Health</th>
                   <th>Reconciliation</th>
                   <th>Action</th>
                 </tr>
@@ -725,3 +744,14 @@ $counts = [
 </main>
 <script src="<?= etds_qc_h(site_href('/fintech/etds-qc/assets/js/etds-qc.js')) ?>"></script>
 <?php require_once dirname(__DIR__, 2) . '/includes/footer.php'; ?>
+<?php
+} catch (Throwable $exception) {
+  etds_qc_log_runtime_error('index.php', $exception);
+  if (!headers_sent()) {
+    etds_qc_flash('error', 'The request could not be completed. Please try again or contact support.');
+    header('Location: ' . site_href('/fintech/etds-qc/'));
+    exit;
+  }
+  throw $exception;
+}
+?>
