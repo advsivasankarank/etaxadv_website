@@ -38,13 +38,19 @@ document.addEventListener('submit', async function (event) {
         'X-Requested-With': 'XMLHttpRequest'
       }
     });
+    const contentType = response.headers.get('content-type') || '';
+    if (!contentType.includes('application/json')) {
+      HTMLFormElement.prototype.submit.call(form);
+      return;
+    }
     const payload = await response.json();
     if (!response.ok || !payload.ok) {
       throw new Error(payload.message || 'Request failed.');
     }
     window.location.href = payload.redirect || window.location.href;
   } catch (error) {
-    window.alert(error instanceof Error ? error.message : 'Request failed.');
+    HTMLFormElement.prototype.submit.call(form);
+    return;
   } finally {
     if (submitButton) {
       submitButton.disabled = false;

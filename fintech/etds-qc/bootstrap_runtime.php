@@ -102,6 +102,23 @@ function etds_qc_write_json(string $file, mixed $payload): void {
   }
 }
 
+function etds_qc_detect_mime_type(string $path): string {
+  if (function_exists('mime_content_type')) {
+    $detected = @mime_content_type($path);
+    if (is_string($detected) && $detected !== '') {
+      return $detected;
+    }
+  }
+  if (class_exists('finfo')) {
+    $finfo = new finfo(FILEINFO_MIME_TYPE);
+    $detected = $finfo->file($path);
+    if (is_string($detected) && $detected !== '') {
+      return $detected;
+    }
+  }
+  return 'application/octet-stream';
+}
+
 function etds_qc_config(): array {
   $config = etds_qc_load_json(ETDS_QC_CONFIG_FILE, []);
   return is_array($config) ? $config : [];
@@ -166,6 +183,15 @@ function etds_qc_session_file(string $sessionId, string $fileName): string {
   return etds_qc_session_dir($sessionId) . '/' . $fileName;
 }
 
+function etds_qc_ensure_session_structure(string $sessionId): void {
+  foreach (['', 'uploads', 'uploads/original', 'output', 'audit', 'logs'] as $path) {
+    $target = $path === '' ? etds_qc_session_dir($sessionId) : etds_qc_session_file($sessionId, $path);
+    if (!is_dir($target)) {
+      mkdir($target, 0775, true);
+    }
+  }
+}
+
 function etds_qc_all_sessions(): array {
   $items = [];
   foreach (glob(ETDS_QC_SESSIONS_ROOT . '/QC-*', GLOB_ONLYDIR) ?: [] as $directory) {
@@ -182,7 +208,7 @@ function etds_qc_session_state(array $session): array {
   $sessionId = (string) ($session['session_id'] ?? '');
   $status = (string) ($session['status'] ?? 'draft');
   if ($sessionId === '') {
-    return ['key' => 'pending_validation', 'label' => 'Pending Validation'];
+    return ['key' => 'pending_validation', 'label' => 'Pending Diagnosis'];
   }
   if (in_array($status, ['downloaded', 'archived', 'purged'], true)) {
     return ['key' => 'completed', 'label' => ucfirst($status)];
@@ -196,18 +222,18 @@ function etds_qc_session_state(array $session): array {
   $difference = $reconciliation['summary']['difference'] ?? null;
   $hasReconciliation = !empty($reconciliation['summary']) || !empty($reconciliation['exceptions']);
   if ($exportFiles !== []) {
-    return ['key' => 'ready', 'label' => 'Export Generated'];
+    return ['key' => 'ready', 'label' => 'Processing Pack Generated'];
   }
   if (etds_qc_export_readiness($sessionId)) {
-    return ['key' => 'ready', 'label' => 'Ready For Export'];
+    return ['key' => 'ready', 'label' => 'Fit for Processing'];
   }
   if ($totalRecords === 0 || $qualityScore < $threshold) {
-    return ['key' => 'pending_validation', 'label' => 'Pending Validation'];
+    return ['key' => 'pending_validation', 'label' => 'Pending Diagnosis'];
   }
   if (!$hasReconciliation || $difference === null || (float) $difference !== 0.0) {
     return ['key' => 'pending_reconciliation', 'label' => 'Pending Reconciliation'];
   }
-  return ['key' => 'pending_validation', 'label' => 'Pending Review'];
+  return ['key' => 'pending_validation', 'label' => 'Doctor Review Pending'];
 }
 
 function etds_qc_find_session(string $sessionId): ?array {
@@ -231,9 +257,7 @@ function etds_qc_generate_session_id(): string {
 
 function etds_qc_create_session(array $payload, array $user): array {
   $sessionId = etds_qc_generate_session_id();
-  foreach (['uploads/original', 'output', 'audit', 'logs'] as $path) {
-    @mkdir(etds_qc_session_file($sessionId, $path), 0775, true);
-  }
+  etds_qc_ensure_session_structure($sessionId);
   $session = [
     'session_id' => $sessionId,
     'client_name' => clean_input((string) ($payload['client_name'] ?? ''), 150),
@@ -348,13 +372,35 @@ function etds_qc_column_index(string $letters): int {
   return $index - 1;
 }
 
-function etds_qc_extract_xlsx(string $path): array {
+function etds_qc_xlsx_cell_text(SimpleXMLElement $cell, array $sharedStrings): string {
+  $type = (string) ($cell['t'] ?? '');
+  if ($type === 's') {
+    $index = (int) ($cell->v ?? 0);
+    return trim((string) ($sharedStrings[$index] ?? ''));
+  }
+  if ($type === 'inlineStr' && isset($cell->is)) {
+    $parts = [];
+    foreach ($cell->is->children() as $child) {
+      if ($child->getName() === 't') {
+        $parts[] = (string) $child;
+        continue;
+      }
+      if ($child->getName() === 'r') {
+        $parts[] = (string) ($child->t ?? '');
+      }
+    }
+    return trim(implode('', $parts));
+  }
+  return trim((string) ($cell->v ?? ''));
+}
+
+function etds_qc_extract_xlsx_rows(string $path): array {
   if (!class_exists('ZipArchive')) {
-    return ['columns' => [], 'records' => []];
+    return [];
   }
   $zip = new ZipArchive();
   if ($zip->open($path) !== true) {
-    return ['columns' => [], 'records' => []];
+    return [];
   }
   $sharedStrings = [];
   $sharedXml = $zip->getFromName('xl/sharedStrings.xml');
@@ -362,18 +408,26 @@ function etds_qc_extract_xlsx(string $path): array {
     $xml = @simplexml_load_string($sharedXml);
     if ($xml) {
       foreach ($xml->si as $item) {
-        $sharedStrings[] = isset($item->t) ? (string) $item->t : '';
+        if (isset($item->t)) {
+          $sharedStrings[] = trim((string) $item->t);
+          continue;
+        }
+        $parts = [];
+        foreach ($item->r as $run) {
+          $parts[] = (string) ($run->t ?? '');
+        }
+        $sharedStrings[] = trim(implode('', $parts));
       }
     }
   }
   $sheetXml = $zip->getFromName('xl/worksheets/sheet1.xml');
   $zip->close();
   if (!is_string($sheetXml) || $sheetXml === '') {
-    return ['columns' => [], 'records' => []];
+    return [];
   }
   $xml = @simplexml_load_string($sheetXml);
   if (!$xml || !isset($xml->sheetData)) {
-    return ['columns' => [], 'records' => []];
+    return [];
   }
   $rows = [];
   foreach ($xml->sheetData->row as $rowNode) {
@@ -381,15 +435,143 @@ function etds_qc_extract_xlsx(string $path): array {
     foreach ($rowNode->c as $cell) {
       preg_match('/([A-Z]+)/', (string) ($cell['r'] ?? 'A'), $m);
       $index = etds_qc_column_index($m[1] ?? 'A');
-      $type = (string) ($cell['t'] ?? '');
-      $cells[$index] = $type === 's' ? ($sharedStrings[(int) ($cell->v ?? 0)] ?? '') : (string) ($cell->v ?? '');
+      $cells[$index] = etds_qc_xlsx_cell_text($cell, $sharedStrings);
     }
     if ($cells !== []) {
       ksort($cells);
-      $rows[] = $cells;
+      $rows[] = ['row_number' => (int) ($rowNode['r'] ?? (count($rows) + 1)), 'cells' => $cells];
     }
   }
-  return etds_qc_tabular_rows_to_records($rows);
+  return $rows;
+}
+
+function etds_qc_extract_salary_register_rows(array $rows): array {
+  $records = [];
+  $current = null;
+  $headerDetected = false;
+
+  $finalize = static function (?array $record) use (&$records): void {
+    if (!$record) {
+      return;
+    }
+    $name = trim((string) ($record['deductee_name'] ?? ''));
+    $pan = strtoupper(trim((string) ($record['pan'] ?? '')));
+    $amount = trim((string) ($record['tds_amount'] ?? ''));
+    if ($name === '' && $pan === '' && $amount === '') {
+      return;
+    }
+    $record['deductee_name'] = preg_replace('/\s+/', ' ', $name) ?? $name;
+    $records[] = $record;
+  };
+
+  foreach ($rows as $row) {
+    $cells = (array) ($row['cells'] ?? []);
+    $a = trim((string) ($cells[0] ?? ''));
+    $b = trim((string) ($cells[1] ?? ''));
+    $c = trim((string) ($cells[2] ?? ''));
+    $d = trim((string) ($cells[3] ?? ''));
+    $e = trim((string) ($cells[4] ?? ''));
+    $rowText = strtolower(trim(implode(' ', array_filter([$a, $b, $c, $d, $e], static fn(string $value): bool => $value !== ''))));
+
+    if (!$headerDetected) {
+      if (strtoupper($a) === 'NAME' && strtoupper($b) === 'PAN') {
+        $headerDetected = true;
+      }
+      continue;
+    }
+
+    if ($rowText === '') {
+      $finalize($current);
+      $current = null;
+      continue;
+    }
+
+    $panCandidate = strtoupper(str_replace(' ', '', $b));
+    $startsRecord = $a !== ''
+      && !in_array(strtoupper($a), ['NAME', 'PAN', 'TAN'], true)
+      && preg_match('/^[A-Z]{5}[0-9]{4}[A-Z]$/', $panCandidate) === 1;
+    if ($startsRecord) {
+      $finalize($current);
+      $current = [
+        'deductee_name' => $a,
+        'pan' => $panCandidate,
+        'tds_amount' => '',
+        'invoice_number' => '',
+        'challan_reference' => '',
+      ];
+      continue;
+    }
+
+    if ($current === null) {
+      continue;
+    }
+
+    if ($a !== '' && $current['pan'] !== '' && $b === '' && stripos($rowText, 'tds') === false) {
+      $current['deductee_name'] = trim($current['deductee_name'] . ' ' . $a);
+    }
+
+    if (stripos($rowText, 'tds') !== false) {
+      $amount = '';
+      foreach ([$e, $d, $c] as $candidate) {
+        if ($candidate !== '' && is_numeric(str_replace(',', '', $candidate))) {
+          $amount = str_replace(',', '', $candidate);
+          break;
+        }
+      }
+      $current['tds_amount'] = $amount;
+    }
+  }
+
+  $finalize($current);
+
+  if ($records === []) {
+    return ['columns' => [], 'records' => []];
+  }
+
+  return [
+    'columns' => ['deductee_name', 'pan', 'tds_amount', 'invoice_number', 'challan_reference'],
+    'records' => $records,
+  ];
+}
+
+function etds_qc_extract_xlsx(string $path): array {
+  $rows = etds_qc_extract_xlsx_rows($path);
+  if ($rows === []) {
+    return ['columns' => [], 'records' => []];
+  }
+
+  $salaryRegister = etds_qc_extract_salary_register_rows($rows);
+  if (($salaryRegister['records'] ?? []) !== []) {
+    return $salaryRegister;
+  }
+
+  $flatRows = [];
+  foreach ($rows as $row) {
+    $flatRows[] = (array) ($row['cells'] ?? []);
+  }
+  return etds_qc_tabular_rows_to_records($flatRows);
+}
+
+function etds_qc_default_deduction_date(string $sessionId): string {
+  $session = etds_qc_find_session($sessionId);
+  if (!$session) {
+    return '';
+  }
+  $financialYear = (string) ($session['financial_year'] ?? '');
+  $quarter = strtoupper((string) ($session['quarter'] ?? ''));
+  if (!preg_match('/^(\d{4})-(\d{2})$/', $financialYear, $match)) {
+    return '';
+  }
+  $startYear = (int) $match[1];
+  $endYear = (int) ('20' . $match[2]);
+
+  return match ($quarter) {
+    'Q1' => sprintf('%04d-06-30', $startYear),
+    'Q2' => sprintf('%04d-09-30', $startYear),
+    'Q3' => sprintf('%04d-12-31', $startYear),
+    'Q4' => sprintf('%04d-03-31', $endYear),
+    default => '',
+  };
 }
 
 function etds_qc_extract_pdf_text(string $path): array {
@@ -438,6 +620,7 @@ function etds_qc_reload_source_data(string $sessionId, array $user): array {
   $allColumns = [];
   $allRecords = [];
   $recordCount = 0;
+  $defaultDeductionDate = etds_qc_default_deduction_date($sessionId);
   foreach ($documents as &$document) {
     $extension = strtolower((string) ($document['extension'] ?? ''));
     $path = etds_qc_session_file($sessionId, 'uploads/original/' . ($document['stored_name'] ?? ''));
@@ -460,12 +643,23 @@ function etds_qc_reload_source_data(string $sessionId, array $user): array {
       $document['extraction_status'] = 'stored_only';
     }
     $document['raw_text_excerpt'] = mb_substr((string) ($extracted['raw_text'] ?? ''), 0, 500);
+    $extractedRecords = is_array($extracted['records'] ?? null) ? $extracted['records'] : [];
+    foreach ($extractedRecords as &$record) {
+      if ($defaultDeductionDate !== '' && trim((string) ($record['deduction_date'] ?? '')) === '') {
+        $record['deduction_date'] = $defaultDeductionDate;
+      }
+    }
+    unset($record);
+    $extracted['records'] = $extractedRecords;
     foreach (($extracted['columns'] ?? []) as $column) {
       if (!in_array($column, $allColumns, true)) {
         $allColumns[] = $column;
       }
     }
-    foreach (($extracted['records'] ?? []) as $index => $record) {
+    if ($defaultDeductionDate !== '' && !in_array('deduction_date', $allColumns, true) && $extractedRecords !== []) {
+      $allColumns[] = 'deduction_date';
+    }
+    foreach ($extractedRecords as $index => $record) {
       $recordCount++;
       $allRecords[] = ['record_id' => 'REC-' . str_pad((string) $recordCount, 4, '0', STR_PAD_LEFT), 'source_file_id' => $document['file_id'], 'row_number' => $index + 2] + $record;
     }
@@ -488,8 +682,9 @@ function etds_qc_date_in_financial_year(DateTimeInterface $date, string $financi
     return true;
   }
   $start = new DateTimeImmutable($m[1] . '-04-01', new DateTimeZone('Asia/Calcutta'));
-  $end = new DateTimeImmutable(('20' . $m[2]) . '-03-31', new DateTimeZone('Asia/Calcutta'));
-  return $date >= $start && $date <= $end;
+  $end = new DateTimeImmutable(('20' . $m[2]) . '-03-31 23:59:59', new DateTimeZone('Asia/Calcutta'));
+  $normalized = new DateTimeImmutable($date->format('Y-m-d') . ' 12:00:00', new DateTimeZone('Asia/Calcutta'));
+  return $normalized >= $start && $normalized <= $end;
 }
 
 function etds_qc_calculate_quality_score(array $records): int {
@@ -539,7 +734,7 @@ function etds_qc_validate_session(string $sessionId, array $user): array {
     if ($name === '') { $issues[] = etds_qc_issue('missing_name', 'critical', 'deductee_name', 'Deductee name is required.', 'Update the source record.'); }
     if ($pan === '') { $issues[] = etds_qc_issue('missing_pan', 'critical', 'pan', 'PAN is required.', 'Enter the deductee PAN.'); }
     elseif (!preg_match('/^[A-Z]{5}[0-9]{4}[A-Z]$/', $pan)) { $issues[] = etds_qc_issue('invalid_pan', 'critical', 'pan', 'PAN must match AAAAA9999A format.', 'Correct the PAN.'); }
-    if ($amountRaw === '' || !is_numeric($amountRaw) || (float) $amountRaw <= 0) { $issues[] = etds_qc_issue('invalid_amount', 'critical', 'tds_amount', 'Amount must be numeric and greater than zero.', 'Correct the amount value.'); }
+    if ($amountRaw === '' || !is_numeric($amountRaw) || (float) $amountRaw < 0) { $issues[] = etds_qc_issue('invalid_amount', 'critical', 'tds_amount', 'Amount must be numeric and zero or greater.', 'Correct the amount value.'); }
     if ($date === '') { $issues[] = etds_qc_issue('missing_date', 'critical', 'deduction_date', 'Deduction date is required.', 'Enter the deduction date.'); }
     else {
       $dateObj = date_create($date);
@@ -858,4 +1053,17 @@ function etds_qc_run_auto_purge(): void {
       etds_qc_purge_session((string) $session['session_id'], ['id' => 'system', 'name' => 'System']);
     }
   }
+}
+
+function etds_qc_log_runtime_error(string $context, Throwable $exception): void {
+  $logFile = ETDS_QC_STORAGE_ROOT . '/runtime-error.log';
+  $line = sprintf(
+    "[%s] %s: %s in %s:%d\n",
+    etds_qc_now(),
+    $context,
+    $exception->getMessage(),
+    $exception->getFile(),
+    $exception->getLine()
+  );
+  @file_put_contents($logFile, $line, FILE_APPEND | LOCK_EX);
 }
