@@ -3,12 +3,32 @@ document.addEventListener('click', function (event) {
   if (!(target instanceof HTMLElement)) {
     return;
   }
+  const sidebarToggle = target.closest('[data-sidebar-toggle]');
+  if (sidebarToggle) {
+    document.body.classList.add('is-sidebar-open');
+    return;
+  }
+  const sidebarClose = target.closest('[data-sidebar-close]');
+  if (sidebarClose) {
+    document.body.classList.remove('is-sidebar-open');
+    return;
+  }
   if (target.matches('[data-confirm]')) {
     const message = target.getAttribute('data-confirm') || 'Are you sure?';
     if (!window.confirm(message)) {
       event.preventDefault();
     }
   }
+});
+
+document.addEventListener('keydown', function (event) {
+  if (event.key === 'Escape') {
+    document.body.classList.remove('is-sidebar-open');
+  }
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+  document.body.classList.remove('is-sidebar-open');
 });
 
 document.addEventListener('submit', async function (event) {
