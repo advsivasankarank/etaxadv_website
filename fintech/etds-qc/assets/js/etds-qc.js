@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', function () {
     cell.dataset.status = status;
     cell.classList.remove('is-valid', 'is-warning', 'is-error', 'is-corrected', 'is-ai_suggested', 'is-manual_override', 'is-ignored');
     cell.classList.add('is-' + status);
-    const label = cell.querySelector('.qc-sheet-status');
+    const label = cell.querySelector('.cell__status');
     if (label instanceof HTMLElement) {
       label.textContent = statusLabel(status);
     }
@@ -215,7 +215,7 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
 
-    const cell = editor.closest('.qc-sheet-cell');
+    const cell = editor.closest('.cell');
     try {
       const result = await postWorkspace({
         action: 'workspace_edit',
@@ -332,7 +332,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const value = applySuggestion.getAttribute('data-value') || '';
       const reason = applySuggestion.getAttribute('data-reason') || 'Applied AI suggestion';
       const editor = grid.querySelector('[data-cell-editor][data-record-id="' + CSS.escape(recordId) + '"][data-field="' + CSS.escape(field) + '"]');
-      const cell = editor?.closest('.qc-sheet-cell') || null;
+      const cell = editor?.closest('.cell') || null;
       try {
         await postWorkspace({
           action: 'workspace_apply_suggestion',
@@ -346,7 +346,7 @@ document.addEventListener('DOMContentLoaded', function () {
           editor.setAttribute('data-original-value', value);
         }
         setCellStatus(cell, 'corrected');
-        applySuggestion.closest('.qc-sheet-suggestion')?.remove();
+        applySuggestion.closest('.cell__suggestion')?.remove();
       } catch (error) {
         window.alert(error instanceof Error ? error.message : 'Suggestion could not be applied.');
       }
@@ -358,7 +358,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const recordId = ignoreSuggestion.getAttribute('data-record-id') || '';
       const field = ignoreSuggestion.getAttribute('data-field') || '';
       const editor = grid.querySelector('[data-cell-editor][data-record-id="' + CSS.escape(recordId) + '"][data-field="' + CSS.escape(field) + '"]');
-      const cell = editor?.closest('.qc-sheet-cell') || null;
+      const cell = editor?.closest('.cell') || null;
       try {
         await postWorkspace({
           action: 'workspace_ignore_suggestion',
@@ -366,74 +366,16 @@ document.addEventListener('DOMContentLoaded', function () {
           field: field
         });
         setCellStatus(cell, 'ignored');
-        ignoreSuggestion.closest('.qc-sheet-suggestion')?.remove();
+        ignoreSuggestion.closest('.cell__suggestion')?.remove();
       } catch (error) {
         window.alert(error instanceof Error ? error.message : 'Suggestion could not be ignored.');
       }
       return;
     }
 
-    const replaceButton = target.closest('[data-sheet-replace-run]');
-    if (replaceButton instanceof HTMLElement) {
-      const find = grid.querySelector('[data-sheet-find]');
-      const replace = grid.querySelector('[data-sheet-replace-value]');
-      const findValue = find instanceof HTMLInputElement ? find.value : '';
-      const replaceValue = replace instanceof HTMLInputElement ? replace.value : '';
-      if (!findValue) {
-        return;
-      }
-      Array.from(grid.querySelectorAll('[data-cell-editor]')).forEach(function (editor) {
-        if (!(editor instanceof HTMLElement) || !editor.offsetParent) {
-          return;
-        }
-        const current = editor.textContent || '';
-        if (!current.includes(findValue)) {
-          return;
-        }
-        editor.textContent = current.split(findValue).join(replaceValue);
-        saveCell(editor, 'manual_override', 'Search and replace');
-      });
-      return;
-    }
-
-    const bulkApply = target.closest('[data-bulk-apply]');
-    if (bulkApply instanceof HTMLElement) {
-      const field = grid.querySelector('[data-bulk-field]');
-      const value = grid.querySelector('[data-bulk-value]');
-      const fieldValue = field instanceof HTMLSelectElement ? field.value : '';
-      const nextValue = value instanceof HTMLInputElement ? value.value : '';
-      const rows = selectedRows();
-      if (!fieldValue || rows.length === 0) {
-        window.alert('Select rows and choose a field for bulk edit.');
-        return;
-      }
-      try {
-        await postWorkspace({
-          action: 'workspace_bulk_edit',
-          field: fieldValue,
-          value: nextValue,
-          record_ids: rows,
-          reason: 'Bulk edit'
-        });
-        rows.forEach(function (recordId) {
-          const editor = grid.querySelector('[data-cell-editor][data-record-id="' + CSS.escape(recordId) + '"][data-field="' + CSS.escape(fieldValue) + '"]');
-          const cell = editor?.closest('.qc-sheet-cell') || null;
-          if (editor instanceof HTMLElement) {
-            editor.textContent = nextValue;
-            editor.setAttribute('data-original-value', nextValue);
-          }
-          setCellStatus(cell, 'manual_override');
-        });
-      } catch (error) {
-        window.alert(error instanceof Error ? error.message : 'Bulk edit failed.');
-      }
-      return;
-    }
-
-    const sortButton = target.closest('.qc-sheet-sort');
+    const sortButton = target.closest('th[data-sort-field]');
     if (sortButton instanceof HTMLElement) {
-      const th = sortButton.closest('th');
-      const field = th?.getAttribute('data-sort-field') || '';
+      const field = sortButton.getAttribute('data-sort-field') || '';
       if (!field) {
         return;
       }
@@ -489,28 +431,4 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
   }
-
-  let resizing = null;
-  grid.querySelectorAll('[data-col-resize]').forEach(function (handle) {
-    handle.addEventListener('mousedown', function (event) {
-      const th = handle.closest('th');
-      if (!(th instanceof HTMLElement)) {
-        return;
-      }
-      resizing = { th: th, startX: event.clientX, startWidth: th.offsetWidth };
-      event.preventDefault();
-    });
-  });
-
-  document.addEventListener('mousemove', function (event) {
-    if (!resizing) {
-      return;
-    }
-    const width = Math.max(120, resizing.startWidth + (event.clientX - resizing.startX));
-    resizing.th.style.width = width + 'px';
-  });
-
-  document.addEventListener('mouseup', function () {
-    resizing = null;
-  });
 });
