@@ -1,104 +1,51 @@
-*
-!/.gitignore
-!/.htaccess
-!/about.php
-!/client-support.php
-!/contact.php
-!/digital-signature.php
-!/e-task.php
-!/ekanakan.php
-!/fintech-tools.php
-!/fintech/
-/fintech/*
-!/fintech/etds-qc.php
-!/index.php
-!/privacy-policy.php
-!/services.php
-!/tools.php
-!/disclaimer.php
-!/gst-consultant-puducherry.php
-!/gst-consultant-chennai.php
-!/income-tax-consultant-puducherry.php
-!/income-tax-consultant-chennai.php
-!/tds-return-filing.php
-!/labour-law-compliance.php
-!/roc-company-compliance.php
-!/trust-society-registration.php
-!/project-report-cma.php
-!/e-hr.php
-!/e-pani.php
-!/salpro.php
-!/etax-academy.php
-!/team.php
-!/why-choose-us.php
-!/robots.txt
-!/sitemap.xml
-!/install.sql
-!/DEPLOYMENT-CHECKLIST.md
-!/assets/
-/assets/*
-!/assets/css/
-/assets/css/*
-!/assets/css/style.css
-!/assets/img/
-/assets/img/*
-!/assets/img/ekanakan.png
-!/assets/img/logo.png
-!/assets/js/
-/assets/js/*
-!/assets/js/main.js
-!/includes/
-/includes/*
-!/includes/footer.php
-!/includes/header.php
-!/includes/testimonials.php
-!/includes/security.php
-!/includes/contact-handler.php
-!/includes/trust-badges.php
-!/testimonial/
-/testimonial/*
-!/testimonial/.htaccess
-!/testimonial/config.php
-!/testimonial/install.sql
-!/testimonial/index.php
-!/testimonial/submit.php
-!/testimonial/admin/
-/testimonial/admin/*
-!/testimonial/admin/_auth.php
-!/testimonial/admin/dashboard.php
-!/testimonial/admin/edit.php
-!/testimonial/admin/login.php
-!/testimonial/admin/logout.php
-!/support/
-/support/*
-!/support/config.php
-!/support/install.sql
-!/support/_layout_header.php
-!/support/_layout_footer.php
-!/support/data/
-/support/data/*
-!/support/data/.gitkeep
-!/admin/
-/admin/*
-!/admin/enquiries.php
-!/admin/login.php
-!/team/
-/team/*
-!/team/ks-sivasankaran.php
-!/team/s-muthulakshmi.php
-!/litigation-representation.php
-!/manufacturing-compliance.php
-!/trust-ngo-advisory.php
-!/labour-law-hr-compliance.php
-!/gst-notice-response.php
-!/income-tax-notice-response.php
-!/faq.php
-!/success-stories.php
-!/content/
-/content/*
-!/content/trust-sections.php
-!/strategy/
-/strategy/*
-!/strategy/thought-leadership-plan.md
-!/strategy/google-review-strategy.md
-!/strategy/authority-roadmap.md
+# ============================================
+# e-TDSDoc V1.0 RC1 - .gitignore
+# ============================================
+
+# Runtime case data
+storage/etds-qc/cases/
+storage/etds-qc/sessions/
+
+# Runtime settings (counters, users)
+storage/etds-qc/settings/
+storage/etds-qc/users/
+
+# Logs
+storage/etds-qc/logs/
+storage/etds-qc/audit/
+*.log
+runtime-error.log
+php-error.log
+
+# Uploaded documents
+storage/etds-qc/documents/
+storage/etds-qc/uploads/
+storage/downloads/
+
+# Temporary files
+.codex-tmp/
+tmp_*
+nul
+
+# Archives
+*.zip
+
+# Unrelated projects
+backup/
+downloads/
+e-kanakan/
+e-kanakan_bef dev/
+ebal/
+ebal_1/
+ebal.etaxadv.com_old/
+support/
+tools/
+wordpress/
+
+# Unrelated files
+audit-report.html
+dev_arch
+
+# Personal files
+assets/img/ks-sivasankaran.jpg
+assets/img/sivasankaran photo.jpeg

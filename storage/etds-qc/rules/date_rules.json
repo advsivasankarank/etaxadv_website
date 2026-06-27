@@ -1,0 +1,30 @@
+[
+  {
+    "rule_id": "DAT-001",
+    "rule_name": "Deduction Date Format",
+    "category": "Date",
+    "severity": "Medium",
+    "description": "Deduction date should be in YYYY-MM-DD format when populated.",
+    "condition": { "scope": "deductee", "field": "deduction_date", "operator": "date_format_optional" },
+    "expected_result": "Date format is valid",
+    "failure_message": "Deduction date format is invalid.",
+    "suggested_treatment": "Review the source date and normalize the date pattern.",
+    "enabled": true,
+    "version": "1.0.0",
+    "effective_date": "2026-06-27"
+  },
+  {
+    "rule_id": "DAT-002",
+    "rule_name": "Deduction Date In Financial Year",
+    "category": "Financial Year",
+    "severity": "Medium",
+    "description": "Deduction date should fall inside the case financial year when available.",
+    "condition": { "scope": "deductee", "field": "deduction_date", "operator": "date_in_financial_year", "financial_year_field": "financial_year" },
+    "expected_result": "Date is inside financial year",
+    "failure_message": "Deduction date falls outside the case financial year.",
+    "suggested_treatment": "Confirm the financial year and extracted date before moving ahead.",
+    "enabled": true,
+    "version": "1.0.0",
+    "effective_date": "2026-06-27"
+  }
+]

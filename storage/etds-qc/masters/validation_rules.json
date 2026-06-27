@@ -1,0 +1,17 @@
+[
+    {
+        "code": "PAN_FORMAT",
+        "label": "PAN format validation",
+        "phase": "v3"
+    },
+    {
+        "code": "TAN_FORMAT",
+        "label": "TAN format validation",
+        "phase": "v2"
+    },
+    {
+        "code": "DATE_FORMAT",
+        "label": "Date format validation",
+        "phase": "v3"
+    }
+]

@@ -1,0 +1,16 @@
+[
+  {
+    "rule_id": "SAL-001",
+    "rule_name": "Salary Amount Positive",
+    "category": "Salary",
+    "severity": "High",
+    "description": "Extracted salary amount should be greater than zero.",
+    "condition": { "scope": "salary", "field": "amount", "operator": "positive_number" },
+    "expected_result": "Salary amount is positive",
+    "failure_message": "Salary amount is not positive.",
+    "suggested_treatment": "Inspect the extracted amount and compare it with the source row.",
+    "enabled": true,
+    "version": "1.0.0",
+    "effective_date": "2026-06-27"
+  }
+]

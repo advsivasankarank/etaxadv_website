@@ -1,0 +1,22 @@
+[
+    {
+        "code": "excel",
+        "label": "Excel"
+    },
+    {
+        "code": "pdf",
+        "label": "PDF"
+    },
+    {
+        "code": "scanned_pdf",
+        "label": "Scanned PDF"
+    },
+    {
+        "code": "image",
+        "label": "Images"
+    },
+    {
+        "code": "zip",
+        "label": "ZIP"
+    }
+]

@@ -1,0 +1,14 @@
+[
+    {
+        "code": "SAL",
+        "label": "Salary Payment"
+    },
+    {
+        "code": "CON",
+        "label": "Contract Payment"
+    },
+    {
+        "code": "PRO",
+        "label": "Professional Payment"
+    }
+]

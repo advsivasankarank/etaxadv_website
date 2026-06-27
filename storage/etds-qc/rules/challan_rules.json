@@ -1,0 +1,30 @@
+[
+  {
+    "rule_id": "CHL-001",
+    "rule_name": "Challan Reference Required",
+    "category": "Challan",
+    "severity": "High",
+    "description": "Each challan record should have a challan reference.",
+    "condition": { "scope": "challan", "field": "challan_reference", "operator": "required" },
+    "expected_result": "Challan reference exists",
+    "failure_message": "Challan reference is missing.",
+    "suggested_treatment": "Review the challan source and confirm the challan reference.",
+    "enabled": true,
+    "version": "1.0.0",
+    "effective_date": "2026-06-27"
+  },
+  {
+    "rule_id": "CHL-002",
+    "rule_name": "BSR Format",
+    "category": "Challan",
+    "severity": "Medium",
+    "description": "BSR code should contain exactly seven digits when provided.",
+    "condition": { "scope": "challan", "field": "bsr_code", "operator": "regex_optional", "pattern": "^[0-9]{7}$" },
+    "expected_result": "BSR code format is valid",
+    "failure_message": "BSR code format is invalid.",
+    "suggested_treatment": "Check the challan image or PDF and confirm the BSR code.",
+    "enabled": true,
+    "version": "1.0.0",
+    "effective_date": "2026-06-27"
+  }
+]

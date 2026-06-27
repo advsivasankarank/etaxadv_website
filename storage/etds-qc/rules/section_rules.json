@@ -1,0 +1,16 @@
+[
+  {
+    "rule_id": "SEC-001",
+    "rule_name": "Section Code In Master",
+    "category": "Section",
+    "severity": "Low",
+    "description": "Section code should exist in the section master when provided.",
+    "condition": { "scope": "challan", "field": "section_code", "operator": "in_master", "master": "sections", "master_key": "code", "optional": true },
+    "expected_result": "Section code is mapped in master",
+    "failure_message": "Section code is not present in the master repository.",
+    "suggested_treatment": "Confirm whether the extracted section code is correct and update the master if approved.",
+    "enabled": true,
+    "version": "1.0.0",
+    "effective_date": "2026-06-27"
+  }
+]

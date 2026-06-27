@@ -1,0 +1,44 @@
+[
+  {
+    "rule_id": "RET-001",
+    "rule_name": "Case TAN Required",
+    "category": "TAN",
+    "severity": "Critical",
+    "description": "A case must have a TAN before validation can proceed.",
+    "condition": { "scope": "case", "field": "tan", "operator": "required" },
+    "expected_result": "TAN is present",
+    "failure_message": "TAN is missing from the case profile.",
+    "suggested_treatment": "Complete the client profile with the correct TAN.",
+    "enabled": true,
+    "version": "1.0.0",
+    "effective_date": "2026-06-27"
+  },
+  {
+    "rule_id": "RET-002",
+    "rule_name": "Case Quarter Valid",
+    "category": "Quarter",
+    "severity": "Low",
+    "description": "Quarter should be one of Q1, Q2, Q3, or Q4.",
+    "condition": { "scope": "case", "field": "quarter", "operator": "in_list", "values": ["Q1", "Q2", "Q3", "Q4"] },
+    "expected_result": "Quarter value is valid",
+    "failure_message": "Quarter is invalid.",
+    "suggested_treatment": "Check the case profile and update the quarter.",
+    "enabled": true,
+    "version": "1.0.0",
+    "effective_date": "2026-06-27"
+  },
+  {
+    "rule_id": "RET-003",
+    "rule_name": "Financial Year Format",
+    "category": "Financial Year",
+    "severity": "Low",
+    "description": "Financial year should follow the YYYY-YY pattern.",
+    "condition": { "scope": "case", "field": "financial_year", "operator": "regex", "pattern": "^[0-9]{4}-[0-9]{2}$" },
+    "expected_result": "Financial year format is valid",
+    "failure_message": "Financial year format is invalid.",
+    "suggested_treatment": "Update the case profile with a valid financial year.",
+    "enabled": true,
+    "version": "1.0.0",
+    "effective_date": "2026-06-27"
+  }
+]

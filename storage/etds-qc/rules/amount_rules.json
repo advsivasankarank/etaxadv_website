@@ -1,0 +1,16 @@
+[
+  {
+    "rule_id": "AMT-001",
+    "rule_name": "Deductee Amount Positive",
+    "category": "Amount",
+    "severity": "High",
+    "description": "TDS amount should be greater than zero for each deductee.",
+    "condition": { "scope": "deductee", "field": "tds_amount", "operator": "positive_number" },
+    "expected_result": "TDS amount is positive",
+    "failure_message": "TDS amount is missing or not positive.",
+    "suggested_treatment": "Compare the amount against the extracted source row.",
+    "enabled": true,
+    "version": "1.0.0",
+    "effective_date": "2026-06-27"
+  }
+]

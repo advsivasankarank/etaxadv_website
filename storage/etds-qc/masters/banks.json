@@ -1,0 +1,18 @@
+[
+    {
+        "code": "SBI",
+        "label": "State Bank of India"
+    },
+    {
+        "code": "IOB",
+        "label": "Indian Overseas Bank"
+    },
+    {
+        "code": "HDFC",
+        "label": "HDFC Bank"
+    },
+    {
+        "code": "ICICI",
+        "label": "ICICI Bank"
+    }
+]

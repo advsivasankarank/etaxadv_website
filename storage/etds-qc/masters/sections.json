@@ -1,0 +1,18 @@
+[
+    {
+        "code": "192",
+        "label": "Salary"
+    },
+    {
+        "code": "194C",
+        "label": "Contractor"
+    },
+    {
+        "code": "194H",
+        "label": "Commission"
+    },
+    {
+        "code": "194J",
+        "label": "Professional Fees"
+    }
+]

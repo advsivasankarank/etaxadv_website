@@ -1,0 +1,16 @@
+[
+  {
+    "rule_id": "DED-001",
+    "rule_name": "Deductee Name Required",
+    "category": "Deductee",
+    "severity": "High",
+    "description": "A deductee row must include the deductee name.",
+    "condition": { "scope": "deductee", "field": "deductee_name", "operator": "required" },
+    "expected_result": "Deductee name is present",
+    "failure_message": "Deductee name is missing.",
+    "suggested_treatment": "Check the extracted row against the source document.",
+    "enabled": true,
+    "version": "1.0.0",
+    "effective_date": "2026-06-27"
+  }
+]

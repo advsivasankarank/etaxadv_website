@@ -6,6 +6,7 @@ function send_security_headers(): void {
   header('X-XSS-Protection: 1; mode=block');
   header('Referrer-Policy: strict-origin-when-cross-origin');
   header('Permissions-Policy: geolocation=(), microphone=(), camera=()');
+  header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'");
   if (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] !== 'on') {
     return;
   }

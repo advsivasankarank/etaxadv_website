@@ -1,0 +1,30 @@
+[
+  {
+    "rule_id": "PAN-001",
+    "rule_name": "Deductee PAN Required",
+    "category": "PAN",
+    "severity": "High",
+    "description": "Each deductee row must include a PAN value.",
+    "condition": { "scope": "deductee", "field": "pan", "operator": "required" },
+    "expected_result": "PAN is present",
+    "failure_message": "PAN is missing for the deductee row.",
+    "suggested_treatment": "Review the source document and confirm the PAN for the deductee.",
+    "enabled": true,
+    "version": "1.0.0",
+    "effective_date": "2026-06-27"
+  },
+  {
+    "rule_id": "PAN-002",
+    "rule_name": "Deductee PAN Format",
+    "category": "PAN",
+    "severity": "Critical",
+    "description": "Deductee PAN must match the statutory PAN format.",
+    "condition": { "scope": "deductee", "field": "pan", "operator": "regex", "pattern": "^[A-Z]{5}[0-9]{4}[A-Z]$" },
+    "expected_result": "PAN matches format",
+    "failure_message": "PAN format is invalid.",
+    "suggested_treatment": "Compare the extracted PAN with the document and correct the source if needed.",
+    "enabled": true,
+    "version": "1.0.0",
+    "effective_date": "2026-06-27"
+  }
+]
