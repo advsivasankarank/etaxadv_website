@@ -71,7 +71,7 @@ $sheetUrl = static function (string $sheet) use ($sessionId): string {
 ?>
 <div class="app-layout">
   <aside class="app-sidebar">
-    <a class="app-sidebar__logo" href="<?= $viewUrl('cases') ?>">eT</a>
+    <a class="app-sidebar__logo" href="<?= $viewUrl('cases') ?>">eTDSDoc</a>
 
     <a class="app-sidebar__link<?= $requestedView === 'cases' ? ' is-active' : '' ?>" href="<?= $viewUrl('cases') ?>" title="Cases">
       <svg viewBox="0 0 24 24"><path d="M3 7.5h18M3 12h18M3 16.5h18"/></svg>
@@ -121,7 +121,7 @@ $sheetUrl = static function (string $sheet) use ($sessionId): string {
         <span class="app-topbar__status <?= etds_qc_h($statusClass) ?>"><?= etds_qc_h($statusLabel) ?></span>
       <?php else: ?>
         <div class="app-topbar__case">
-          <strong>e-TDSDoc</strong>
+          <strong>eTDSDoc</strong>
         </div>
       <?php endif; ?>
       <div class="app-topbar__spacer"></div>
@@ -315,7 +315,7 @@ $sheetUrl = static function (string $sheet) use ($sessionId): string {
 
       <?php elseif ($requestedView === 'doctor'): ?>
         <section class="screen-doctor">
-          <h2>e-TDS Doctor</h2>
+          <h2>eTDSDoc Doctor</h2>
 
           <?php if (!$activeSession): ?>
             <div class="empty-state"><p>No case selected.</p><a class="btn btn-primary" href="<?= $viewUrl('cases') ?>">Open Cases</a></div>

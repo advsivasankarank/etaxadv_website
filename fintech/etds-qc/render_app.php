@@ -99,10 +99,10 @@ $buildUrl = static function (array $params = []) use ($sessionId, $view, $worksp
       <aside class="etds-sidebar">
         <div class="etds-sidebar-inner">
           <div class="etds-side-brand">
-            <div class="etds-side-brand-mark">eT</div>
+            <div class="etds-side-brand-mark">eTDSDoc</div>
             <div>
-              <p class="etds-side-brand-title">e-TDS QC Tool</p>
-              <p class="etds-side-brand-subtitle">e-TDS Doctor Command Centre</p>
+              <p class="etds-side-brand-title">eTDSDoc</p>
+              <p class="etds-side-brand-subtitle">Professional TDS Processing Workspace</p>
             </div>
           </div>
 
@@ -131,7 +131,7 @@ $buildUrl = static function (array $params = []) use ($sessionId, $view, $worksp
           <form class="etds-logout-form" method="post" action="<?= etds_qc_h(site_href('/fintech/etds-qc/')) ?>">
             <?= csrf_field() ?>
             <input type="hidden" name="action" value="logout">
-            <button class="etds-logout-button" type="submit" data-confirm="Log out of e-TDS QC Tool now?">
+            <button class="etds-logout-button" type="submit" data-confirm="Log out of eTDSDoc now?">
               <span class="etds-workspace-icon"><?= etds_qc_nav_icon('logout') ?></span>
               <span>Logout</span>
             </button>
@@ -149,14 +149,14 @@ $buildUrl = static function (array $params = []) use ($sessionId, $view, $worksp
               'extraction' => 'Extraction Centre',
               'bench' => "Doctor's Bench",
               'excel' => 'Final Excel Advice',
-              default => 'e-TDS Doctor',
+              default => 'eTDSDoc Doctor',
             }) ?></div>
             <h1><?= etds_qc_h(match ($workspace) {
               'intake' => 'Capture and organise every diagnostic case',
               'extraction' => 'Prepare source files for clinical review',
               'bench' => 'Investigate, reconcile, treat, and certify',
               'excel' => 'Prepare certified output files and advice',
-              default => 'e-TDS Doctor',
+              default => 'eTDSDoc Doctor',
             }) ?></h1>
             <p class="etds-subtitle">
               <?php if ($activeSession): ?>

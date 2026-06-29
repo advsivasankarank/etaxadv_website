@@ -1,5 +1,5 @@
 # REGRESSION TEST REPORT
-## e-TDSDoc V1 – Production Hardening Sprint
+## eTDSDoc V1 – Production Hardening Sprint
 ### Date: 2026-06-27
 
 ---

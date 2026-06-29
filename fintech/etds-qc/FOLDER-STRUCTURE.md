@@ -1,4 +1,4 @@
-# e-TDS QC Tool Folder Structure
+# eTDSDoc Folder Structure
 
 ## Application Tree
 

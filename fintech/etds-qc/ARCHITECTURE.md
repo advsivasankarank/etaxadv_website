@@ -1,8 +1,8 @@
-# e-TDS QC Tool Architecture
+# eTDSDoc Architecture
 
 ## Product Definition
 
-`e-TDS QC Tool` is an internal office utility for E Tax Advisors Private Limited. It receives client TDS source documents, extracts structured data, highlights data quality problems, supports correction and challan reconciliation, and produces clean Excel output for downstream TaxPro use.
+`eTDSDoc` is an internal office utility for E Tax Advisors Private Limited. It receives client TDS source documents, extracts structured data, highlights data quality problems, supports correction and challan reconciliation, and produces clean Excel output for downstream TaxPro use.
 
 It is intentionally not:
 

@@ -1,4 +1,4 @@
-# e-TDS QC Tool Security Review Report
+# eTDSDoc Security Review Report
 
 ## Review Scope
 

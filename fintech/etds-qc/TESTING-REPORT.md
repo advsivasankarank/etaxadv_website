@@ -1,4 +1,4 @@
-# e-TDS QC Tool Testing Report
+# eTDSDoc Testing Report
 
 ## Test Date
 

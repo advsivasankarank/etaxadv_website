@@ -15,8 +15,8 @@ $action = $_POST['action'] ?? $_GET['action'] ?? null;
 $isAjax = (string) ($_REQUEST['ajax'] ?? '0') === '1';
 $flash = etds_qc_pull_flash();
 $user = etds_qc_current_user();
-$page_title = 'e-TDSDoc | E Tax Advisors';
-$page_description = 'e-TDSDoc - Diagnose. Reconcile. Prepare. Your Intelligent TDS Data Health Checker for intake, diagnosis, reconciliation, and processing preparation.';
+$page_title = 'eTDSDoc | E Tax Advisors';
+$page_description = 'eTDSDoc - Diagnose. Reconcile. Prepare. Your Intelligent TDS Data Health Checker for intake, diagnosis, reconciliation, and processing preparation.';
 $page_path = '/fintech/etds-qc/';
 
 function etds_qc_respond(bool $isAjax, string $redirect, string $type, string $message, array $extra = []): never {
@@ -373,7 +373,7 @@ require_once dirname(__DIR__, 2) . '/includes/header.php';
   <section class="container etds-login-wrap">
     <div class="etds-login-card">
       <div class="eyebrow">Internal Access</div>
-      <h1>e-TDSDoc</h1>
+      <h1>eTDSDoc</h1>
       <p class="etds-subtitle">Diagnose. Reconcile. Prepare.</p>
       <?php etds_qc_render_flash($flash); ?>
       <form method="post" action="<?= etds_qc_h(site_href('/fintech/etds-qc/')) ?>">

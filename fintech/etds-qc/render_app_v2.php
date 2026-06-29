@@ -163,7 +163,7 @@ $workspaceDescriptions = [
   'overview' => 'Understand the case, what is wrong, and the next recommended action within seconds.',
   'intake' => 'Capture client metadata, upload source files, and confirm the document bundle for diagnosis.',
   'extraction' => 'Run extraction, review parsed structures, and prepare the case for Doctor\'s Bench.',
-  'bench' => 'Operate the e-TDS Doctor workflow using diagnosis, reconciliation, treatment, and readiness tabs.',
+  'bench' => 'Operate the eTDSDoc Doctor workflow using diagnosis, reconciliation, treatment, and readiness tabs.',
   'excel' => 'Review certification status, blocked issues, generated files, and output readiness before export.',
 ];
 ?>
@@ -173,10 +173,10 @@ $workspaceDescriptions = [
       <aside class="etds-sidebar">
         <div class="etds-sidebar-inner">
           <div class="etds-side-brand">
-            <div class="etds-side-brand-mark">eT</div>
+            <div class="etds-side-brand-mark">eTDSDoc</div>
             <div>
-              <p class="etds-side-brand-title">e-TDS QC Tool</p>
-              <p class="etds-side-brand-subtitle">Powered by e-TDS Doctor</p>
+              <p class="etds-side-brand-title">eTDSDoc</p>
+              <p class="etds-side-brand-subtitle">Powered by eTDSDoc Doctor</p>
             </div>
           </div>
 
@@ -200,7 +200,7 @@ $workspaceDescriptions = [
           <form class="etds-logout-form" method="post" action="<?= etds_qc_h(site_href('/fintech/etds-qc/')) ?>">
             <?= csrf_field() ?>
             <input type="hidden" name="action" value="logout">
-            <button class="etds-logout-button" type="submit" data-confirm="Log out of e-TDS QC Tool now?">
+            <button class="etds-logout-button" type="submit" data-confirm="Log out of eTDSDoc now?">
               <span class="etds-workspace-icon"><?= etds_qc_nav_icon('logout') ?></span>
               <span>Logout</span>
             </button>
@@ -214,8 +214,8 @@ $workspaceDescriptions = [
         <section class="etds-command-header">
           <div class="etds-command-brand">
             <span class="eyebrow">E Tax Advisors</span>
-            <h1>e-TDS QC Tool</h1>
-            <p>Powered by e-TDS Doctor · AI-Driven Data Health Check</p>
+            <h1>eTDSDoc</h1>
+            <p>Powered by eTDSDoc Doctor · Professional TDS Processing Workspace</p>
           </div>
           <div class="etds-command-context">
             <div class="etds-context-item">
@@ -237,7 +237,7 @@ $workspaceDescriptions = [
           </div>
           <div class="etds-command-actions">
             <div class="etds-doctor-chip" data-tone="<?= $readiness ? 'good' : ($healthIssueCount > 0 ? 'critical' : 'warning') ?>">
-              <span class="etds-context-label">e-TDS Doctor Status</span>
+              <span class="etds-context-label">eTDSDoc Doctor Status</span>
               <strong><?= etds_qc_h($doctorCertificationLabel) ?></strong>
             </div>
             <div class="etds-profile-chip">
@@ -247,15 +247,15 @@ $workspaceDescriptions = [
             <form method="post" action="<?= etds_qc_h(site_href('/fintech/etds-qc/')) ?>">
               <?= csrf_field() ?>
               <input type="hidden" name="action" value="logout">
-              <button class="btn btn-outline btn-sm" type="submit" data-confirm="Log out of e-TDS QC Tool now?">Logout</button>
+              <button class="btn btn-outline btn-sm" type="submit" data-confirm="Log out of eTDSDoc now?">Logout</button>
             </form>
           </div>
         </section>
 
         <div class="etds-page-head">
           <div>
-            <div class="eyebrow"><?= etds_qc_h($workspaceLabels[$workspace] ?? 'e-TDS Doctor') ?></div>
-            <h2><?= etds_qc_h($workspaceTitles[$workspace] ?? 'e-TDS Doctor') ?></h2>
+            <div class="eyebrow"><?= etds_qc_h($workspaceLabels[$workspace] ?? 'eTDSDoc Doctor') ?></div>
+            <h2><?= etds_qc_h($workspaceTitles[$workspace] ?? 'eTDSDoc Doctor') ?></h2>
             <p class="etds-subtitle"><?= etds_qc_h($workspaceDescriptions[$workspace] ?? '') ?></p>
           </div>
           <div>

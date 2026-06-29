@@ -1,4 +1,4 @@
-# e-TDSDoc V1 - Phase 5 e-TDS Doctor Intelligence Engine
+# eTDSDoc V1 - Phase 5 e-TDS Doctor Intelligence Engine
 
 ## Scope Delivered
 

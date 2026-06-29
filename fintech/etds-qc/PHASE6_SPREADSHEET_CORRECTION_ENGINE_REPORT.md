@@ -1,4 +1,4 @@
-# e-TDSDoc V1 - Phase 6 Spreadsheet Workspace & Correction Engine
+# eTDSDoc V1 - Phase 6 Spreadsheet Workspace & Correction Engine
 
 ## Scope Delivered
 

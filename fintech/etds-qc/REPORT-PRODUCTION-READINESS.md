@@ -1,5 +1,5 @@
 # PRODUCTION READINESS REPORT
-## e-TDSDoc V1 – Production Hardening Sprint
+## eTDSDoc V1 – Production Hardening Sprint
 ### Date: 2026-06-27
 ### Status: READY WITH NOTES
 
@@ -7,7 +7,7 @@
 
 ## EXECUTIVE SUMMARY
 
-The e-TDSDoc V1 application has been audited across 5 sprints covering environment configuration, security, performance, regression testing, and browser UAT. **9 Critical and High severity defects were identified and fixed.** The application is certified as production-ready for internal use.
+The eTDSDoc V1 application has been audited across 5 sprints covering environment configuration, security, performance, regression testing, and browser UAT. **9 Critical and High severity defects were identified and fixed.** The application is certified as production-ready for internal use.
 
 ---
 
@@ -100,7 +100,7 @@ The e-TDSDoc V1 application has been audited across 5 sprints covering environme
 
 ## VERDICT
 
-**CERTIFIED: The e-TDSDoc V1 application is PRODUCTION-READY for internal deployment.**
+**CERTIFIED: The eTDSDoc V1 application is PRODUCTION-READY for internal deployment.**
 
 All Critical and High severity defects have been resolved. The application meets security, performance, and functional requirements for its intended use as an internal TDS data quality control tool.
 

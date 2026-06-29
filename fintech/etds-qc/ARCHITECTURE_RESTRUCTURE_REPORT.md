@@ -1,4 +1,4 @@
-# e-TDSDoc V1 Architecture Restructure Report
+# eTDSDoc V1 Architecture Restructure Report
 
 ## Updated Information Architecture
 

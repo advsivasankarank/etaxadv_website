@@ -1,4 +1,4 @@
-# e-TDS QC Tool JSON Schemas
+# eTDSDoc JSON Schemas
 
 ## 1. `users.json`
 

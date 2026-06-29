@@ -1,4 +1,4 @@
-# e-TDSDoc V1 - Phase 4 Validation Rules Engine
+# eTDSDoc V1 - Phase 4 Validation Rules Engine
 
 ## Scope Delivered
 

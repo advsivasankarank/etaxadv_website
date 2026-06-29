@@ -1,4 +1,4 @@
-# e-TDS QC Tool Screen Wireframes
+# eTDSDoc Screen Wireframes
 
 ## 1. Login
 
@@ -7,7 +7,7 @@
 | E Tax Advisors Header                                         |
 +---------------------------------------------------------------+
 | Internal Utility Access                                       |
-| e-TDS QC Tool                                                 |
+| eTDSDoc                                                 |
 | Data Quality Validation, Reconciliation & Excel Preparation   |
 |                                                               |
 |  Email / User ID                                              |
@@ -24,7 +24,7 @@
 +----------------------------------------------------------------------------------+
 | Header / Navigation                                                              |
 +----------------------------------------------------------------------------------+
-| e-TDS QC Tool Dashboard                         [ New Session ] [ Continue Work ] |
+| eTDSDoc Dashboard                         [ New Session ] [ Continue Work ] |
 |----------------------------------------------------------------------------------|
 | Sessions Created | Pending Validation | Pending Reconciliation | Ready | Complete|
 |----------------------------------------------------------------------------------|

@@ -1,4 +1,4 @@
-# e-TDS QC Tool UI Approval Notes
+# eTDSDoc UI Approval Notes
 
 ## Scope
 
@@ -22,7 +22,7 @@ Bottom fixed action:
 
 - Sidebar follows the e-BAL V2 single-level navigation philosophy.
 - Header is reinterpreted as a case command header with three zones:
-  - Left: ETA brand plus e-TDS QC Tool identity
+  - Left: ETA brand plus eTDSDoc identity
   - Centre: Client Name, TAN, FY, Quarter
   - Right: e-TDS Doctor status, user profile, logout
 - Doctor's Bench remains the primary workspace and uses tabs:

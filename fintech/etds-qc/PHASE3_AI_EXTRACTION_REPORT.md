@@ -1,4 +1,4 @@
-# e-TDSDoc V1 Phase 3 Report
+# eTDSDoc V1 Phase 3 Report
 
 ## Scope Delivered
 

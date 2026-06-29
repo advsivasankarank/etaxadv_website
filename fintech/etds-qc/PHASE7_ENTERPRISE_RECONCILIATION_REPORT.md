@@ -1,4 +1,4 @@
-# e-TDSDoc V1 – Phase 7
+# eTDSDoc V1 – Phase 7
 
 ## Enterprise Reconciliation Engine
 
@@ -89,4 +89,4 @@ Not implemented in this phase:
 
 ### Production Readiness
 
-The Phase 7 implementation is modular, JSON-backed, and aligned with the existing e-TDSDoc architecture. It extends the approved workflow from extraction and validation into financial consistency review without altering the frozen UI shell.
+The Phase 7 implementation is modular, JSON-backed, and aligned with the existing eTDSDoc architecture. It extends the approved workflow from extraction and validation into financial consistency review without altering the frozen UI shell.

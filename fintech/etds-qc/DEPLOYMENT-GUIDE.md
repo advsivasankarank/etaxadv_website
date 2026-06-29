@@ -1,4 +1,4 @@
-# e-TDS QC Tool Deployment Guide
+# eTDSDoc Deployment Guide
 
 ## Target Path
 
