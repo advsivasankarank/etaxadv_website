@@ -135,6 +135,9 @@ require_once __DIR__ . '/../includes/header.php';
         <p style="margin:4px 0 0;color:var(--gray-600);font-size:14px;"><?= count($enquiries) ?> total &middot; <span style="text-transform:capitalize;"><?= $is_admin ? 'Admin' : 'BO' ?></span></p>
       </div>
       <div style="display:flex;gap:8px;">
+        <?php if ($is_admin): ?>
+        <a class="btn btn-outline" href="password_management.php" style="border-color:var(--gold);color:var(--gold);">Password Management</a>
+        <?php endif; ?>
         <a class="btn btn-outline" href="?export=1">Export CSV</a>
         <a class="btn btn-outline" href="?logout=1">Logout</a>
       </div>

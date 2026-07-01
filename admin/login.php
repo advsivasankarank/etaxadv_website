@@ -14,6 +14,7 @@ $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $pwd = $_POST['password'] ?? '';
   if (password_verify($pwd, ADMIN_PASSWORD_HASH)) {
+    session_regenerate_id(true);
     $_SESSION['enq_auth'] = true;
     $_SESSION['enq_role'] = 'admin';
     $_SESSION['enq_time'] = time();
@@ -21,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
   }
   if (password_verify($pwd, BO_PASSWORD_HASH)) {
+    session_regenerate_id(true);
     $_SESSION['enq_auth'] = true;
     $_SESSION['enq_role'] = 'bo';
     $_SESSION['enq_time'] = time();
