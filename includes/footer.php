@@ -1,60 +1,71 @@
 <footer class="footer">
   <div class="container footer-grid">
+
+    <!-- COLUMN 1: Company -->
     <div class="footer-brand">
       <p class="footer-company-name">E Tax Advisors Private Limited</p>
       <p class="footer-cin">CIN: U74120PY2015PTC003005</p>
-      <p class="footer-address">No. 234, I Floor, Lawspet Main Road, Pakkamudayanpet, Lawspet, Puducherry – 605008</p>
-      <div class="footer-contact-stack">
-        <span>CRM: <a href="tel:+919500601119">+91-9500601119</a></span>
-        <span>Founder: <a href="tel:+919894626300">+91-9894626300</a></span>
-      </div>
-      <p class="footer-email"><a href="mailto:support@etaxadv.com">support@etaxadv.com</a></p>
-    </div>
-
-    <div>
-      <h3>Services</h3>
-      <ul class="footer-links">
-        <li><a href="<?= htmlspecialchars(site_href('/income-tax-consultant-puducherry.php')) ?>">Income Tax</a></li>
-        <li><a href="<?= htmlspecialchars(site_href('/gst-consultant-puducherry.php')) ?>">GST</a></li>
-        <li><a href="<?= htmlspecialchars(site_href('/tds-return-filing.php')) ?>">TDS & Payroll</a></li>
-        <li><a href="<?= htmlspecialchars(site_href('/labour-law-hr-compliance.php')) ?>">Labour Law</a></li>
-        <li><a href="<?= htmlspecialchars(site_href('/roc-company-compliance.php')) ?>">Corporate Compliance</a></li>
-        <li><a href="<?= htmlspecialchars(site_href('/trust-ngo-advisory.php')) ?>">Trust & NGO</a></li>
-        <li><a href="<?= htmlspecialchars(site_href('/litigation-representation.php')) ?>">Litigation Support</a></li>
-        <li><a href="<?= htmlspecialchars(site_href('/project-report-cma.php')) ?>">Project Reports</a></li>
-      </ul>
-    </div>
-
-    <div>
-      <h3>Fintech Tools</h3>
-      <ul class="footer-links">
-        <li><a href="<?= htmlspecialchars(site_href('/fintech-tools.php')) ?>">e-Pani</a></li>
-        <li><a href="<?= htmlspecialchars(site_href('/fintech-tools.php')) ?>">e-HR</a></li>
-        <li><a href="<?= htmlspecialchars(site_href('/ekanakan.php')) ?>">e-Kanakan</a></li>
-        <li><a href="<?= htmlspecialchars(site_href('/fintech-tools.php')) ?>">e-Bal</a></li>
-        <li><a href="<?= htmlspecialchars(site_href('/fintech-tools.php')) ?>">SalPro</a></li>
-        <li><a href="<?= htmlspecialchars(site_href('/fintech-tools.php')) ?>">E Tax Academy</a></li>
-        <li style="margin-top:8px;padding-top:8px;border-top:1px solid var(--gray-100);"><a href="<?= htmlspecialchars(site_href('/admin/login.php')) ?>">BO Login</a></li>
+      <p class="footer-tagline">Integrated Tax, Legal &amp; Compliance Solutions</p>
+      <h3 class="footer-office-heading">Office Access</h3>
+      <ul class="footer-links footer-office-links">
+        <li><a href="<?= htmlspecialchars(site_href('/admin/enquiries.php')) ?>">Appointment Management</a></li>
+        <li><a href="<?= htmlspecialchars(site_href('/admin/login.php')) ?>">BO Login</a></li>
         <li><a href="<?= htmlspecialchars(site_href('/admin/login.php')) ?>">Admin Login</a></li>
       </ul>
     </div>
 
+    <!-- COLUMN 2: Useful Links -->
     <div>
-      <h3>About the Company</h3>
+      <h3>Useful Links</h3>
       <ul class="footer-links">
-        <li><a href="<?= htmlspecialchars(site_href('/about.php')) ?>">About Us</a></li>
-        <li><a href="<?= htmlspecialchars(site_href('/about.php')) ?>">Leadership</a></li>
-        <li><a href="<?= htmlspecialchars(site_href('/team/ks-sivasankaran.php')) ?>">K. Sivasankaran</a></li>
-        <li><a href="<?= htmlspecialchars(site_href('/contact.php')) ?>">Contact Us</a></li>
-        <li><a href="<?= htmlspecialchars(site_href('/privacy-policy.php')) ?>">Privacy Policy</a></li>
-        <li><a href="<?= htmlspecialchars(site_href('/disclaimer.php')) ?>">Terms of Use</a></li>
+        <li><a href="https://www.incometax.gov.in/" target="_blank" rel="noopener noreferrer">Income Tax Dept.</a></li>
+        <li><a href="https://www.gst.gov.in/" target="_blank" rel="noopener noreferrer">GST Portal</a></li>
+        <li><a href="https://nclt.gov.in/" target="_blank" rel="noopener noreferrer">National Company Law Tribunal</a></li>
+        <li><a href="https://nclat.nic.in/" target="_blank" rel="noopener noreferrer">National Company Law Appellate Tribunal</a></li>
+        <li><a href="https://www.mca.gov.in/" target="_blank" rel="noopener noreferrer">Ministry of Corporate Affairs</a></li>
+        <li><a href="https://www.sebi.gov.in/" target="_blank" rel="noopener noreferrer">Securities and Exchange Board of India</a></li>
+        <li><a href="https://www.rbi.org.in/" target="_blank" rel="noopener noreferrer">Reserve Bank of India</a></li>
+        <li><a href="https://ibbi.gov.in/" target="_blank" rel="noopener noreferrer">Insolvency and Bankruptcy Board of India</a></li>
       </ul>
     </div>
+
+    <!-- COLUMN 3: Connect with Us -->
+    <div>
+      <h3>Connect with Us</h3>
+      <ul class="footer-links">
+        <!-- TODO: Replace # with actual social media URLs -->
+        <li><a href="#" target="_blank" rel="noopener noreferrer">Facebook</a></li>
+        <li><a href="#" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+        <li><a href="#" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+        <li><a href="#" target="_blank" rel="noopener noreferrer">Telegram</a></li>
+        <li><a href="#" target="_blank" rel="noopener noreferrer">Twitter / X</a></li>
+        <li><a href="#" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+        <li><a href="#" target="_blank" rel="noopener noreferrer">Google Group</a></li>
+      </ul>
+    </div>
+
+    <!-- COLUMN 4: Contact Us -->
+    <div>
+      <h3>Contact Us</h3>
+      <p class="footer-address">No. 234, I Floor, Lawspet Main Road, Pakkamudayanpet, Lawspet, Puducherry &#8211; 605008</p>
+      <div class="footer-contact-stack">
+        <span>Phone: <a href="tel:+919500601119">+91-9500601119</a></span>
+        <span>Founder: <a href="tel:+919894626300">+91-9894626300</a></span>
+      </div>
+      <p class="footer-email" style="margin-top:6px;"><a href="mailto:support@etaxadv.com">support@etaxadv.com</a></p>
+      <p style="font-size:11px;color:var(--gray-400);margin-top:4px;">We feel happy to talk</p>
+      <a class="footer-message-btn" href="<?= htmlspecialchars(site_href('/contact.php')) ?>">Write Your Message</a>
+    </div>
+
   </div>
 
   <div class="container footer-bottom">
-    <p>&copy; 2026 E Tax Advisors Private Limited. All Rights Reserved.</p>
-    <p>CIN: U74120PY2015PTC003005</p>
+    <p>&copy; 2026 E Tax Advisors Private Limited. All Rights Reserved. &nbsp;|&nbsp; CIN: U74120PY2015PTC003005</p>
+    <div class="footer-bottom-links">
+      <a href="<?= htmlspecialchars(site_href('/privacy-policy.php')) ?>">Privacy Policy</a>
+      <a href="<?= htmlspecialchars(site_href('/disclaimer.php')) ?>">Disclaimer</a>
+      <a href="<?= htmlspecialchars(site_href('/disclaimer.php')) ?>">Terms of Use</a>
+    </div>
   </div>
 </footer>
 
