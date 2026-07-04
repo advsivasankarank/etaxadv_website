@@ -260,7 +260,7 @@ $tabUrl = static function (string $tab) use ($sessionId): string {
                   <div class="form-section-label">Assignment Details</div>
                   <div class="form-field"><label for="financial_year">Financial Year <span class="required">*</span></label><select id="financial_year" name="financial_year" required><?php foreach (($masters['financial_years'] ?? []) as $item): ?><option value="<?= etds_qc_h((string) ($item['code'] ?? '')) ?>"><?= etds_qc_h((string) ($item['label'] ?? '')) ?></option><?php endforeach; ?></select></div>
                   <div class="form-field"><label for="quarter">Quarter <span class="required">*</span></label><select id="quarter" name="quarter" required><?php foreach (($masters['quarters'] ?? []) as $item): ?><option value="<?= etds_qc_h((string) ($item['code'] ?? '')) ?>"><?= etds_qc_h((string) ($item['label'] ?? '')) ?></option><?php endforeach; ?></select></div>
-                  <div class="form-field"><label for="return_type">Return Type <span class="required">*</span></label><select id="return_type" name="return_type" required><option>24Q</option><option>26Q</option><option>27Q</option><option>27EQ</option></select></div>
+                  <div class="form-field"><label for="return_type">Return Type <span class="required">*</span></label><select id="return_type" name="return_type" required><option value="24Q">Form 138 / 24Q — Salary TDS</option><option value="26Q">Form 140 / 26Q — Non-salary TDS</option><option value="27Q">Form 144 / 27Q — Non-resident TDS</option><option value="27EQ">Form 143 / 27EQ — TCS</option></select></div>
                 </div>
                 <div style="margin-top:16px; display:flex; gap:8px;">
                   <button class="btn btn-primary" type="submit">Confirm Assignment &amp; Proceed</button>
@@ -419,7 +419,7 @@ $tabUrl = static function (string $tab) use ($sessionId): string {
             <?php if ($etdsdocTab === 'examination'): ?>
               <div class="etdsdoc-tab-content">
                 <h3>Examination</h3>
-                <p style="font-size:12px; color:#6b7280; margin-bottom:16px;">Review uploaded source files and run AI extraction to populate structured data.</p>
+                <p style="font-size:12px; color:#6b7280; margin-bottom:16px;">Review uploaded source files, run AI extraction, and examine data understanding.</p>
 
                 <div class="summary-row">
                   <div class="summary-card"><strong><?= $documentsReceived ?></strong><span>Source Files</span></div>
@@ -439,7 +439,7 @@ $tabUrl = static function (string $tab) use ($sessionId): string {
 
                 <?php if (!empty($sourceData['documents'])): ?>
                   <table class="data-table">
-                    <thead><tr><th>Document</th><th>Classification</th><th>Confidence</th><th>Extraction</th></tr></thead>
+                    <thead><tr><th>Document</th><th>Classification</th><th>Confidence</th><th>Extraction</th><th>Note</th></tr></thead>
                     <tbody>
                       <?php foreach (($sourceData['documents'] ?? []) as $document): ?>
                         <?php if (($document['is_removed'] ?? false) === true) { continue; } ?>
@@ -448,6 +448,24 @@ $tabUrl = static function (string $tab) use ($sessionId): string {
                           <td><?= etds_qc_h((string) ($document['classification'] ?? 'Unknown')) ?></td>
                           <td><?= (int) ($document['classification_confidence'] ?? 0) ?>%</td>
                           <td><?= etds_qc_h((string) ($document['extraction_status'] ?? 'Pending')) ?></td>
+                          <td style="font-size:11px; color:#6b7280;"><?= etds_qc_h((string) ($document['extraction_note'] ?? '')) ?></td>
+                        </tr>
+                      <?php endforeach; ?>
+                    </tbody>
+                  </table>
+                <?php endif; ?>
+
+                <?php if (!empty($doctorIntelli['data_understanding'])): ?>
+                  <h4 style="margin-top:16px; font-size:13px; font-weight:600;">Data Understanding</h4>
+                  <table class="data-table">
+                    <thead><tr><th>Document</th><th>Detected Type</th><th>Confidence</th><th>Reason</th></tr></thead>
+                    <tbody>
+                      <?php foreach ($doctorIntelli['data_understanding'] as $du): ?>
+                        <tr>
+                          <td><?= etds_qc_h((string) ($du['original_name'] ?? '')) ?></td>
+                          <td><span style="font-weight:600;"><?= etds_qc_h((string) ($du['detected_type'] ?? '')) ?></span></td>
+                          <td><?= (int) ($du['confidence'] ?? 0) ?>%</td>
+                          <td style="font-size:11px; color:#6b7280;"><?= etds_qc_h((string) ($du['reason'] ?? '')) ?></td>
                         </tr>
                       <?php endforeach; ?>
                     </tbody>
@@ -458,32 +476,56 @@ $tabUrl = static function (string $tab) use ($sessionId): string {
             <?php elseif ($etdsdocTab === 'diagnosis'): ?>
               <div class="etdsdoc-tab-content">
                 <h3>Diagnosis</h3>
-                <p style="font-size:12px; color:#6b7280; margin-bottom:16px;">Identify errors, defects, missing fields and mismatches through validation and doctor intelligence.</p>
+                <p style="font-size:12px; color:#6b7280; margin-bottom:16px;">Examine data quality, validate against e-TDS requirements, and assess readiness.</p>
 
-                <div class="severity-row">
-                  <div class="severity-card is-critical"><strong><?= $criticalIssues ?></strong><span>Critical</span></div>
-                  <div class="severity-card is-high"><strong><?= $highIssues ?></strong><span>High</span></div>
-                  <div class="severity-card is-medium"><strong><?= $moderateIssues ?></strong><span>Medium</span></div>
-                  <div class="severity-card is-low"><strong><?= $minorIssues ?></strong><span>Low / Info</span></div>
-                </div>
+                <?php if (!empty($doctorIntelli)): ?>
+                  <div style="background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:16px; margin-bottom:16px;">
+                    <div style="display:flex; align-items:center; gap:16px; margin-bottom:12px;">
+                      <div style="font-size:28px; font-weight:700; color:<?= $doctorIntelli['readiness_score'] >= 90 ? '#059669' : ($doctorIntelli['readiness_score'] >= 75 ? '#d97706' : '#dc2626') ?>;">
+                        <?= (int) ($doctorIntelli['readiness_score'] ?? 0) ?>/100
+                      </div>
+                      <div>
+                        <div style="font-weight:600;"><?= etds_qc_h((string) ($doctorIntelli['readiness_status'] ?? 'Unknown')) ?></div>
+                        <div style="font-size:11px; color:#6b7280;"><?= etds_qc_h((string) ($doctorIntelli['readiness_note'] ?? '')) ?></div>
+                      </div>
+                    </div>
+                  </div>
+                <?php endif; ?>
 
-                <div class="doctor-rec">
-                  <h4>Doctor Recommendation</h4>
-                  <?php if ($doctorReadinessStatus === 'Ready for QC Certification'): ?>
-                    <p style="color:#059669; font-weight:600;">Ready for QC Certification. Data quality meets all thresholds.</p>
-                  <?php elseif ($doctorReadinessStatus === 'Ready After Corrections'): ?>
-                    <p>Ready after corrections. Top: <?= etds_qc_h($doctorTopDiagnosis) ?>. Est. <?= $doctorEstimatedMinutes ?> min to resolve.</p>
-                  <?php else: ?>
-                    <p><?= etds_qc_h($doctorReadinessReason) ?></p>
-                  <?php endif; ?>
-                </div>
+                <?php if (!empty($doctorIntelli['bifurcation_summary'])): ?>
+                  <h4 style="font-size:13px; font-weight:600; margin-bottom:8px;">Data Summary</h4>
+                  <div class="summary-row" style="margin-bottom:16px;">
+                    <div class="summary-card"><strong><?= (int) ($doctorIntelli['bifurcation_summary']['total_staff'] ?? 0) ?></strong><span>Staff/Deductees</span></div>
+                    <div class="summary-card"><strong>₹<?= number_format((float) ($doctorIntelli['bifurcation_summary']['total_tds'] ?? 0)) ?></strong><span>Total TDS</span></div>
+                    <div class="summary-card"><strong><?= (int) ($doctorIntelli['bifurcation_summary']['challan_count'] ?? 0) ?></strong><span>Challans</span></div>
+                    <div class="summary-card"><strong>₹<?= number_format((float) ($doctorIntelli['bifurcation_summary']['total_challan'] ?? 0)) ?></strong><span>Total Challan</span></div>
+                    <div class="summary-card"><strong>₹<?= number_format((float) ($doctorIntelli['bifurcation_summary']['challan_difference'] ?? 0)) ?></strong><span>Difference</span></div>
+                  </div>
+                <?php endif; ?>
 
-                <div style="display:flex; gap:8px;">
+                <?php if (!empty($doctorIntelli['findings'])): ?>
+                  <h4 style="font-size:13px; font-weight:600; margin-bottom:8px;">Findings (<?= count($doctorIntelli['findings']) ?>)</h4>
+                  <table class="data-table">
+                    <thead><tr><th>Severity</th><th>Category</th><th>Message</th><th>Treatment</th></tr></thead>
+                    <tbody>
+                      <?php foreach ($doctorIntelli['findings'] as $finding): ?>
+                        <tr>
+                          <td><span class="severity-badge severity-badge--<?= strtolower((string) ($finding['severity'] ?? '')) ?>"><?= etds_qc_h((string) ($finding['severity'] ?? '')) ?></span></td>
+                          <td style="font-size:11px;"><?= etds_qc_h((string) ($finding['category'] ?? '')) ?></td>
+                          <td><?= etds_qc_h((string) ($finding['message'] ?? '')) ?></td>
+                          <td style="font-size:11px; color:#6b7280;"><?= etds_qc_h((string) ($finding['suggested_treatment'] ?? '')) ?></td>
+                        </tr>
+                      <?php endforeach; ?>
+                    </tbody>
+                  </table>
+                <?php endif; ?>
+
+                <div style="display:flex; gap:8px; margin-top:16px;">
                   <form method="post" action="<?= etds_qc_h(site_href('/fintech/etds-qc/')) ?>" data-ajax="reload">
                     <?= csrf_field() ?>
-                    <input type="hidden" name="action" value="run_validation">
+                    <input type="hidden" name="action" value="run_doctor_intelli">
                     <input type="hidden" name="session_id" value="<?= etds_qc_h($sessionId) ?>">
-                    <button class="btn btn-primary" type="submit">Run Validation + Doctor</button>
+                    <button class="btn btn-primary" type="submit">Run Doctor Intelli Mode</button>
                   </form>
                 </div>
               </div>
@@ -491,36 +533,27 @@ $tabUrl = static function (string $tab) use ($sessionId): string {
             <?php elseif ($etdsdocTab === 'treatment'): ?>
               <div class="etdsdoc-tab-content">
                 <h3>Treatment</h3>
-                <p style="font-size:12px; color:#6b7280; margin-bottom:16px;">Review diagnostic findings and apply corrections, suggestions, or manual overrides.</p>
+                <p style="font-size:12px; color:#6b7280; margin-bottom:16px;">Review findings and suggested treatments. Mark items as reviewed or resolved.</p>
 
                 <?php
-                  $findings = $validatedData['findings'] ?? [];
-                  $openFindings = array_filter($findings, static fn(array $f): bool => ($f['status'] ?? 'open') === 'open');
+                  $intelliFindings = $doctorIntelli['findings'] ?? [];
+                  $openFindings = array_filter($intelliFindings, static fn(array $f): bool => ($f['status'] ?? 'open') === 'open');
                 ?>
-                <?php if (empty($openFindings)): ?>
-                  <div class="empty-state"><p>No open findings to treat. Run Diagnosis first.</p></div>
+                <?php if (empty($openFindings) && empty($intelliFindings)): ?>
+                  <div class="empty-state"><p>No findings to treat. Run Doctor Intelli Mode first.</p></div>
+                <?php elseif (empty($openFindings)): ?>
+                  <div class="empty-state"><p>All findings have been reviewed or resolved.</p></div>
                 <?php else: ?>
                   <table class="data-table">
-                    <thead><tr><th>Severity</th><th>Rule</th><th>Field</th><th>Message</th><th>Record</th><th>Status</th></tr></thead>
+                    <thead><tr><th>Severity</th><th>Category</th><th>Message</th><th>Suggested Treatment</th><th>Source</th></tr></thead>
                     <tbody>
                       <?php foreach ($openFindings as $finding): ?>
                         <tr>
                           <td><span class="severity-badge severity-badge--<?= strtolower((string) ($finding['severity'] ?? '')) ?>"><?= etds_qc_h((string) ($finding['severity'] ?? '')) ?></span></td>
-                          <td><?= etds_qc_h((string) ($finding['rule_name'] ?? $finding['rule_id'] ?? '')) ?></td>
-                          <td><?= etds_qc_h((string) ($finding['field'] ?? '')) ?></td>
+                          <td style="font-size:11px;"><?= etds_qc_h((string) ($finding['category'] ?? '')) ?></td>
                           <td><?= etds_qc_h((string) ($finding['message'] ?? '')) ?></td>
-                          <td><?= etds_qc_h((string) ($finding['record_reference'] ?? '')) ?></td>
-                          <td>
-                            <form method="post" action="<?= etds_qc_h(site_href('/fintech/etds-qc/')) ?>" data-ajax="reload" style="display:inline;">
-                              <?= csrf_field() ?>
-                              <input type="hidden" name="action" value="issue_status">
-                              <input type="hidden" name="session_id" value="<?= etds_qc_h($sessionId) ?>">
-                              <input type="hidden" name="record_id" value="<?= etds_qc_h((string) ($finding['record_reference'] ?? '')) ?>">
-                              <input type="hidden" name="issue_id" value="<?= etds_qc_h((string) ($finding['finding_id'] ?? '')) ?>">
-                              <input type="hidden" name="issue_status" value="resolved">
-                              <button class="btn btn-sm btn-outline" type="submit">Resolve</button>
-                            </form>
-                          </td>
+                          <td style="font-size:11px; color:#6b7280;"><?= etds_qc_h((string) ($finding['suggested_treatment'] ?? '')) ?></td>
+                          <td style="font-size:11px;"><?= etds_qc_h((string) ($finding['source'] ?? '')) ?></td>
                         </tr>
                       <?php endforeach; ?>
                     </tbody>
@@ -529,6 +562,7 @@ $tabUrl = static function (string $tab) use ($sessionId): string {
 
                 <div style="display:flex; gap:8px; margin-top:16px;">
                   <a class="btn btn-outline" href="<?= $tabUrl('review') ?>">Open Review Summary &rarr;</a>
+                  <a class="btn btn-primary" href="<?= $viewUrl('deliverables') ?>">Proceed to Deliverables &rarr;</a>
                 </div>
               </div>
 
@@ -544,16 +578,25 @@ $tabUrl = static function (string $tab) use ($sessionId): string {
                     <input type="search" placeholder="Search..." data-sheet-search style="padding:5px 10px; border:1px solid #d1d5db; border-radius:4px; font-size:11px; width:160px;">
                     <form method="post" action="<?= etds_qc_h(site_href('/fintech/etds-qc/')) ?>" data-ajax="reload" style="display:inline;">
                       <?= csrf_field() ?>
-                      <input type="hidden" name="action" value="run_validation">
+                      <input type="hidden" name="action" value="run_doctor_intelli">
                       <input type="hidden" name="session_id" value="<?= etds_qc_h($sessionId) ?>">
-                      <input type="hidden" name="return_to" value="review">
-                      <input type="hidden" name="sheet" value="<?= etds_qc_h($spreadsheetSheet) ?>">
-                      <button class="btn btn-sm btn-outline" type="submit">Validate</button>
+                      <button class="btn btn-sm btn-outline" type="submit">Doctor Intelli</button>
                     </form>
-                    <a class="btn btn-sm btn-outline" href="<?= $tabUrl('diagnosis') ?>">Doctor</a>
+                    <a class="btn btn-sm btn-outline" href="<?= $tabUrl('diagnosis') ?>">Diagnosis</a>
                     <a class="btn btn-sm btn-primary" href="<?= $viewUrl('deliverables') ?>">Deliverables</a>
                   </div>
                 </div>
+
+                <?php if (!empty($doctorIntelli['bifurcation_summary'])): ?>
+                  <div style="background:#fff; border:1px solid #e5e7eb; border-radius:8px; padding:12px; margin-bottom:12px; display:flex; gap:16px; flex-wrap:wrap; font-size:12px;">
+                    <span><strong><?= (int) ($doctorIntelli['bifurcation_summary']['total_staff'] ?? 0) ?></strong> Staff</span>
+                    <span><strong>₹<?= number_format((float) ($doctorIntelli['bifurcation_summary']['total_tds'] ?? 0)) ?></strong> TDS</span>
+                    <span><strong><?= (int) ($doctorIntelli['bifurcation_summary']['challan_count'] ?? 0) ?></strong> Challans</span>
+                    <span><strong>₹<?= number_format((float) ($doctorIntelli['bifurcation_summary']['total_challan'] ?? 0)) ?></strong> Challan Amt</span>
+                    <span><strong>₹<?= number_format((float) ($doctorIntelli['bifurcation_summary']['challan_difference'] ?? 0)) ?></strong> Diff</span>
+                    <span style="color:<?= ($doctorIntelli['readiness_score'] ?? 0) >= 75 ? '#059669' : '#dc2626' ?>;"><strong><?= (int) ($doctorIntelli['readiness_score'] ?? 0) ?>/100</strong> <?= etds_qc_h((string) ($doctorIntelli['readiness_status'] ?? '')) ?></span>
+                  </div>
+                <?php endif; ?>
 
                 <div class="screen-spreadsheet__grid" data-spreadsheet-grid data-session-id="<?= etds_qc_h($sessionId) ?>" data-sheet="<?= etds_qc_h($spreadsheetSheet) ?>" data-csrf="<?= etds_qc_h(csrf_token()) ?>">
                   <?php if ($activeSheetRows === []): ?>

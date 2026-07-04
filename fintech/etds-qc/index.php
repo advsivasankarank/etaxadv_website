@@ -222,6 +222,15 @@ if ($action === 'run_doctor' && $user) {
   etds_qc_respond($isAjax, $redirect, 'success', 'Doctor intelligence regenerated from the latest validation findings.');
 }
 
+if ($action === 'run_doctor_intelli' && $user) {
+  $sessionId = (string) ($_POST['session_id'] ?? '');
+  etds_qc_workspace_sync_case_data($sessionId);
+  etds_qc_validate_session($sessionId, $user);
+  etds_doctor_intelli_mode_v1($sessionId, $user);
+  $redirect = site_href('/fintech/etds-qc/?view=etdsdoc&tab=diagnosis&session=' . urlencode($sessionId));
+  etds_qc_respond($isAjax, $redirect, 'success', 'Doctor Intelli Mode V1 executed. Diagnosis and readiness score updated.');
+}
+
 if ($action === 'issue_status' && $user) {
   $sessionId = (string) ($_POST['session_id'] ?? '');
   etds_qc_update_issue_status(
@@ -445,6 +454,7 @@ $extractionData = $activeSession ? etds_qc_load_json(etds_qc_session_file($sessi
 $ocrData = $activeSession ? etds_qc_load_json(etds_qc_session_file($sessionId, 'ocr.json'), etds_qc_default_ocr()) : etds_qc_default_ocr();
 $validatedData = $activeSession ? etds_qc_load_json(etds_qc_session_file($sessionId, 'validation.json'), etds_qc_default_validation()) : etds_qc_default_validation();
 $doctorData = $activeSession ? etds_qc_load_json(etds_qc_session_file($sessionId, 'doctor.json'), etds_qc_default_doctor()) : etds_qc_default_doctor();
+$doctorIntelli = $activeSession ? etds_qc_load_json(etds_qc_session_file($sessionId, 'doctor_intelli.json'), []) : [];
 $correctionsData = $activeSession ? etds_qc_workspace_corrections($sessionId) : etds_qc_default_corrections();
 $spreadsheetWorkspace = $activeSession ? etds_qc_workspace_records($sessionId) : [];
 $challans = $activeSession ? etds_qc_load_json(etds_qc_session_file($sessionId, 'challans.json'), ['challans' => []]) : ['challans' => []];

@@ -580,6 +580,29 @@ function etds_qc_tan_valid(string $tan): bool {
   return preg_match('/^[A-Z]{4}[0-9]{5}[A-Z]$/', strtoupper($tan)) === 1;
 }
 
+function etds_qc_return_type_map(string $returnType): array {
+  $returnType = strtoupper(trim($returnType));
+  $map = [
+    '24Q'   => ['old_form' => '24Q', 'new_form' => '138', 'form_label' => 'Form 138 / 24Q — Salary TDS', 'form_nature' => 'salary_tds'],
+    '26Q'   => ['old_form' => '26Q', 'new_form' => '140', 'form_label' => 'Form 140 / 26Q — Non-salary TDS', 'form_nature' => 'non_salary_tds'],
+    '27Q'   => ['old_form' => '27Q', 'new_form' => '144', 'form_label' => 'Form 144 / 27Q — Non-resident TDS', 'form_nature' => 'non_resident_tds'],
+    '27EQ'  => ['old_form' => '27EQ', 'new_form' => '143', 'form_label' => 'Form 143 / 27EQ — TCS', 'form_nature' => 'tcs'],
+    '138'   => ['old_form' => '24Q', 'new_form' => '138', 'form_label' => 'Form 138 / 24Q — Salary TDS', 'form_nature' => 'salary_tds'],
+    '140'   => ['old_form' => '26Q', 'new_form' => '140', 'form_label' => 'Form 140 / 26Q — Non-salary TDS', 'form_nature' => 'non_salary_tds'],
+    '144'   => ['old_form' => '27Q', 'new_form' => '144', 'form_label' => 'Form 144 / 27Q — Non-resident TDS', 'form_nature' => 'non_resident_tds'],
+    '143'   => ['old_form' => '27EQ', 'new_form' => '143', 'form_label' => 'Form 143 / 27EQ — TCS', 'form_nature' => 'tcs'],
+  ];
+  return $map[$returnType] ?? ['old_form' => $returnType, 'new_form' => '', 'form_label' => $returnType, 'form_nature' => 'unknown'];
+}
+
+function etds_qc_return_type_label(string $returnType): string {
+  return etds_qc_return_type_map($returnType)['form_label'];
+}
+
+function etds_qc_return_type_canonical(string $returnType): string {
+  return etds_qc_return_type_map($returnType)['old_form'];
+}
+
 function etds_qc_session_dir(string $sessionId): string {
   return etds_qc_case_root($sessionId);
 }
@@ -1993,6 +2016,94 @@ function etds_qc_extract_salary_register_rows(array $rows): array {
   ];
 }
 
+function etds_qc_extract_quarterly_salary_rows(array $rows): array {
+  $records = [];
+  $headerRow = -1;
+  $subHeaderRow = -1;
+  $schoolName = '';
+  $period = '';
+
+  foreach ($rows as $row) {
+    $cells = (array) ($row['cells'] ?? []);
+    $rowNum = (int) ($row['row_number'] ?? 0);
+    $rowText = strtolower(trim(implode(' ', array_filter($cells, static fn($v): bool => trim((string) $v) !== ''))));
+
+    if (str_contains($rowText, 'school') || str_contains($rowText, 'quarter statement')) {
+      if (str_contains($rowText, 'school')) {
+        $schoolName = trim((string) ($cells[0] ?? ''));
+      }
+      if (str_contains($rowText, 'quarter statement') || str_contains($rowText, 'march') || str_contains($rowText, 'june')) {
+        $period = trim((string) ($cells[0] ?? ''));
+      }
+      continue;
+    }
+
+    if (str_contains($rowText, 'name of the staff') || str_contains($rowText, 'pan number')) {
+      $headerRow = $rowNum;
+      continue;
+    }
+
+    if (str_contains($rowText, 'gross salary') || str_contains($rowText, 'income tax')) {
+      $subHeaderRow = $rowNum;
+      continue;
+    }
+
+    if ($headerRow > 0 && $rowNum > $headerRow) {
+      $a = trim((string) ($cells[0] ?? ''));
+      $b = trim((string) ($cells[1] ?? ''));
+      $c = trim((string) ($cells[2] ?? ''));
+      $d = trim((string) ($cells[3] ?? ''));
+
+      if ($a === '' && $b === '' && $c === '' && $d === '') {
+        continue;
+      }
+
+      if (strtolower($a) === 'total' || strtolower($b) === 'total') {
+        continue;
+      }
+
+      $panCandidate = strtoupper(preg_replace('/\s+/', '', $d));
+      $hasPan = preg_match('/^[A-Z]{5}[0-9]{4}[A-Z]$/', $panCandidate) === 1;
+      $hasName = $b !== '' && !in_array(strtolower($b), ['name of the staff', 'name', 'pan', 'des', ''], true);
+
+      if (!$hasName && !$hasPan) {
+        continue;
+      }
+
+      $incomeTaxTotal = trim((string) ($cells[12] ?? ''));
+      if ($incomeTaxTotal === '' || !is_numeric(str_replace(',', '', $incomeTaxTotal))) {
+        $incomeTaxTotal = '0';
+      }
+
+      $grossTotal = trim((string) ($cells[13] ?? ''));
+      if ($grossTotal === '' || !is_numeric(str_replace(',', '', $grossTotal))) {
+        $grossTotal = '0';
+      }
+
+      $records[] = [
+        'deductee_name' => preg_replace('/\s+/', ' ', $b) ?? $b,
+        'designation' => $c,
+        'pan' => $hasPan ? $panCandidate : '',
+        'tds_amount' => str_replace(',', '', $incomeTaxTotal),
+        'gross_salary' => str_replace(',', '', $grossTotal),
+        'invoice_number' => '',
+        'challan_reference' => '',
+      ];
+    }
+  }
+
+  if ($records === []) {
+    return ['columns' => [], 'records' => [], 'school_name' => $schoolName, 'period' => $period];
+  }
+
+  return [
+    'columns' => ['deductee_name', 'designation', 'pan', 'tds_amount', 'gross_salary', 'invoice_number', 'challan_reference'],
+    'records' => $records,
+    'school_name' => $schoolName,
+    'period' => $period,
+  ];
+}
+
 function etds_qc_extract_xlsx(string $path): array {
   $rows = etds_qc_extract_xlsx_rows($path);
   if ($rows === []) {
@@ -2002,6 +2113,11 @@ function etds_qc_extract_xlsx(string $path): array {
   $salaryRegister = etds_qc_extract_salary_register_rows($rows);
   if (($salaryRegister['records'] ?? []) !== []) {
     return $salaryRegister;
+  }
+
+  $quarterlySalary = etds_qc_extract_quarterly_salary_rows($rows);
+  if (($quarterlySalary['records'] ?? []) !== []) {
+    return $quarterlySalary;
   }
 
   $flatRows = [];
@@ -2164,15 +2280,16 @@ function etds_qc_field_payload(string $field, string $value, int $confidence, in
 function etds_qc_document_classifier(string $documentName, string $text, array $columns = []): array {
   $haystack = strtoupper($documentName . ' ' . $text . ' ' . implode(' ', $columns));
   $rules = [
-    'challan' => ['CHALLAN', 'BSR', 'CIN', 'OLTAS'],
+    'challan' => ['CHALLAN', 'BSR', 'CIN', 'OLTAS', 'CRN', 'TAX YEAR'],
     'deductee_list' => ['DEDUCTEE', 'PAN', 'DEDUCTEE NAME'],
-    'salary_register' => ['SALARY', 'EMPLOYEE', 'BASIC', 'HRA'],
+    'salary_register' => ['SALARY', 'EMPLOYEE', 'BASIC', 'HRA', 'NAME OF THE STAFF', 'INCOME TAX', 'GROSS SALARY'],
     'payment_register' => ['PAYMENT', 'INVOICE', 'VENDOR'],
     'bank_challan' => ['BANK CHALLAN', 'BSR CODE'],
     'form_16' => ['FORM 16'],
     'form_16a' => ['FORM 16A'],
     'form_24q_working' => ['24Q', 'WORKING'],
     'form_26q_working' => ['26Q', 'WORKING'],
+    'quarterly_tds' => ['QUARTER STATEMENT', 'QUARTERLY', 'PAN NUMBER', 'MONTH-WISE'],
   ];
   $best = ['classification' => 'unknown_document', 'confidence' => 30];
   foreach ($rules as $classification => $needles) {
@@ -2193,6 +2310,80 @@ function etds_qc_document_classifier(string $documentName, string $text, array $
   return $best;
 }
 
+function etds_qc_find_pdf_converter(): ?string {
+  $paths = [
+    'pdftoppm',
+    __DIR__ . '/../../tools/poppler/poppler-24.02.0/Library/bin/pdftoppm.exe',
+    'C:\\Program Files\\poppler\\bin\\pdftoppm.exe',
+    'C:\\Program Files\\poppler-24.02.0\\bin\\pdftoppm.exe',
+    'C:\\Program Files\\gs\\gs10.02.1\\bin\\gswin64c.exe',
+    'C:\\Program Files\\gs\\gs9.56.1\\bin\\gswin64c.exe',
+    'C:\\Program Files\\gs\\gs9.55.0\\bin\\gswin64c.exe',
+    'C:\\Program Files\\gs\\gs10.03.0\\bin\\gswin64c.exe',
+  ];
+  foreach ($paths as $path) {
+    if (is_file($path)) {
+      return $path;
+    }
+  }
+  $output = [];
+  $exitCode = 0;
+  @exec('where pdftoppm 2>nul', $output, $exitCode);
+  if ($exitCode === 0 && !empty($output)) {
+    return trim($output[0]);
+  }
+  return null;
+}
+
+function etds_qc_convert_pdf_to_images(string $pdfPath, string $sessionId, string $docId): array {
+  $converter = etds_qc_find_pdf_converter();
+  if ($converter === null) {
+    return ['images' => [], 'error' => 'PDF-to-image conversion tool not available. Please install Poppler (pdftoppm) or Ghostscript.'];
+  }
+
+  $tempDir = etds_qc_session_dir($sessionId) . '/temp/ocr/' . $docId;
+  if (!is_dir($tempDir)) {
+    @mkdir($tempDir, 0775, true);
+  }
+
+  $isGhostscript = stripos(basename($converter), 'gs') !== false;
+  $images = [];
+
+  if ($isGhostscript) {
+    $outputPattern = $tempDir . '/page-%03d.png';
+    @exec('"' . $converter . '" -dNOPAUSE -dBATCH -sDEVICE=png16m -r200 -sOutputFile="' . $outputPattern . '" "' . $pdfPath . '"', $output, $exitCode);
+    if ($exitCode === 0) {
+      foreach (glob($tempDir . '/page-*.png') ?: [] as $file) {
+        $pageNum = 1;
+        if (preg_match('/page-(\d+)\.png$/', $file, $m)) {
+          $pageNum = (int) $m[1];
+        }
+        $images[] = ['page_number' => $pageNum, 'path' => $file];
+      }
+      usort($images, static fn(array $a, array $b): int => $a['page_number'] <=> $b['page_number']);
+    }
+  } else {
+    $outputPattern = $tempDir . '/page';
+    @exec('"' . $converter . '" -png -r200 "' . $pdfPath . '" "' . $outputPattern . '"', $output, $exitCode);
+    if ($exitCode === 0) {
+      foreach (glob($tempDir . '/page-*.png') ?: [] as $file) {
+        $pageNum = 1;
+        if (preg_match('/page-(\d+)\.png$/', $file, $m)) {
+          $pageNum = (int) $m[1];
+        }
+        $images[] = ['page_number' => $pageNum, 'path' => $file];
+      }
+      usort($images, static fn(array $a, array $b): int => $a['page_number'] <=> $b['page_number']);
+    }
+  }
+
+  if ($images === []) {
+    return ['images' => [], 'error' => 'PDF-to-image conversion failed. The PDF may be corrupted or the converter encountered an error.'];
+  }
+
+  return ['images' => $images, 'error' => ''];
+}
+
 function etds_qc_extract_pdf_ocr_text(string $path): array {
   $tesseract = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe';
   if (!is_file($tesseract)) {
@@ -2204,10 +2395,100 @@ function etds_qc_extract_pdf_ocr_text(string $path): array {
   }
   preg_match_all('/\((.*?)\)\s*Tj/s', $raw, $matches);
   $text = trim(preg_replace('/\s+/u', ' ', implode(' ', $matches[1] ?? [])) ?? '');
+
+  if ($text !== '' && mb_strlen($text) > 50) {
+    return [
+      'pages' => [['page_number' => 1, 'text' => $text]],
+      'raw_text' => $text,
+      'mode' => 'pdf_text',
+    ];
+  }
+
+  $converter = etds_qc_find_pdf_converter();
+  if ($converter === null) {
+    return [
+      'pages' => [],
+      'raw_text' => '',
+      'mode' => 'scanned_pdf_needs_manual_review',
+      'note' => 'Scanned PDF detected. PDF-to-image conversion tool not available. Please install Poppler (pdftoppm) or upload page images.',
+    ];
+  }
+
+  $sessionId = '';
+  $docId = '';
+  if (preg_match('/cases\/([^\/]+)\//', $path, $m)) {
+    $sessionId = $m[1];
+  }
+  if (preg_match('/DOC-(\d+)/', basename($path), $m)) {
+    $docId = 'DOC-' . $m[1];
+  }
+  if ($sessionId === '' || $docId === '') {
+    $tempDir = sys_get_temp_dir() . '/etds_qc_pdf_' . md5($path);
+  } else {
+    $tempDir = etds_qc_session_dir($sessionId) . '/temp/ocr/' . $docId;
+  }
+  if (!is_dir($tempDir)) {
+    @mkdir($tempDir, 0775, true);
+  }
+
+  $isGhostscript = stripos(basename($converter), 'gs') !== false;
+  $pages = [];
+
+  if ($isGhostscript) {
+    $outputPattern = $tempDir . '/page-%03d.png';
+    @exec('"' . $converter . '" -dNOPAUSE -dBATCH -sDEVICE=png16m -r200 -sOutputFile="' . $outputPattern . '" "' . $path . '"', $output, $exitCode);
+  } else {
+    $outputPattern = $tempDir . '/page';
+    @exec('"' . $converter . '" -png -r 150 "' . $path . '" "' . $outputPattern . '"', $output, $exitCode);
+  }
+
+  $imageFiles = glob($tempDir . '/page-*.png') ?: [];
+  if ($imageFiles === []) {
+    return [
+      'pages' => [],
+      'raw_text' => '',
+      'mode' => 'scanned_pdf_conversion_failed',
+      'note' => 'Scanned PDF detected but page conversion failed. Manual review required.',
+    ];
+  }
+
+  usort($imageFiles, static function (string $a, string $b): int {
+    preg_match('/page-(\d+)\.png$/', $a, $ma);
+    preg_match('/page-(\d+)\.png$/', $b, $mb);
+    return ((int) ($ma[1] ?? 0)) <=> ((int) ($mb[1] ?? 0));
+  });
+
+  $allText = [];
+  foreach ($imageFiles as $index => $imageFile) {
+    $pageNum = $index + 1;
+    $tempBase = tempnam(sys_get_temp_dir(), 'etds_qc_page_ocr_');
+    if ($tempBase === false) { continue; }
+    @unlink($tempBase);
+    @exec('"' . $tesseract . '" "' . $imageFile . '" "' . $tempBase . '" --psm 1', $output, $exitCode);
+    $textPath = $tempBase . '.txt';
+    $pageText = is_file($textPath) ? trim((string) file_get_contents($textPath)) : '';
+    if (is_file($textPath)) { @unlink($textPath); }
+    $pages[] = ['page_number' => $pageNum, 'text' => $pageText];
+    if ($pageText !== '') {
+      $allText[] = $pageText;
+    }
+  }
+
+  $combinedText = trim(implode("\n\n", $allText));
+
+  if ($combinedText !== '') {
+    return [
+      'pages' => $pages,
+      'raw_text' => $combinedText,
+      'mode' => 'pdf_ocr_scanned',
+    ];
+  }
+
   return [
-    'pages' => [['page_number' => 1, 'text' => $text]],
-    'raw_text' => $text,
-    'mode' => $text !== '' ? 'pdf_text' : 'ocr_review_required',
+    'pages' => $pages,
+    'raw_text' => '',
+    'mode' => 'scanned_pdf_ocr_failed',
+    'note' => 'Scanned PDF processed but OCR could not extract usable text from any page.',
   ];
 }
 
@@ -2295,6 +2576,8 @@ function etds_qc_extract_structured_entities(string $sessionId, array $document,
   $records = is_array($payload['tabular']['records'] ?? null) ? $payload['tabular']['records'] : [];
   $text = (string) ($payload['raw_text'] ?? '');
   $classification = (string) ($payload['classification']['classification'] ?? 'unknown_document');
+  $ocrPages = is_array($payload['ocr']['pages'] ?? null) ? $payload['ocr']['pages'] : [];
+  $ocrMode = (string) ($payload['ocr']['mode'] ?? '');
   $sourcePage = 1;
   $deductor = [];
   $deductees = [];
@@ -2325,7 +2608,49 @@ function etds_qc_extract_structured_entities(string $sessionId, array $document,
     }
   }
 
-  if (in_array($classification, ['challan', 'bank_challan'], true)) {
+  $isScannedPdfOcr = $ocrMode === 'pdf_ocr_scanned' && count($ocrPages) > 1;
+  if ($isScannedPdfOcr && in_array($classification, ['challan', 'bank_challan', 'unknown_document'], true)) {
+    foreach ($ocrPages as $page) {
+      $pageText = (string) ($page['text'] ?? '');
+      $pageNum = (int) ($page['page_number'] ?? 0);
+      if ($pageText === '') { continue; }
+      $pageClassification = etds_qc_document_classifier((string) ($document['original_name'] ?? ''), $pageText, []);
+      $pageIsChallan = in_array($pageClassification['classification'] ?? '', ['challan', 'bank_challan'], true)
+        || preg_match('/(?:CRN|TAN|Tax\s*Year|Major\s*Head)/i', $pageText) === 1;
+      if ($pageIsChallan) {
+        $ocrChallan = etds_qc_parse_challan_from_ocr_text($pageText);
+        if ($ocrChallan['has_data']) {
+          $challanConfidence = $ocrChallan['confidence'];
+          $f = $ocrChallan['fields'];
+          $challans[] = [
+            'challan_id' => 'CHL-' . str_pad((string) (count($challans) + 1), 5, '0', STR_PAD_LEFT),
+            'document_id' => $document['document_id'] ?? '',
+            'fields' => [
+              etds_qc_field_payload('crn', $f['crn'] ?? '', etds_qc_confidence_from_presence($f['crn'] ?? '', $challanConfidence), $pageNum),
+              etds_qc_field_payload('tan', $f['tan'] ?? $tan, etds_qc_confidence_from_presence($f['tan'] ?? $tan, $challanConfidence), $pageNum),
+              etds_qc_field_payload('tax_year', $f['tax_year'] ?? '', etds_qc_confidence_from_presence($f['tax_year'] ?? '', $challanConfidence), $pageNum),
+              etds_qc_field_payload('amount', $f['amount'] !== null ? (string) $f['amount'] : '', etds_qc_confidence_from_presence($f['amount'] !== null ? (string) $f['amount'] : '', $challanConfidence), $pageNum),
+              etds_qc_field_payload('major_head', $f['major_head'] ?? '', etds_qc_confidence_from_presence($f['major_head'] ?? '', $challanConfidence), $pageNum),
+              etds_qc_field_payload('minor_head', $f['minor_head'] ?? '', etds_qc_confidence_from_presence($f['minor_head'] ?? '', $challanConfidence), $pageNum),
+              etds_qc_field_payload('nature_of_payment', $f['nature_of_payment'] ?? '', etds_qc_confidence_from_presence($f['nature_of_payment'] ?? '', $challanConfidence), $pageNum),
+              etds_qc_field_payload('payment_mode', $f['payment_mode'] ?? '', etds_qc_confidence_from_presence($f['payment_mode'] ?? '', $challanConfidence), $pageNum),
+              etds_qc_field_payload('bank_name', $f['bank_name'] ?? '', etds_qc_confidence_from_presence($f['bank_name'] ?? '', $challanConfidence), $pageNum),
+              etds_qc_field_payload('bsr_code', $f['bsr_code'] ?? $bsr, etds_qc_confidence_from_presence($f['bsr_code'] ?? $bsr, $challanConfidence), $pageNum),
+              etds_qc_field_payload('zao_code', $f['zao_code'] ?? '', etds_qc_confidence_from_presence($f['zao_code'] ?? '', $challanConfidence), $pageNum),
+              etds_qc_field_payload('section_code', $f['section_code'] ?? '', etds_qc_confidence_from_presence($f['section_code'] ?? '', $challanConfidence), $pageNum),
+              etds_qc_field_payload('deposit_date', $f['deposit_date'] ?? '', etds_qc_confidence_from_presence($f['deposit_date'] ?? '', $challanConfidence), $pageNum),
+            ],
+            'confidence' => $challanConfidence,
+          ];
+        }
+      }
+    }
+    if ($challans !== []) {
+      $classification = 'challan';
+    }
+  }
+
+  if ($challans === [] && in_array($classification, ['challan', 'bank_challan'], true)) {
     $ocrChallan = etds_qc_parse_challan_from_ocr_text($text);
     if ($ocrChallan['has_data']) {
       $challanConfidence = $ocrChallan['confidence'];
@@ -2478,12 +2803,24 @@ function etds_qc_reload_source_data(string $sessionId, array $user): array {
       $documentConfidence[] = (int) ($record['confidence'] ?? 0);
     }
     $document['extraction_confidence'] = $documentConfidence === [] ? (int) ($classification['confidence'] ?? 0) : (int) round(array_sum($documentConfidence) / count($documentConfidence));
-    $document['extraction_status'] = !empty($structure['records']) ? 'extraction_ready' : ((($payload['raw_text'] ?? '') !== '') ? 'extraction_pending_review' : 'extraction_failed');
+    $ocrMode = (string) ($ocrPayload['mode'] ?? '');
+    $ocrPageCount = count($ocrPayload['pages'] ?? []);
+    $isScannedPdfConverted = $ocrMode === 'pdf_ocr_scanned' && $ocrPageCount > 0;
+    $isScannedPdfFailed = in_array($ocrMode, ['scanned_pdf_needs_manual_review', 'scanned_pdf_conversion_failed', 'scanned_pdf_ocr_failed'], true);
+    $isScannedPdf = $extension === 'pdf' && ($isScannedPdfFailed || $isScannedPdfConverted);
+    $document['extraction_status'] = !empty($structure['records']) ? 'extraction_ready' : ((($payload['raw_text'] ?? '') !== '' || ($isScannedPdf && !$isScannedPdfFailed)) ? 'extraction_pending_review' : 'extraction_failed');
     $document['raw_text_excerpt'] = mb_substr((string) ($payload['raw_text'] ?? ''), 0, 500);
     $document['validation_status'] = 'Extraction Ready';
     $document['extraction_note'] = '';
-    if ($document['extraction_status'] === 'extraction_pending_review') {
-      if (etds_qc_is_image_extension($extension)) {
+    if ($isScannedPdfConverted && !empty($structure['records'])) {
+      $pageCount = count($structure['challans'] ?? []);
+      $document['extraction_note'] = 'Scanned PDF processed page-wise through OCR. ' . $pageCount . ' record(s) extracted from ' . $ocrPageCount . ' page(s).';
+    } elseif ($isScannedPdfConverted) {
+      $document['extraction_note'] = 'Scanned PDF processed page-wise through OCR. Some pages may require manual review.';
+    } elseif ($document['extraction_status'] === 'extraction_pending_review') {
+      if ($isScannedPdfFailed) {
+        $document['extraction_note'] = 'Scanned PDF detected. PDF-to-image conversion tool not available or conversion failed. Please install Poppler (pdftoppm) or upload page images.';
+      } elseif (etds_qc_is_image_extension($extension)) {
         $document['extraction_note'] = 'OCR completed but structured extraction requires manual review. Image OCR may require manual verification, especially for rotated or tabular photographs.';
       } else {
         $document['extraction_note'] = 'OCR completed but structured extraction requires manual review.';
@@ -2491,6 +2828,8 @@ function etds_qc_reload_source_data(string $sessionId, array $user): array {
     } elseif ($document['extraction_status'] === 'extraction_failed') {
       if (etds_qc_is_image_extension($extension)) {
         $document['extraction_note'] = 'Image OCR could not extract usable text. Manual data entry may be required.';
+      } elseif ($extension === 'pdf') {
+        $document['extraction_note'] = 'PDF text extraction failed. The document may be scanned or image-based. Please upload page images or enable PDF-to-image OCR support.';
       }
     }
 
@@ -2615,6 +2954,351 @@ function etds_qc_validate_session(string $sessionId, array $user): array {
     return etds_validation_engine_run($sessionId, $user);
   }
   return etds_qc_default_validation();
+}
+
+function etds_doctor_intelli_mode_v1(string $sessionId, array $user): array {
+  $session = etds_qc_find_session($sessionId);
+  $returnType = strtoupper((string) ($session['return_type'] ?? ''));
+  $returnTypeCanonical = etds_qc_return_type_canonical($returnType);
+  $assignmentTan = strtoupper((string) ($session['tan'] ?? ''));
+  $assignmentFY = (string) ($session['financial_year'] ?? '');
+
+  $deductees = etds_qc_load_json(etds_qc_session_file($sessionId, 'deductees.json'), ['deductees' => []]);
+  $challans = etds_qc_load_json(etds_qc_session_file($sessionId, 'challans.json'), ['challans' => []]);
+  $salary = etds_qc_load_json(etds_qc_session_file($sessionId, 'salary.json'), ['rows' => []]);
+  $payments = etds_qc_load_json(etds_qc_session_file($sessionId, 'payments.json'), ['payments' => []]);
+  $documents = etds_qc_load_json(etds_qc_session_file($sessionId, 'documents.json'), ['documents' => []]);
+  $extraction = etds_qc_load_json(etds_qc_session_file($sessionId, 'extraction.json'), ['summary' => [], 'records' => []]);
+
+  $allDeductees = $deductees['deductees'] ?? [];
+  $allChallans = $challans['challans'] ?? [];
+  $allSalary = $salary['rows'] ?? [];
+  $allPayments = $payments['payments'] ?? [];
+  $allDocs = $documents['documents'] ?? [];
+
+  $dataUnderstanding = [];
+  $findings = [];
+  $findingId = 0;
+
+  $nextFinding = static function (string $severity, string $category, string $message, string $treatment, string $source = 'system_rule', string $docId = '', string $recordId = '') use (&$findingId): array {
+    $findingId++;
+    return [
+      'finding_id' => 'INT-F' . str_pad((string) $findingId, 4, '0', STR_PAD_LEFT),
+      'severity' => $severity,
+      'category' => $category,
+      'message' => $message,
+      'suggested_treatment' => $treatment,
+      'status' => 'open',
+      'source' => $source,
+      'document_id' => $docId,
+      'record_id' => $recordId,
+    ];
+  };
+
+  foreach ($allDocs as $doc) {
+    if (($doc['is_removed'] ?? false) === true) { continue; }
+    $docId = (string) ($doc['document_id'] ?? '');
+    $ext = strtolower((string) ($doc['extension'] ?? ''));
+    $classification = (string) ($doc['classification'] ?? 'unknown_document');
+    $ocrStatus = (string) ($doc['ocr_status'] ?? '');
+    $extractionStatus = (string) ($doc['extraction_status'] ?? '');
+    $extractionNote = (string) ($doc['extraction_note'] ?? '');
+    $detectedType = 'unknown';
+    $reason = '';
+
+    if (in_array($classification, ['salary_register', 'deductee_list', 'form_24q_working', 'form_26q_working'], true)) {
+      $detectedType = 'salary_deductee';
+      $reason = 'Document classified as ' . $classification . ' with salary/deductee data.';
+    } elseif (in_array($classification, ['challan', 'bank_challan'], true)) {
+      $detectedType = 'challan';
+      $reason = 'Document classified as ' . $classification . ' with challan data.';
+    } elseif ($classification === 'payment_register') {
+      $detectedType = 'payment';
+      $reason = 'Document classified as payment register.';
+    } elseif (in_array($classification, ['quarterly_tds'], true)) {
+      $detectedType = 'salary_deductee';
+      $reason = 'Document contains quarterly TDS/salary statement.';
+    } elseif ($extractionStatus === 'extraction_pending_review') {
+      $detectedType = 'ocr_pending_review';
+      $reason = 'Document requires manual review.';
+    } else {
+      $detectedType = 'unknown';
+      $reason = 'Document could not be classified.';
+    }
+
+    $dataUnderstanding[] = [
+      'document_id' => $docId,
+      'original_name' => $doc['original_name'] ?? '',
+      'detected_type' => $detectedType,
+      'classification' => $classification,
+      'confidence' => (int) ($doc['classification_confidence'] ?? 0),
+      'extraction_status' => $extractionStatus,
+      'ocr_status' => $ocrStatus,
+      'reason' => $reason,
+    ];
+
+    if ($extractionStatus === 'extraction_pending_review') {
+      $findings[] = $nextFinding('medium', 'ocr_review', 'Document "' . ($doc['original_name'] ?? $docId) . '" requires manual review.', 'Manually verify the document and correct extracted data.', 'ocr', $docId);
+    }
+    if ($detectedType === 'unknown' && $extractionStatus !== 'extraction_pending_review') {
+      $findings[] = $nextFinding('low', 'data_completeness', 'Document "' . ($doc['original_name'] ?? $docId) . '" could not be classified.', 'Review document and upload with correct categorization.', 'system_rule', $docId);
+    }
+  }
+
+  $totalStaff = count($allDeductees) + count($allSalary);
+  $totalTds = 0;
+  foreach ($allDeductees as $d) {
+    foreach ($d['fields'] ?? [] as $f) {
+      if (($f['field'] ?? '') === 'tds_amount' && ($f['value'] ?? '') !== '') {
+        $totalTds += (float) str_replace(',', '', (string) $f['value']);
+      }
+    }
+  }
+  foreach ($allSalary as $s) {
+    $amt = (float) str_replace(',', '', (string) ($s['amount'] ?? ''));
+    if ($amt > 0) { $totalTds += $amt; }
+  }
+  foreach ($allPayments as $p) {
+    $amt = (float) str_replace(',', '', (string) ($p['amount'] ?? ''));
+    if ($amt > 0) { $totalTds += $amt; }
+  }
+
+  $totalChallan = 0;
+  $challanCount = count($allChallans);
+  $challanCrns = [];
+  foreach ($allChallans as $c) {
+    foreach ($c['fields'] ?? [] as $f) {
+      if (($f['field'] ?? '') === 'amount' && ($f['value'] ?? '') !== '') {
+        $totalChallan += (float) str_replace(',', '', (string) $f['value']);
+      }
+      if (($f['field'] ?? '') === 'crn' && ($f['value'] ?? '') !== '') {
+        $challanCrns[] = (string) $f['value'];
+      }
+    }
+  }
+
+  $ocrPendingCount = 0;
+  foreach ($allDocs as $d) {
+    if (($d['is_removed'] ?? false)) { continue; }
+    if (($d['extraction_status'] ?? '') === 'extraction_pending_review') { $ocrPendingCount++; }
+  }
+
+  foreach ($allDeductees as $d) {
+    $name = '';
+    $pan = '';
+    foreach ($d['fields'] ?? [] as $f) {
+      if (($f['field'] ?? '') === 'deductee_name') { $name = (string) ($f['value'] ?? ''); }
+      if (($f['field'] ?? '') === 'pan') { $pan = strtoupper((string) ($f['value'] ?? '')); }
+    }
+    if ($pan === '') {
+      $findings[] = $nextFinding('high', 'pan_validation', 'PAN missing for deductee "' . $name . '".', 'Enter valid PAN before preparing final output.', 'system_rule', $d['document_id'] ?? '', $d['deductee_id'] ?? '');
+    } elseif (preg_match('/^[A-Z]{5}[0-9]{4}[A-Z]$/', $pan) !== 1) {
+      $findings[] = $nextFinding('high', 'pan_validation', 'Invalid PAN format "' . $pan . '" for "' . $name . '".', 'Correct PAN to match AAAAA9999A format.', 'system_rule', $d['document_id'] ?? '', $d['deductee_id'] ?? '');
+    }
+    if ($name === '') {
+      $findings[] = $nextFinding('medium', 'data_completeness', 'Deductee name missing for PAN ' . $pan . '.', 'Enter the deductee/staff name.', 'system_rule', $d['document_id'] ?? '', $d['deductee_id'] ?? '');
+    }
+  }
+
+  foreach ($allSalary as $s) {
+    $name = (string) ($s['employee_name'] ?? '');
+    $pan = strtoupper((string) ($s['pan'] ?? ''));
+    if ($pan === '') {
+      $findings[] = $nextFinding('high', 'pan_validation', 'PAN missing for staff "' . $name . '".', 'Enter valid PAN before preparing final output.', 'system_rule', $s['document_id'] ?? '', $s['salary_id'] ?? '');
+    } elseif (preg_match('/^[A-Z]{5}[0-9]{4}[A-Z]$/', $pan) !== 1) {
+      $findings[] = $nextFinding('high', 'pan_validation', 'Invalid PAN format "' . $pan . '" for "' . $name . '".', 'Correct PAN to match AAAAA9999A format.', 'system_rule', $s['document_id'] ?? '', $s['salary_id'] ?? '');
+    }
+  }
+
+  $challanCrnCounts = array_count_values($challanCrns);
+  foreach ($challanCrnCounts as $crn => $count) {
+    if ($count > 1) {
+      $findings[] = $nextFinding('medium', 'duplicate_check', 'Duplicate challan CRN "' . $crn . '" detected (' . $count . ' times).', 'Verify and remove duplicate challan records.', 'duplicate_check');
+    }
+  }
+
+  $panSeen = [];
+  foreach ($allDeductees as $d) {
+    $name = '';
+    $pan = '';
+    foreach ($d['fields'] ?? [] as $f) {
+      if (($f['field'] ?? '') === 'deductee_name') { $name = (string) ($f['value'] ?? ''); }
+      if (($f['field'] ?? '') === 'pan') { $pan = strtoupper((string) ($f['value'] ?? '')); }
+    }
+    if ($pan !== '') {
+      $key = $pan;
+      if (isset($panSeen[$key])) {
+        $findings[] = $nextFinding('medium', 'duplicate_check', 'Possible duplicate: PAN "' . $pan . '" appears multiple times.', 'Review and merge/delete duplicate records if confirmed.', 'duplicate_check', $d['document_id'] ?? '', $d['deductee_id'] ?? '');
+      }
+      $panSeen[$key] = true;
+    }
+  }
+
+  if ($returnTypeCanonical !== '' && $totalStaff > 0 && in_array($returnTypeCanonical, ['26Q', '27Q', '27EQ'], true)) {
+    $findings[] = $nextFinding('medium', 'return_type_check', 'Return type is ' . etds_qc_return_type_label($returnType) . ' but salary/deductee records were found. Verify if this is expected.', 'Confirm return type matches the data uploaded.', 'return_type_check');
+  }
+
+  $hasMarchData = false;
+  $hasSalaryPattern = false;
+  $hasGovtSalaryPattern = false;
+  foreach ($allDocs as $doc) {
+    $docName = strtolower((string) ($doc['original_name'] ?? ''));
+    if (str_contains($docName, 'march') || str_contains($docName, 'quarter')) {
+      $hasMarchData = true;
+    }
+    $class = (string) ($doc['classification'] ?? '');
+    if (in_array($class, ['salary_register', 'quarterly_tds', 'deductee_list'], true)) {
+      $hasSalaryPattern = true;
+    }
+    $rawText = strtolower((string) ($doc['raw_text_excerpt'] ?? ''));
+    if (str_contains($rawText, 'march') || str_contains($rawText, 'quarter statement') || str_contains($rawText, 'govt') || str_contains($rawText, 'school')) {
+      $hasMarchData = true;
+      $hasGovtSalaryPattern = true;
+    }
+  }
+  foreach ($allSalary as $s) {
+    $desig = strtolower((string) ($s['designation'] ?? ''));
+    $empName = strtolower((string) ($s['employee_name'] ?? ''));
+    if (str_contains($desig, 'hm') || str_contains($desig, 'tgt') || str_contains($desig, 'pgt') || str_contains($desig, 'pt') || str_contains($empName, 'govt') || str_contains($empName, 'school')) {
+      $hasGovtSalaryPattern = true;
+    }
+  }
+
+  if ($returnTypeCanonical === '24Q' && $hasMarchData && $hasSalaryPattern) {
+    $findings[] = $nextFinding('info', 'period_check', 'Government salary pattern detected: March salary appears in Q1 working. This may be valid where March salary is paid/deducted in April. Verify deduction/payment date before finalisation.', 'Verify deduction/payment dates before finalising Q1 24Q return.', 'period_check');
+  }
+
+  if ($challanCount > 0) {
+    foreach ($allChallans as $c) {
+      $challanTan = '';
+      foreach ($c['fields'] ?? [] as $f) {
+        if (($f['field'] ?? '') === 'tan') { $challanTan = strtoupper((string) ($f['value'] ?? '')); }
+      }
+      if ($challanTan !== '' && $assignmentTan !== '' && $challanTan !== $assignmentTan) {
+        $findings[] = $nextFinding('high', 'challan_matching', 'Challan TAN "' . $challanTan . '" does not match assignment TAN "' . $assignmentTan . '".', 'Upload correct challan or verify selected assignment.', 'challan_match', $c['document_id'] ?? '');
+      }
+    }
+  }
+
+  $difference = $totalChallan - $totalTds;
+  $challanMatchStatus = 'no_data';
+  $shortfallRatio = 0;
+  if ($totalTds > 0 && $totalChallan > 0) {
+    $challanMatchStatus = abs($difference) < 1 ? 'matched' : ($difference > 0 ? 'excess' : 'shortfall');
+    if ($totalTds > $totalChallan) {
+      $shortfall = $totalTds - $totalChallan;
+      $shortfallRatio = $totalTds > 0 ? $shortfall / $totalTds : 0;
+      if ($shortfallRatio >= 0.5) {
+        $findings[] = $nextFinding('critical', 'challan_matching', 'Critical challan shortfall: ₹' . number_format($shortfall) . ' (' . round($shortfallRatio * 100) . '% of TDS). Total TDS: ₹' . number_format($totalTds) . ', Total Challan: ₹' . number_format($totalChallan) . '.', 'Upload missing challans or verify extracted TDS total and period.', 'challan_match');
+      } elseif ($shortfallRatio >= 0.25) {
+        $findings[] = $nextFinding('high', 'challan_matching', 'Significant challan shortfall: ₹' . number_format($shortfall) . ' (' . round($shortfallRatio * 100) . '% of TDS). Total TDS: ₹' . number_format($totalTds) . ', Total Challan: ₹' . number_format($totalChallan) . '.', 'Upload missing challans or verify extracted TDS total.', 'challan_match');
+      } else {
+        $findings[] = $nextFinding('high', 'challan_matching', 'Challan shortfall: ₹' . number_format($shortfall) . '. Total TDS: ₹' . number_format($totalTds) . ', Total Challan: ₹' . number_format($totalChallan) . '.', 'Verify challan amounts and ensure all challans are uploaded.', 'challan_match');
+      }
+    } elseif ($difference > 1000) {
+      $findings[] = $nextFinding('medium', 'challan_matching', 'Excess challan amount: ₹' . number_format($difference) . '. Total TDS: ₹' . number_format($totalTds) . ', Total Challan: ₹' . number_format($totalChallan) . '.', 'Verify challan allocation.', 'challan_match');
+    }
+  } elseif ($totalTds > 0 && $challanCount === 0) {
+    $challanMatchStatus = 'no_challan';
+    $findings[] = $nextFinding('critical', 'challan_matching', 'No challan data found but TDS of ₹' . number_format($totalTds) . ' exists. Complete challan upload required.', 'Upload challan documents for all TDS deductions.', 'challan_match');
+  }
+
+  $criticalCount = count(array_filter($findings, fn($f) => $f['severity'] === 'critical'));
+  $highCount = count(array_filter($findings, fn($f) => $f['severity'] === 'high'));
+  $mediumCount = count(array_filter($findings, fn($f) => $f['severity'] === 'medium'));
+  $lowCount = count(array_filter($findings, fn($f) => in_array($f['severity'], ['low', 'info'], true)));
+  $hasBlockingFinding = $criticalCount > 0 || count(array_filter($findings, fn($f) => $f['severity'] === 'high' && $f['category'] === 'challan_matching')) > 0;
+
+  $score = 100;
+  $score -= $criticalCount * 20;
+  $score -= $highCount * 10;
+  $score -= $mediumCount * 5;
+  $score -= $lowCount * 2;
+  $score -= $ocrPendingCount * 5;
+
+  if ($challanMatchStatus === 'shortfall' && $totalTds > 0) {
+    if ($shortfallRatio >= 0.5) {
+      $score = min($score, 55);
+    } elseif ($shortfallRatio >= 0.25) {
+      $score = min($score, 70);
+    } else {
+      $score = min($score, 80);
+    }
+  }
+  if ($challanMatchStatus === 'no_challan') {
+    $score = min($score, 40);
+  }
+  $score = max(0, min(100, $score));
+
+  if ($hasBlockingFinding) {
+    if ($criticalCount > 0 || $score < 50) {
+      $readinessStatus = 'Critical Review Required';
+      $readinessNote = 'Critical issues must be resolved. ' . ($criticalCount > 0 ? $criticalCount . ' critical finding(s).' : '');
+    } else {
+      $readinessStatus = 'Not Ready';
+      $readinessNote = 'Blocking issues must be resolved before preparing deliverables.';
+    }
+  } elseif ($score >= 90) {
+    $readinessStatus = 'Ready';
+    $readinessNote = 'Data quality meets all thresholds.';
+  } elseif ($score >= 75) {
+    $readinessStatus = 'Ready with Caution';
+    $readinessNote = 'Minor issues should be reviewed before final output.';
+  } elseif ($score >= 50) {
+    $readinessStatus = 'Not Ready';
+    $readinessNote = 'Resolve issues before preparing deliverables.';
+  } else {
+    $readinessStatus = 'Critical Review Required';
+    $readinessNote = 'Significant data quality issues must be resolved.';
+  }
+
+  $bifurcation = [
+    'total_staff' => count($allSalary),
+    'total_deductees' => count($allDeductees),
+    'total_tds' => $totalTds,
+    'total_payments' => count($allPayments),
+    'challan_count' => $challanCount,
+    'total_challan' => $totalChallan,
+    'challan_difference' => $difference,
+    'challan_match_status' => $challanMatchStatus,
+    'ocr_pending_count' => $ocrPendingCount,
+    'unknown_doc_count' => count(array_filter($allDocs, fn($d) => ($d['classification'] ?? '') === 'unknown_document' && !($d['is_removed'] ?? false))),
+  ];
+
+  $payload = [
+    'data_understanding' => $dataUnderstanding,
+    'bifurcation_summary' => $bifurcation,
+    'validation_summary' => [
+      'total_findings' => count($findings),
+      'critical' => $criticalCount,
+      'high' => $highCount,
+      'medium' => $mediumCount,
+      'low' => $lowCount,
+    ],
+    'challan_match_summary' => [
+      'total_tds' => $totalTds,
+      'total_challan' => $totalChallan,
+      'difference' => $difference,
+      'match_status' => $challanMatchStatus,
+    ],
+    'findings' => $findings,
+    'readiness_score' => $score,
+    'readiness_status' => $readinessStatus,
+    'readiness_note' => $readinessNote,
+    'generated_at' => etds_qc_now(),
+  ];
+
+  etds_qc_write_json(etds_qc_session_file($sessionId, 'doctor_intelli.json'), $payload);
+
+  if (function_exists('etds_qc_audit')) {
+    etds_qc_audit($sessionId, $user, 'doctor_intelli_completed', 'Doctor Intelli Mode V1 executed', [], [
+      'readiness_score' => $score,
+      'readiness_status' => $readinessStatus,
+      'total_findings' => count($findings),
+    ]);
+  }
+
+  return $payload;
 }
 
 function etds_qc_update_issue_status(string $sessionId, string $recordId, string $issueId, string $status, array $user): void {
