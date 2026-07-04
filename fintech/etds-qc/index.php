@@ -399,31 +399,73 @@ function etds_qc_nav_icon(string $name): string {
 if ($view === 'login'):
 require_once dirname(__DIR__, 2) . '/includes/header.php';
 ?>
+<style>
+.etds-login-hero{display:flex;min-height:calc(100vh - 80px);background:linear-gradient(135deg,#f0fdfa 0%,#f8fafc 50%,#fffbeb 100%);padding:40px 0;}
+.etds-login-hero__left{flex:1;display:flex;flex-direction:column;justify-content:center;padding:40px 60px 40px 80px;max-width:580px;}
+.etds-login-hero__badge{display:inline-block;background:linear-gradient(135deg,#f97316,#fb923c);color:#fff;font-size:11px;font-weight:700;padding:5px 14px;border-radius:20px;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:20px;width:fit-content;}
+.etds-login-hero__title{font-size:42px;font-weight:800;color:#0f172a;line-height:1.15;margin-bottom:6px;font-family:'Fraunces',Georgia,serif;}
+.etds-login-hero__subtitle{font-size:16px;color:#0d9488;font-weight:600;margin-bottom:16px;}
+.etds-login-hero__desc{font-size:14px;color:#475569;line-height:1.7;margin-bottom:28px;}
+.etds-login-hero__features{list-style:none;padding:0;margin:0;}
+.etds-login-hero__features li{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#334155;margin-bottom:12px;line-height:1.5;}
+.etds-login-hero__features li::before{content:'';flex-shrink:0;width:20px;height:20px;border-radius:50%;background:#ccfbf1;display:inline-block;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%230d9488'%3E%3Cpath fill-rule='evenodd' d='M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:center;background-size:14px;margin-top:1px;}
+.etds-login-hero__right{flex:0 0 440px;display:flex;align-items:center;justify-content:center;padding:40px 80px 40px 40px;}
+.etds-login-card{width:100%;max-width:400px;background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,.08),0 1px 3px rgba(0,0,0,.04);padding:36px 32px;}
+.etds-login-card__eyebrow{font-size:11px;font-weight:700;color:#0d9488;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px;}
+.etds-login-card__title{font-size:24px;font-weight:700;color:#0f172a;margin-bottom:4px;}
+.etds-login-card__note{font-size:12px;color:#94a3b8;margin-bottom:24px;}
+.etds-login-card .etds-fields{display:flex;flex-direction:column;gap:16px;}
+.etds-login-card .etds-field{display:flex;flex-direction:column;gap:5px;}
+.etds-login-card .etds-field label{font-size:12px;font-weight:600;color:#475569;}
+.etds-login-card .etds-field input{width:100%;padding:11px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:14px;color:#1e293b;background:#f8fafc;transition:border-color .2s,box-shadow .2s;outline:none;}
+.etds-login-card .etds-field input:focus{border-color:#0d9488;box-shadow:0 0 0 3px rgba(13,148,136,.12);background:#fff;}
+.etds-login-card .etds-field input::placeholder{color:#94a3b8;}
+.etds-login-card .etds-action-row{display:flex;flex-direction:column;gap:10px;margin-top:24px;}
+.etds-login-card .btn-login-primary{width:100%;padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,#0d9488,#14b8a6);color:#fff;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;letter-spacing:0.01em;}
+.etds-login-card .btn-login-primary:hover{background:linear-gradient(135deg,#0f766e,#0d9488);box-shadow:0 4px 12px rgba(13,148,136,.3);}
+.etds-login-card .btn-login-secondary{display:block;text-align:center;padding:10px;border:1.5px solid #e2e8f0;border-radius:10px;background:#fff;color:#475569;font-size:13px;font-weight:500;text-decoration:none;transition:all .2s;}
+.etds-login-card .btn-login-secondary:hover{border-color:#0d9488;color:#0d9488;background:#f0fdfa;}
+@media(max-width:1024px){.etds-login-hero__left{padding:30px 40px;max-width:100%;}.etds-login-hero__right{flex:0 0 380px;padding:30px 40px;}.etds-login-hero__title{font-size:34px;}}
+@media(max-width:768px){.etds-login-hero{flex-direction:column;min-height:auto;padding:24px 0;}.etds-login-hero__left{padding:20px 24px;max-width:100%;}.etds-login-hero__right{flex:none;padding:0 24px 24px;}.etds-login-hero__title{font-size:28px;}}
+</style>
 <main id="main-content">
-  <section class="container etds-login-wrap">
-    <div class="etds-login-card">
-      <div class="eyebrow">Internal Access</div>
-      <h1>eTDSDoc</h1>
-      <p class="etds-subtitle">Examine. Diagnose. Treat.</p>
-      <?php etds_qc_render_flash($flash); ?>
-      <form method="post" action="<?= etds_qc_h(site_href('/fintech/etds-qc/')) ?>">
-        <?= csrf_field() ?>
-        <input type="hidden" name="action" value="login">
-        <div class="etds-fields">
-          <div class="etds-field etds-field-full">
-            <label for="email">Email</label>
-            <input id="email" name="email" type="email" placeholder="Enter your email address" required autofocus>
+  <section class="etds-login-hero">
+    <div class="etds-login-hero__left">
+      <div class="etds-login-hero__badge">Internal Access</div>
+      <h1 class="etds-login-hero__title">eTDSDoc</h1>
+      <p class="etds-login-hero__subtitle">Examine. Diagnose. Treat.</p>
+      <p class="etds-login-hero__desc">Internal TDS QC workspace for extracting, validating, diagnosing and preparing clean e-TDS data from Excel, PDF, image and challan files.</p>
+      <ul class="etds-login-hero__features">
+        <li>Excel, PDF, image and scanned challan support</li>
+        <li>Doctor Intelli Mode for e-TDS QC</li>
+        <li>eTDSDoc AI-ready diagnostic workflow</li>
+      </ul>
+    </div>
+    <div class="etds-login-hero__right">
+      <div class="etds-login-card">
+        <div class="etds-login-card__eyebrow">Internal Access</div>
+        <h2 class="etds-login-card__title">Sign In to eTDSDoc</h2>
+        <p class="etds-login-card__note">Authorised staff access only.</p>
+        <?php etds_qc_render_flash($flash); ?>
+        <form method="post" action="<?= etds_qc_h(site_href('/fintech/etds-qc/')) ?>">
+          <?= csrf_field() ?>
+          <input type="hidden" name="action" value="login">
+          <div class="etds-fields">
+            <div class="etds-field etds-field-full">
+              <label for="email">Email</label>
+              <input id="email" name="email" type="email" placeholder="Enter your email address" required autofocus>
+            </div>
+            <div class="etds-field etds-field-full">
+              <label for="password">Password</label>
+              <input id="password" name="password" type="password" placeholder="Enter your password" required>
+            </div>
           </div>
-          <div class="etds-field etds-field-full">
-            <label for="password">Password</label>
-            <input id="password" name="password" type="password" required>
+          <div class="etds-action-row">
+            <button class="btn-login-primary" type="submit">Sign In to eTDSDoc</button>
+            <a class="btn-login-secondary" href="<?= etds_qc_h(site_href('/fintech-tools.php')) ?>">Back to Fintech Tools</a>
           </div>
-        </div>
-        <div class="etds-action-row" style="margin-top:18px;">
-          <button class="btn btn-primary" type="submit">Sign In</button>
-          <a class="btn btn-outline" href="<?= etds_qc_h(site_href('/fintech-tools.php')) ?>">Back to Fintech Tools</a>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   </section>
 </main>
