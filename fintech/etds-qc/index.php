@@ -10,14 +10,34 @@ $extra_head = <<<HTML
 HTML;
 $extra_css = site_href('/fintech/etds-qc/assets/css/etds-qc.css');
 
-$view = $_GET['view'] ?? 'dashboard';
+$view = $_GET['view'] ?? 'gateway';
 $action = $_POST['action'] ?? $_GET['action'] ?? null;
 $isAjax = (string) ($_REQUEST['ajax'] ?? '0') === '1';
 $flash = etds_qc_pull_flash();
 $user = etds_qc_current_user();
 $page_title = 'eTDSDoc | E Tax Advisors';
-$page_description = 'eTDSDoc - Diagnose. Reconcile. Prepare. Your Intelligent TDS Data Health Checker for intake, diagnosis, reconciliation, and processing preparation.';
+$page_description = 'eTDSDoc - Examine. Diagnose. Treat. Your Intelligent TDS Data QC workspace for intake, diagnosis, reconciliation, and deliverables preparation.';
 $page_path = '/fintech/etds-qc/';
+
+$viewAliases = [
+  'cases' => 'gateway',
+  'upload' => 'upload-console',
+  'extract' => 'etdsdoc',
+  'doctor' => 'etdsdoc',
+  'spreadsheet' => 'etdsdoc',
+  'output' => 'deliverables',
+];
+if (isset($viewAliases[$view]) && $action === null) {
+  $aliasTarget = $viewAliases[$view];
+  $aliasParams = $_GET;
+  unset($aliasParams['view']);
+  if ($view === 'extract') { $aliasParams['tab'] = 'examination'; }
+  if ($view === 'doctor') { $aliasParams['tab'] = 'diagnosis'; }
+  if ($view === 'spreadsheet') { $aliasParams['tab'] = 'review'; }
+  $aliasParams['view'] = $aliasTarget;
+  header('Location: ' . site_href('/fintech/etds-qc/?' . http_build_query($aliasParams)));
+  exit;
+}
 
 function etds_qc_respond(bool $isAjax, string $redirect, string $type, string $message, array $extra = []): never {
   if ($isAjax) {
@@ -40,12 +60,12 @@ if ($action === 'login' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=login'), 'error', 'Too many login attempts. Please wait 15 minutes and try again.');
   }
   if (!verify_csrf($_POST['_csrf'] ?? null)) {
-    etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=cases'), 'error', 'Security token expired. Please try again.');
+    etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=gateway'), 'error', 'Security token expired. Please try again.');
   }
   $email = clean_input((string) ($_POST['email'] ?? ''), 150);
   $password = (string) ($_POST['password'] ?? '');
   if (etds_qc_login($email, $password)) {
-    etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=cases'), 'success', 'Welcome back.');
+    etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=gateway'), 'success', 'Welcome back.');
   }
   etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=login'), 'error', 'Invalid email or password.');
 }
@@ -62,44 +82,45 @@ if ($view !== 'login') {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action !== 'login') {
   if (!verify_csrf($_POST['_csrf'] ?? null)) {
-    etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=cases'), 'error', 'Security token expired. Please try again.');
+    etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=gateway'), 'error', 'Security token expired. Please try again.');
   }
 }
 
 if ($action === 'create_session' && $user) {
   $tan = strtoupper(clean_input((string) ($_POST['tan'] ?? ''), 10));
   if ($tan === '' || !etds_qc_tan_valid($tan)) {
-    etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?ws=dashboard&view=dashboard'), 'error', 'Enter a valid TAN in the format AAAA99999A.');
+    etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=gateway'), 'error', 'Enter a valid TAN in the format AAAA99999A.');
   }
   $session = etds_qc_create_session($_POST, $user);
-    etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=upload&session=' . urlencode($session['session_id'])), 'success', 'Case ' . $session['session_id'] . ' created.');
+    etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=upload-console&session=' . urlencode($session['session_id'])), 'success', 'Case ' . $session['session_id'] . ' created. Proceed to upload documents.');
 }
 
 if ($action === 'upload_documents' && $user) {
   $sessionId = (string) ($_POST['session_id'] ?? '');
+  $uploadCategory = (string) ($_POST['upload_category'] ?? '');
   $session = etds_qc_find_session($sessionId);
   if ($session && isset($_FILES['documents'])) {
-    $result = etds_qc_register_uploads($sessionId, $_FILES['documents'], $user);
+    $result = etds_qc_register_uploads($sessionId, $_FILES['documents'], $user, $uploadCategory);
     if (($result['uploaded'] ?? 0) > 0) {
       $suffix = (($result['duplicates'] ?? 0) > 0 || ($result['versions'] ?? 0) > 0)
         ? ' Duplicate and version details were captured in the document register.'
         : '';
-      etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=extract&session=' . urlencode($sessionId)), 'success', 'Documents uploaded successfully.' . $suffix);
+      etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=upload-console&session=' . urlencode($sessionId)), 'success', 'Documents uploaded successfully.' . $suffix);
     }
   }
-  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=upload&session=' . urlencode($sessionId)), 'error', 'No documents were uploaded.');
+  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=upload-console&session=' . urlencode($sessionId)), 'error', 'No documents were uploaded.');
 }
 
 if ($action === 'delete_upload' && $user) {
   $sessionId = (string) ($_POST['session_id'] ?? '');
   $deleted = etds_qc_delete_upload($sessionId, (string) ($_POST['file_id'] ?? ''), $user);
-  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=upload&session=' . urlencode($sessionId)), $deleted ? 'success' : 'error', $deleted ? 'Upload deleted and data refreshed.' : 'Upload could not be deleted.');
+  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=upload-console&session=' . urlencode($sessionId)), $deleted ? 'success' : 'error', $deleted ? 'Upload deleted and data refreshed.' : 'Upload could not be deleted.');
 }
 
 if ($action === 'extract_validate' && $user) {
   $sessionId = (string) ($_POST['session_id'] ?? '');
   etds_qc_reload_source_data($sessionId, $user);
-  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=spreadsheet&session=' . urlencode($sessionId)), 'success', 'AI extraction completed. Structured data is ready for review.');
+  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=etdsdoc&tab=review&session=' . urlencode($sessionId)), 'success', 'AI extraction completed. Structured data is ready for review.');
 }
 
 if ($action === 'workspace_edit' && $user) {
@@ -117,7 +138,7 @@ if ($action === 'workspace_edit' && $user) {
   if ($isAjax) {
     json_response(['ok' => true] + $result);
   }
-  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=spreadsheet&sheet=' . urlencode((string) ($_POST['sheet'] ?? 'deductees')) . '&session=' . urlencode($sessionId)), 'success', 'Cell updated.');
+  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=etdsdoc&tab=review&sheet=' . urlencode((string) ($_POST['sheet'] ?? 'deductees')) . '&session=' . urlencode($sessionId)), 'success', 'Cell updated.');
 }
 
 if ($action === 'workspace_bulk_edit' && $user) {
@@ -136,7 +157,7 @@ if ($action === 'workspace_bulk_edit' && $user) {
   if ($isAjax) {
     json_response(['ok' => true, 'updated' => count($results)]);
   }
-  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=spreadsheet&sheet=' . urlencode($sheet) . '&session=' . urlencode($sessionId)), 'success', count($results) . ' cell correction(s) saved.');
+  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=etdsdoc&tab=review&sheet=' . urlencode($sheet) . '&session=' . urlencode($sessionId)), 'success', count($results) . ' cell correction(s) saved.');
 }
 
 if ($action === 'workspace_reset_field' && $user) {
@@ -146,7 +167,7 @@ if ($action === 'workspace_reset_field' && $user) {
   if ($isAjax) {
     json_response(['ok' => true] + $result);
   }
-  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=spreadsheet&sheet=' . urlencode($sheet) . '&session=' . urlencode($sessionId)), 'success', 'Cell reset to extracted value.');
+  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=etdsdoc&tab=review&sheet=' . urlencode($sheet) . '&session=' . urlencode($sessionId)), 'success', 'Cell reset to extracted value.');
 }
 
 if ($action === 'workspace_ignore_suggestion' && $user) {
@@ -156,7 +177,7 @@ if ($action === 'workspace_ignore_suggestion' && $user) {
   if ($isAjax) {
     json_response(['ok' => true, 'mode' => 'ignored']);
   }
-  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=spreadsheet&sheet=' . urlencode($sheet) . '&session=' . urlencode($sessionId)), 'success', 'Suggestion ignored.');
+  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=etdsdoc&tab=review&sheet=' . urlencode($sheet) . '&session=' . urlencode($sessionId)), 'success', 'Suggestion ignored.');
 }
 
 if ($action === 'workspace_apply_suggestion' && $user) {
@@ -176,28 +197,28 @@ if ($action === 'workspace_apply_suggestion' && $user) {
   if ($isAjax) {
     json_response(['ok' => true] + $result);
   }
-  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=spreadsheet&sheet=' . urlencode($sheet) . '&session=' . urlencode($sessionId)), 'success', 'AI suggestion applied.');
+  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=etdsdoc&tab=review&sheet=' . urlencode($sheet) . '&session=' . urlencode($sessionId)), 'success', 'AI suggestion applied.');
 }
 
 if ($action === 'run_validation' && $user) {
   $sessionId = (string) ($_POST['session_id'] ?? '');
-  $returnTo = (string) ($_POST['return_to'] ?? 'bench');
+  $returnTo = (string) ($_POST['return_to'] ?? 'diagnosis');
   etds_qc_workspace_sync_case_data($sessionId);
   etds_qc_validate_session($sessionId, $user);
   etds_doctor_engine_run($sessionId, $user);
-  $redirect = $returnTo === 'spreadsheet'
-    ? site_href('/fintech/etds-qc/?view=spreadsheet&sheet=' . urlencode((string) ($_POST['sheet'] ?? 'deductees')) . '&session=' . urlencode($sessionId))
-    : site_href('/fintech/etds-qc/?view=doctor&session=' . urlencode($sessionId));
+  $redirect = $returnTo === 'review'
+    ? site_href('/fintech/etds-qc/?view=etdsdoc&tab=review&sheet=' . urlencode((string) ($_POST['sheet'] ?? 'deductees')) . '&session=' . urlencode($sessionId))
+    : site_href('/fintech/etds-qc/?view=etdsdoc&tab=diagnosis&session=' . urlencode($sessionId));
   etds_qc_respond($isAjax, $redirect, 'success', 'Validation rules engine executed. Doctor intelligence is ready.');
 }
 
 if ($action === 'run_doctor' && $user) {
   $sessionId = (string) ($_POST['session_id'] ?? '');
-  $returnTo = (string) ($_POST['return_to'] ?? 'bench');
+  $returnTo = (string) ($_POST['return_to'] ?? 'diagnosis');
   etds_doctor_engine_run($sessionId, $user);
-  $redirect = $returnTo === 'spreadsheet'
-    ? site_href('/fintech/etds-qc/?view=spreadsheet&sheet=' . urlencode((string) ($_POST['sheet'] ?? 'deductees')) . '&session=' . urlencode($sessionId))
-    : site_href('/fintech/etds-qc/?view=doctor&session=' . urlencode($sessionId));
+  $redirect = $returnTo === 'review'
+    ? site_href('/fintech/etds-qc/?view=etdsdoc&tab=review&sheet=' . urlencode((string) ($_POST['sheet'] ?? 'deductees')) . '&session=' . urlencode($sessionId))
+    : site_href('/fintech/etds-qc/?view=etdsdoc&tab=diagnosis&session=' . urlencode($sessionId));
   etds_qc_respond($isAjax, $redirect, 'success', 'Doctor intelligence regenerated from the latest validation findings.');
 }
 
@@ -211,7 +232,7 @@ if ($action === 'issue_status' && $user) {
     $user
   );
   etds_doctor_engine_run($sessionId, $user);
-  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=doctor&session=' . urlencode($sessionId)), 'success', 'Issue updated.');
+  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=etdsdoc&tab=diagnosis&session=' . urlencode($sessionId)), 'success', 'Issue updated.');
 }
 
 if ($action === 'edit_record' && $user) {
@@ -219,7 +240,7 @@ if ($action === 'edit_record' && $user) {
   etds_qc_edit_record($sessionId, (string) ($_POST['record_id'] ?? ''), $_POST, $user);
   etds_qc_validate_session($sessionId, $user);
   etds_doctor_engine_run($sessionId, $user);
-  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=spreadsheet&session=' . urlencode($sessionId)), 'success', 'Record updated and revalidated.');
+  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=etdsdoc&tab=review&session=' . urlencode($sessionId)), 'success', 'Record updated and revalidated.');
 }
 
 if ($action === 'add_challan' && $user) {
@@ -238,13 +259,13 @@ if ($action === 'add_challan' && $user) {
   ];
   etds_qc_write_json(etds_qc_session_file($sessionId, 'challans.json'), ['challans' => $rows]);
   etds_qc_audit($sessionId, $user, 'challan_added', 'Challan added', ['challan_reference' => $_POST['challan_reference'] ?? '']);
-  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=spreadsheet&session=' . urlencode($sessionId)), 'success', 'Challan saved.');
+  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=etdsdoc&tab=review&session=' . urlencode($sessionId)), 'success', 'Challan saved.');
 }
 
 if ($action === 'run_reconciliation' && $user) {
   $sessionId = (string) ($_POST['session_id'] ?? '');
   etds_qc_reconcile($sessionId, $user);
-  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=spreadsheet&session=' . urlencode($sessionId)), 'success', 'Enterprise reconciliation completed.');
+  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=etdsdoc&tab=review&session=' . urlencode($sessionId)), 'success', 'Enterprise reconciliation completed.');
 }
 
 if ($action === 'export_xlsx' && $user) {
@@ -253,45 +274,45 @@ if ($action === 'export_xlsx' && $user) {
   if ($session) {
     $fileName = etds_qc_write_export_xlsx($sessionId, $session, $user);
     if ($fileName) {
-      etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=output&session=' . urlencode($sessionId)), 'success', 'QC output file generated: ' . $fileName, ['file_name' => $fileName]);
+      etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=deliverables&session=' . urlencode($sessionId)), 'success', 'QC output file generated: ' . $fileName, ['file_name' => $fileName]);
     } else {
-      etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=output&session=' . urlencode($sessionId)), 'error', 'QC output is blocked until validation and reconciliation are fully clean.');
+      etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=deliverables&session=' . urlencode($sessionId)), 'error', 'QC output is blocked until validation and reconciliation are fully clean.');
     }
   }
-  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=output&session=' . urlencode($sessionId)), 'error', 'Session was not found.');
+  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=deliverables&session=' . urlencode($sessionId)), 'error', 'Session was not found.');
 }
 
 if ($action === 'archive_session' && $user) {
   $sessionId = (string) ($_POST['session_id'] ?? '');
   etds_qc_archive_session($sessionId, $user);
-  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=cases'), 'success', 'Case archived.');
+  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=gateway'), 'success', 'Case archived.');
 }
 
 if ($action === 'purge_session' && $user) {
   $sessionId = (string) ($_POST['session_id'] ?? '');
   etds_qc_purge_session($sessionId, $user);
-  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=cases'), 'success', 'Case deleted. The record was soft deleted and retained for audit.');
+  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=gateway'), 'success', 'Case deleted. The record was soft deleted and retained for audit.');
 }
 
 if ($action === 'toggle_favourite' && $user) {
   $sessionId = (string) ($_POST['session_id'] ?? '');
   $session = etds_qc_toggle_favourite_case($sessionId, $user);
-  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=cases'), 'success', ($session && ($session['is_favourite'] ?? false)) ? 'Case added to favourites.' : 'Case removed from favourites.');
+  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=gateway'), 'success', ($session && ($session['is_favourite'] ?? false)) ? 'Case added to favourites.' : 'Case removed from favourites.');
 }
 
 if ($action === 'duplicate_case' && $user) {
   $sessionId = (string) ($_POST['session_id'] ?? '');
   $newCase = etds_qc_duplicate_case($sessionId, $user);
   if ($newCase) {
-    etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=upload&session=' . urlencode($newCase['session_id'])), 'success', 'Case duplicated as ' . $newCase['session_id'] . '.');
+    etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=upload-console&session=' . urlencode($newCase['session_id'])), 'success', 'Case duplicated as ' . $newCase['session_id'] . '.');
   }
-  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=cases'), 'error', 'The case could not be duplicated.');
+  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=gateway'), 'error', 'The case could not be duplicated.');
 }
 
 if ($action === 'close_case' && $user) {
   $sessionId = (string) ($_POST['session_id'] ?? '');
   etds_qc_case_update_status($sessionId, 'qc_completed', $user, 'Case closed');
-  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=cases'), 'success', 'Case closed.');
+  etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=gateway'), 'success', 'Case closed.');
 }
 
 if ($action === 'download' && $user) {
@@ -374,7 +395,7 @@ require_once dirname(__DIR__, 2) . '/includes/header.php';
     <div class="etds-login-card">
       <div class="eyebrow">Internal Access</div>
       <h1>eTDSDoc</h1>
-      <p class="etds-subtitle">Diagnose. Reconcile. Prepare.</p>
+      <p class="etds-subtitle">Examine. Diagnose. Treat.</p>
       <?php etds_qc_render_flash($flash); ?>
       <form method="post" action="<?= etds_qc_h(site_href('/fintech/etds-qc/')) ?>">
         <?= csrf_field() ?>
@@ -412,9 +433,12 @@ $sessions = etds_qc_search_sessions([
   'quarter' => $quarterFilter,
 ]);
 $sessionId = (string) ($_GET['session'] ?? '');
-$activeSession = $sessionId !== '' ? etds_qc_find_session($sessionId) : (!empty($sessions) ? $sessions[0] : (!empty($allSessions) ? $allSessions[0] : null));
+$activeSession = $sessionId !== '' ? etds_qc_find_session($sessionId) : null;
 if ($activeSession) {
   $sessionId = (string) ($activeSession['session_id'] ?? $sessionId);
+} else {
+  $sessionId = '';
+  $activeSession = null;
 }
 $sourceData = $activeSession ? etds_qc_load_json(etds_qc_session_file($sessionId, 'documents.json'), etds_qc_default_case_documents()) : etds_qc_default_case_documents();
 $extractionData = $activeSession ? etds_qc_load_json(etds_qc_session_file($sessionId, 'extraction.json'), etds_qc_default_extraction()) : etds_qc_default_extraction();
@@ -473,7 +497,7 @@ exit;
   etds_qc_log_runtime_error('index.php', $exception);
   if (!headers_sent()) {
     etds_qc_flash('error', 'The request could not be completed. Please try again or contact support.');
-    header('Location: ' . site_href('/fintech/etds-qc/?view=cases'));
+    header('Location: ' . site_href('/fintech/etds-qc/?view=gateway'));
     exit;
   }
   throw $exception;

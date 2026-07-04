@@ -432,7 +432,7 @@ function etds_qc_bootstrap(): void {
       'name' => 'System Administrator',
       'email' => 'admin@etaxadv.local',
       'role' => 'super_admin',
-      'password_hash' => '$2y$12$.zeHQgu5aE9Dkz0sfrl1ge1DCT9mwcwi/RxIYw4fO1zQrsq9GiqrG',
+      'password_hash' => '$2y$12$Kp.UmGs91Th5LFsLsAuEgO6KlFxW8kt8xkK8HvPk5a676gCi1ZaSa',
       'status' => 'active',
       'created_on' => etds_qc_now(),
       'updated_on' => etds_qc_now(),
@@ -1272,7 +1272,7 @@ function etds_qc_document_preview_allowed(array $document): bool {
   return in_array($type, ['pdf', 'scanned pdf', 'images'], true);
 }
 
-function etds_qc_register_uploads(string $sessionId, array $fileBag, array $user): array {
+function etds_qc_register_uploads(string $sessionId, array $fileBag, array $user, string $uploadCategory = ''): array {
   $session = etds_qc_find_session($sessionId);
   if (!$session) {
     return ['uploaded' => 0, 'duplicates' => 0, 'versions' => 0];
@@ -1333,6 +1333,7 @@ function etds_qc_register_uploads(string $sessionId, array $fileBag, array $user
       'original_name' => basename((string) $originalName),
       'original_name_slug' => $normalizedOriginalName,
       'document_type' => etds_qc_detect_document_type($extension, $mimeType),
+      'upload_category' => $uploadCategory !== '' ? $uploadCategory : null,
       'upload_time' => etds_qc_now(),
       'uploaded_on' => etds_qc_now(),
       'uploaded_by' => $user['id'] ?? 'system',
