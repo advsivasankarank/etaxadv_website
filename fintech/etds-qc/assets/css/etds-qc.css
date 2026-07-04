@@ -3,15 +3,6 @@
    Design Goal: Data First, Dashboard Last
    ============================================================ */
 
-/* === HEADER OVERRIDE (match main website) === */
-.site-header .brand-name { color: #1a202c; text-decoration: none; }
-.site-header .brand-cin { color: #8a8a9a; text-decoration: none; }
-.site-header .brand-tag { color: #4a4a5a; text-decoration: none; }
-.site-header .nav-link { color: #4a4a5a; text-decoration: none; }
-.site-header .nav-link:hover, .site-header .nav-link.is-active { color: #004d4d; }
-.site-header .btn-primary { background: #004d4d; color: #fff; border-color: #004d4d; }
-.site-header .btn-primary:hover { background: #005555; }
-
 /* === RESET & BASE === */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -789,13 +780,13 @@ body.etds-app-mode {
   white-space: nowrap;
 }
 
-.btn-primary {
+.app-layout .btn-primary {
   background: #1a1f2e;
   color: #fff;
   border-color: #1a1f2e;
 }
 
-.btn-primary:hover {
+.app-layout .btn-primary:hover {
   background: #2d3748;
 }
 

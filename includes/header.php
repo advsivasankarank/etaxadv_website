@@ -55,6 +55,9 @@ function page_url(string $path): string {
 function render_nav_link(array $item, string $current_page, string $extra_classes = ''): string {
   global $page_path, $current_request_path;
   $is_active = in_array($current_page, $item['match'], true);
+  if ($is_active && ($item['href'] ?? '') === '/index.php' && str_contains((string) $page_path, '/fintech/etds-qc/')) {
+    $is_active = false;
+  }
   if (!$is_active && ($item['href'] ?? '') === '/fintech-tools.php') {
     $is_active = str_contains((string) $page_path, '/fintech/etds-qc/')
       || str_contains((string) $current_request_path, '/fintech/etds-qc/');
