@@ -2053,12 +2053,22 @@ function etds_qc_extract_image_text(string $path): array {
     return ['columns' => [], 'records' => [], 'raw_text' => '', 'mode' => 'ocr_temp_failed'];
   }
   @unlink($tempBase);
-  @exec('"' . $tesseract . '" "' . $path . '" "' . $tempBase . '" --psm 6', $output, $exitCode);
+
+  $text = '';
+  $exitCode = 1;
+
+  @exec('"' . $tesseract . '" "' . $path . '" "' . $tempBase . '" --psm 1', $output, $exitCode);
   $textPath = $tempBase . '.txt';
   $text = is_file($textPath) ? trim((string) file_get_contents($textPath)) : '';
-  if (is_file($textPath)) {
-    @unlink($textPath);
+  if (is_file($textPath)) { @unlink($textPath); }
+
+  if ($text === '' || mb_strlen($text) < 10) {
+    @exec('"' . $tesseract . '" "' . $path . '" "' . $tempBase . '" --psm 6', $output, $exitCode);
+    $textPath = $tempBase . '.txt';
+    $text = is_file($textPath) ? trim((string) file_get_contents($textPath)) : '';
+    if (is_file($textPath)) { @unlink($textPath); }
   }
+
   $rows = [];
   if ($text !== '' && preg_match('/,|;|\t/', $text)) {
     foreach (preg_split('/\r\n|\r|\n/', $text) ?: [] as $line) {
@@ -2069,7 +2079,7 @@ function etds_qc_extract_image_text(string $path): array {
   }
   $tabular = $rows !== [] ? etds_qc_tabular_rows_to_records($rows) : ['columns' => [], 'records' => []];
   $tabular['raw_text'] = $text;
-  $tabular['mode'] = $exitCode === 0 ? 'ocr_text' : 'ocr_review_required';
+  $tabular['mode'] = ($exitCode === 0 && $text !== '') ? 'ocr_text' : 'ocr_review_required';
   return $tabular;
 }
 
@@ -2081,6 +2091,57 @@ function etds_qc_extract_text_tokens(string $text): array {
 
 function etds_qc_extract_first_match(string $pattern, string $text): string {
   return preg_match($pattern, $text, $matches) === 1 ? trim((string) ($matches[1] ?? $matches[0] ?? '')) : '';
+}
+
+function etds_qc_parse_challan_from_ocr_text(string $text): array {
+  $fields = [];
+  $confidence = 0;
+
+  $tan = etds_qc_extract_first_match('/\b([A-Z]{4}[0-9]{5}[A-Z])\b/', $text);
+  if ($tan !== '') { $fields['tan'] = $tan; $confidence += 20; }
+
+  $crn = etds_qc_extract_first_match('/(?:CRN|Challan\s*Receipt\s*Number)[:\s-]*(\d{10,20})\b/i', $text);
+  if ($crn === '') { $crn = etds_qc_extract_first_match('/\b(\d{12,15})\b/', $text); }
+  if ($crn !== '') { $fields['crn'] = $crn; $confidence += 10; }
+
+  $taxYear = etds_qc_extract_first_match('/(?:Tax\s*Year|Financial\s*Year)[:\s-]*(\d{4}-\d{2,4})\b/i', $text);
+  if ($taxYear === '') { $taxYear = etds_qc_extract_first_match('/\b(20\d{2}-\d{2})\b/', $text); }
+  if ($taxYear !== '') { $fields['tax_year'] = $taxYear; $confidence += 10; }
+
+  $amount = etds_qc_extract_first_match('/(?:Amount|₹|Rs\.?|INR)[:\s]*([0-9,\.]+)\b/i', $text);
+  if ($amount === '') { $amount = etds_qc_extract_first_match('/\b([0-9]{1,3}(?:,[0-9]{2,3})+(?:\.[0-9]{2})?)\b/', $text); }
+  if ($amount !== '') { $fields['amount'] = (float) str_replace(',', '', $amount); $confidence += 15; }
+
+  $majorHead = etds_qc_extract_first_match('/(?:Major\s*Head)[:\s-]*(\d{4})\b/i', $text);
+  if ($majorHead === '') { $majorHead = etds_qc_extract_first_match('/\((\d{4})\)/', $text); }
+  if ($majorHead !== '') { $fields['major_head'] = $majorHead; $confidence += 10; }
+
+  $minorHead = etds_qc_extract_first_match('/(?:Minor\s*Head)[:\s-]*(\d{3})\b/i', $text);
+  if ($minorHead !== '') { $fields['minor_head'] = $minorHead; $confidence += 8; }
+
+  $natureOfPayment = etds_qc_extract_first_match('/(?:Nature\s*of\s*Payment)[:\s-]*(\d{4})\b/i', $text);
+  if ($natureOfPayment !== '') { $fields['nature_of_payment'] = $natureOfPayment; $confidence += 10; }
+
+  $paymentMode = etds_qc_extract_first_match('/(?:Payment\s*through|Mode\s*of\s*Payment)[:\s-]*(\w+)/i', $text);
+  if ($paymentMode !== '') { $fields['payment_mode'] = ucfirst(strtolower($paymentMode)); $confidence += 5; }
+
+  $bankName = etds_qc_extract_first_match('/(?:Drawn\s*on\s*Bank|Bank)[:\s-]*([A-Z][A-Za-z\s&]+?)(?:\s+(?:Branch|CIN|Date|\n)|$)/i', $text);
+  if ($bankName !== '') { $fields['bank_name'] = trim($bankName); $confidence += 5; }
+
+  $bsr = etds_qc_extract_first_match('/(?:BSR(?:\s*Code)?)[:\s-]*(\d{7})\b/i', $text);
+  if ($bsr !== '') { $fields['bsr_code'] = $bsr; $confidence += 8; }
+
+  $zao = etds_qc_extract_first_match('/(?:ZAO\s*Code)[:\s-]*(\d+)/i', $text);
+  if ($zao !== '') { $fields['zao_code'] = $zao; $confidence += 5; }
+
+  $sectionCode = etds_qc_extract_first_match('/(?:Section(?:\s*Code)?)[:\s-]*(194[A-Z]?)\b/i', $text);
+  if ($sectionCode !== '') { $fields['section_code'] = $sectionCode; $confidence += 5; }
+
+  return [
+    'fields' => $fields,
+    'confidence' => min(98, $confidence),
+    'has_data' => count($fields) >= 2,
+  ];
 }
 
 function etds_qc_confidence_from_presence(string $value, int $base = 70): int {
@@ -2264,9 +2325,41 @@ function etds_qc_extract_structured_entities(string $sessionId, array $document,
     }
   }
 
+  if (in_array($classification, ['challan', 'bank_challan'], true)) {
+    $ocrChallan = etds_qc_parse_challan_from_ocr_text($text);
+    if ($ocrChallan['has_data']) {
+      $challanConfidence = $ocrChallan['confidence'];
+      $f = $ocrChallan['fields'];
+      $challans[] = [
+        'challan_id' => 'CHL-' . str_pad((string) (count($challans) + 1), 5, '0', STR_PAD_LEFT),
+        'document_id' => $document['document_id'] ?? '',
+        'fields' => [
+          etds_qc_field_payload('crn', $f['crn'] ?? '', etds_qc_confidence_from_presence($f['crn'] ?? '', $challanConfidence), $sourcePage),
+          etds_qc_field_payload('tan', $f['tan'] ?? $tan, etds_qc_confidence_from_presence($f['tan'] ?? $tan, $challanConfidence), $sourcePage),
+          etds_qc_field_payload('tax_year', $f['tax_year'] ?? '', etds_qc_confidence_from_presence($f['tax_year'] ?? '', $challanConfidence), $sourcePage),
+          etds_qc_field_payload('amount', $f['amount'] !== null ? (string) $f['amount'] : '', etds_qc_confidence_from_presence($f['amount'] !== null ? (string) $f['amount'] : '', $challanConfidence), $sourcePage),
+          etds_qc_field_payload('major_head', $f['major_head'] ?? '', etds_qc_confidence_from_presence($f['major_head'] ?? '', $challanConfidence), $sourcePage),
+          etds_qc_field_payload('minor_head', $f['minor_head'] ?? '', etds_qc_confidence_from_presence($f['minor_head'] ?? '', $challanConfidence), $sourcePage),
+          etds_qc_field_payload('nature_of_payment', $f['nature_of_payment'] ?? '', etds_qc_confidence_from_presence($f['nature_of_payment'] ?? '', $challanConfidence), $sourcePage),
+          etds_qc_field_payload('payment_mode', $f['payment_mode'] ?? '', etds_qc_confidence_from_presence($f['payment_mode'] ?? '', $challanConfidence), $sourcePage),
+          etds_qc_field_payload('bank_name', $f['bank_name'] ?? '', etds_qc_confidence_from_presence($f['bank_name'] ?? '', $challanConfidence), $sourcePage),
+          etds_qc_field_payload('bsr_code', $f['bsr_code'] ?? $bsr, etds_qc_confidence_from_presence($f['bsr_code'] ?? $bsr, $challanConfidence), $sourcePage),
+          etds_qc_field_payload('zao_code', $f['zao_code'] ?? '', etds_qc_confidence_from_presence($f['zao_code'] ?? '', $challanConfidence), $sourcePage),
+          etds_qc_field_payload('section_code', $f['section_code'] ?? '', etds_qc_confidence_from_presence($f['section_code'] ?? '', $challanConfidence), $sourcePage),
+          etds_qc_field_payload('deposit_date', $f['deposit_date'] ?? '', etds_qc_confidence_from_presence($f['deposit_date'] ?? '', $challanConfidence), $sourcePage),
+        ],
+        'confidence' => $challanConfidence,
+      ];
+    }
+  }
+
   foreach ($records as $index => $record) {
     $normalized = array_change_key_case($record, CASE_LOWER);
     if (in_array($classification, ['salary_register', 'deductee_list', 'form_24q_working', 'form_26q_working'], true)) {
+      $hasMeaningfulData = trim((string) ($normalized['deductee_name'] ?? '')) !== '' || trim((string) ($normalized['pan'] ?? '')) !== '' || trim((string) ($normalized['tds_amount'] ?? '')) !== '';
+      if (!$hasMeaningfulData) {
+        continue;
+      }
       $confidence = etds_qc_extraction_record_confidence($normalized, ['deductee_name', 'pan', 'tds_amount', 'deduction_date']);
       $deductees[] = [
         'deductee_id' => 'DED-' . str_pad((string) (count($deductees) + 1), 5, '0', STR_PAD_LEFT),
@@ -2297,38 +2390,28 @@ function etds_qc_extract_structured_entities(string $sessionId, array $document,
         'source_page' => $sourcePage,
       ];
     } elseif (in_array($classification, ['challan', 'bank_challan'], true)) {
-      $challanConfidence = etds_qc_extraction_record_confidence($normalized, ['challan_reference', 'bsr_code', 'deposit_date', 'total_available']);
-      $challans[] = [
-        'challan_id' => 'CHL-' . str_pad((string) (count($challans) + 1), 5, '0', STR_PAD_LEFT),
-        'document_id' => $document['document_id'] ?? '',
-        'fields' => [
-          etds_qc_field_payload('challan_reference', (string) ($normalized['challan_reference'] ?? ''), etds_qc_confidence_from_presence((string) ($normalized['challan_reference'] ?? ''), $challanConfidence), $sourcePage),
-          etds_qc_field_payload('bsr_code', (string) ($normalized['bsr_code'] ?? $bsr), etds_qc_confidence_from_presence((string) ($normalized['bsr_code'] ?? $bsr), $challanConfidence), $sourcePage),
-          etds_qc_field_payload('deposit_date', (string) ($normalized['deposit_date'] ?? ''), etds_qc_confidence_from_presence((string) ($normalized['deposit_date'] ?? ''), max(60, $challanConfidence - 5)), $sourcePage),
-          etds_qc_field_payload('section_code', (string) ($normalized['section_code'] ?? ''), etds_qc_confidence_from_presence((string) ($normalized['section_code'] ?? ''), max(60, $challanConfidence - 5)), $sourcePage),
-          etds_qc_field_payload('total_available', (string) ($normalized['total_available'] ?? $normalized['tds_amount'] ?? ''), etds_qc_confidence_from_presence((string) ($normalized['total_available'] ?? $normalized['tds_amount'] ?? ''), $challanConfidence), $sourcePage),
-        ],
-        'confidence' => $challanConfidence,
-      ];
       $recordRows[] = [
         'record_id' => 'REC-' . str_pad((string) (count($recordRows) + 1), 5, '0', STR_PAD_LEFT),
         'document_id' => $document['document_id'] ?? '',
         'classification' => $classification,
         'values' => $normalized,
-        'confidence' => $challanConfidence,
+        'confidence' => 55,
         'source_page' => $sourcePage,
       ];
     } elseif ($classification === 'payment_register') {
-      $paymentConfidence = etds_qc_extraction_record_confidence($normalized, ['invoice_number', 'deductee_name', 'tds_amount', 'deduction_date']);
-      $payments[] = [
-        'payment_id' => 'PAY-' . str_pad((string) (count($payments) + 1), 5, '0', STR_PAD_LEFT),
-        'document_id' => $document['document_id'] ?? '',
-        'invoice_number' => (string) ($normalized['invoice_number'] ?? ''),
-        'party_name' => (string) ($normalized['deductee_name'] ?? ''),
-        'amount' => (string) ($normalized['tds_amount'] ?? ''),
-        'payment_date' => (string) ($normalized['deduction_date'] ?? ''),
-        'confidence' => $paymentConfidence,
-      ];
+      $hasMeaningfulPaymentData = trim((string) ($normalized['invoice_number'] ?? '')) !== '' || trim((string) ($normalized['deductee_name'] ?? '')) !== '' || trim((string) ($normalized['tds_amount'] ?? '')) !== '';
+      if ($hasMeaningfulPaymentData) {
+        $paymentConfidence = etds_qc_extraction_record_confidence($normalized, ['invoice_number', 'deductee_name', 'tds_amount', 'deduction_date']);
+        $payments[] = [
+          'payment_id' => 'PAY-' . str_pad((string) (count($payments) + 1), 5, '0', STR_PAD_LEFT),
+          'document_id' => $document['document_id'] ?? '',
+          'invoice_number' => (string) ($normalized['invoice_number'] ?? ''),
+          'party_name' => (string) ($normalized['deductee_name'] ?? ''),
+          'amount' => (string) ($normalized['tds_amount'] ?? ''),
+          'payment_date' => (string) ($normalized['deduction_date'] ?? ''),
+          'confidence' => $paymentConfidence,
+        ];
+      }
       $recordRows[] = [
         'record_id' => 'REC-' . str_pad((string) (count($recordRows) + 1), 5, '0', STR_PAD_LEFT),
         'document_id' => $document['document_id'] ?? '',
@@ -2398,6 +2481,18 @@ function etds_qc_reload_source_data(string $sessionId, array $user): array {
     $document['extraction_status'] = !empty($structure['records']) ? 'extraction_ready' : ((($payload['raw_text'] ?? '') !== '') ? 'extraction_pending_review' : 'extraction_failed');
     $document['raw_text_excerpt'] = mb_substr((string) ($payload['raw_text'] ?? ''), 0, 500);
     $document['validation_status'] = 'Extraction Ready';
+    $document['extraction_note'] = '';
+    if ($document['extraction_status'] === 'extraction_pending_review') {
+      if (etds_qc_is_image_extension($extension)) {
+        $document['extraction_note'] = 'OCR completed but structured extraction requires manual review. Image OCR may require manual verification, especially for rotated or tabular photographs.';
+      } else {
+        $document['extraction_note'] = 'OCR completed but structured extraction requires manual review.';
+      }
+    } elseif ($document['extraction_status'] === 'extraction_failed') {
+      if (etds_qc_is_image_extension($extension)) {
+        $document['extraction_note'] = 'Image OCR could not extract usable text. Manual data entry may be required.';
+      }
+    }
 
     if ($document['extraction_status'] === 'extraction_ready') {
       $documentsProcessed++;
