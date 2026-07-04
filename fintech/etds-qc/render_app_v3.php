@@ -495,7 +495,7 @@ $tabUrl = static function (string $tab) use ($sessionId): string {
                 <?php if (!empty($doctorIntelli['bifurcation_summary'])): ?>
                   <h4 style="font-size:13px; font-weight:600; margin-bottom:8px;">Data Summary</h4>
                   <div class="summary-row" style="margin-bottom:16px;">
-                    <div class="summary-card"><strong><?= (int) ($doctorIntelli['bifurcation_summary']['total_staff'] ?? 0) ?></strong><span>Staff/Deductees</span></div>
+                    <div class="summary-card"><strong><?= (int) ($doctorIntelli['bifurcation_summary']['record_count'] ?? ($doctorIntelli['bifurcation_summary']['total_staff'] ?? 0)) ?></strong><span><?= etds_qc_h((string) ($doctorIntelli['bifurcation_summary']['record_label'] ?? 'Records')) ?></span></div>
                     <div class="summary-card"><strong>₹<?= number_format((float) ($doctorIntelli['bifurcation_summary']['total_tds'] ?? 0)) ?></strong><span>Total TDS</span></div>
                     <div class="summary-card"><strong><?= (int) ($doctorIntelli['bifurcation_summary']['challan_count'] ?? 0) ?></strong><span>Challans</span></div>
                     <div class="summary-card"><strong>₹<?= number_format((float) ($doctorIntelli['bifurcation_summary']['total_challan'] ?? 0)) ?></strong><span>Total Challan</span></div>
@@ -589,7 +589,7 @@ $tabUrl = static function (string $tab) use ($sessionId): string {
 
                 <?php if (!empty($doctorIntelli['bifurcation_summary'])): ?>
                   <div style="background:#fff; border:1px solid #e5e7eb; border-radius:8px; padding:12px; margin-bottom:12px; display:flex; gap:16px; flex-wrap:wrap; font-size:12px;">
-                    <span><strong><?= (int) ($doctorIntelli['bifurcation_summary']['total_staff'] ?? 0) ?></strong> Staff</span>
+                    <span><strong><?= (int) ($doctorIntelli['bifurcation_summary']['record_count'] ?? ($doctorIntelli['bifurcation_summary']['total_staff'] ?? 0)) ?></strong> <?= etds_qc_h((string) ($doctorIntelli['bifurcation_summary']['record_label'] ?? 'Records')) ?></span>
                     <span><strong>₹<?= number_format((float) ($doctorIntelli['bifurcation_summary']['total_tds'] ?? 0)) ?></strong> TDS</span>
                     <span><strong><?= (int) ($doctorIntelli['bifurcation_summary']['challan_count'] ?? 0) ?></strong> Challans</span>
                     <span><strong>₹<?= number_format((float) ($doctorIntelli['bifurcation_summary']['total_challan'] ?? 0)) ?></strong> Challan Amt</span>

@@ -3957,14 +3957,28 @@ function etds_doctor_intelli_mode_v1(string $sessionId, array $user): array {
   foreach ($allDeductees as $d) {
     $name = '';
     $pan = '';
+    $sectionCode = '';
+    $tdsAmount = '';
+    $deductionDate = '';
+    $challanRef = '';
     foreach ($d['fields'] ?? [] as $f) {
-      if (($f['field'] ?? '') === 'deductee_name') { $name = (string) ($f['value'] ?? ''); }
-      if (($f['field'] ?? '') === 'pan') { $pan = strtoupper((string) ($f['value'] ?? '')); }
+      $field = (string) ($f['field'] ?? '');
+      $value = (string) ($f['value'] ?? '');
+      if ($field === 'deductee_name') { $name = $value; }
+      if ($field === 'pan') { $pan = strtoupper($value); }
+      if ($field === 'section_code') { $sectionCode = strtoupper(preg_replace('/\s+/', '', $value) ?? $value); }
+      if ($field === 'tds_amount') { $tdsAmount = preg_replace('/[^0-9.]/', '', $value) ?? $value; }
+      if ($field === 'deduction_date') { $deductionDate = $value; }
+      if ($field === 'challan_reference') { $challanRef = $value; }
     }
     if ($pan !== '') {
-      $key = $pan;
+      if (in_array($returnTypeCanonical, ['26Q', '27Q', '27EQ'], true)) {
+        $key = $pan . '|' . $sectionCode . '|' . $deductionDate . '|' . $tdsAmount . '|' . $challanRef;
+      } else {
+        $key = $pan;
+      }
       if (isset($panSeen[$key])) {
-        $findings[] = $nextFinding('medium', 'duplicate_check', 'Possible duplicate: PAN "' . $pan . '" appears multiple times.', 'Review and merge/delete duplicate records if confirmed.', 'duplicate_check', $d['document_id'] ?? '', $d['deductee_id'] ?? '');
+        $findings[] = $nextFinding('medium', 'duplicate_check', 'Possible duplicate: PAN "' . $pan . '" appears multiple times with identical details.', 'Review and merge/delete duplicate records if confirmed.', 'duplicate_check', $d['document_id'] ?? '', $d['deductee_id'] ?? '');
       }
       $panSeen[$key] = true;
     }
@@ -4088,9 +4102,28 @@ function etds_doctor_intelli_mode_v1(string $sessionId, array $user): array {
     $readinessNote = 'Significant data quality issues must be resolved.';
   }
 
+  if ($returnTypeCanonical === '24Q') {
+    $recordLabel = 'Staff Records';
+    $recordCount = count($allSalary);
+  } elseif ($returnTypeCanonical === '26Q') {
+    $recordLabel = 'Deductee Records';
+    $recordCount = count($allDeductees);
+  } elseif ($returnTypeCanonical === '27Q') {
+    $recordLabel = 'Non-resident Records';
+    $recordCount = count($allDeductees);
+  } elseif ($returnTypeCanonical === '27EQ') {
+    $recordLabel = 'Collectee Records';
+    $recordCount = count($allDeductees);
+  } else {
+    $recordLabel = 'Records';
+    $recordCount = count($allDeductees) + count($allSalary);
+  }
+
   $bifurcation = [
     'total_staff' => count($allSalary),
     'total_deductees' => count($allDeductees),
+    'record_count' => $recordCount,
+    'record_label' => $recordLabel,
     'total_tds' => $totalTds,
     'total_payments' => count($allPayments),
     'total_bill_amount' => $totalBillAmount,
