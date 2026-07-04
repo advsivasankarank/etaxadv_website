@@ -1972,6 +1972,534 @@ function etds_qc_extract_xlsx_rows(string $path): array {
   return $rows;
 }
 
+function etds_qc_tabular_rows_to_text(array $rows): string {
+  $lines = [];
+  foreach ($rows as $row) {
+    $cells = is_array($row['cells'] ?? null) ? $row['cells'] : (array) $row;
+    $values = [];
+    foreach ($cells as $value) {
+      $value = trim((string) $value);
+      if ($value !== '') {
+        $values[] = $value;
+      }
+    }
+    if ($values !== []) {
+      $lines[] = implode(' ', $values);
+    }
+  }
+  return trim(implode("\n", $lines));
+}
+
+function etds_qc_unpack_u16le(string $data, int $offset): int {
+  $slice = substr($data, $offset, 2);
+  if (strlen($slice) < 2) {
+    return 0;
+  }
+  $value = unpack('v', $slice);
+  return (int) ($value[1] ?? 0);
+}
+
+function etds_qc_unpack_u32le(string $data, int $offset): int {
+  $slice = substr($data, $offset, 4);
+  if (strlen($slice) < 4) {
+    return 0;
+  }
+  $value = unpack('V', $slice);
+  return (int) ($value[1] ?? 0);
+}
+
+function etds_qc_ole_read_chain(string $blob, array $fat, int $startSector, int $sectorSize): string {
+  $endOfChain = 0xFFFFFFFE;
+  $freeSect = 0xFFFFFFFF;
+  $stream = '';
+  $sector = $startSector;
+  $guard = 0;
+  while ($sector >= 0 && $sector !== $endOfChain && $sector !== $freeSect && isset($fat[$sector]) && $guard < 100000) {
+    $offset = ($sector + 1) * $sectorSize;
+    $stream .= substr($blob, $offset, $sectorSize);
+    $sector = (int) $fat[$sector];
+    $guard++;
+  }
+  return $stream;
+}
+
+function etds_qc_ole_read_mini_chain(string $miniStream, array $miniFat, int $startSector, int $miniSectorSize): string {
+  $endOfChain = 0xFFFFFFFE;
+  $freeSect = 0xFFFFFFFF;
+  $stream = '';
+  $sector = $startSector;
+  $guard = 0;
+  while ($sector >= 0 && $sector !== $endOfChain && $sector !== $freeSect && isset($miniFat[$sector]) && $guard < 100000) {
+    $offset = $sector * $miniSectorSize;
+    $stream .= substr($miniStream, $offset, $miniSectorSize);
+    $sector = (int) $miniFat[$sector];
+    $guard++;
+  }
+  return $stream;
+}
+
+function etds_qc_ole_read_stream(string $path, string $streamName): string {
+  $blob = @file_get_contents($path);
+  if (!is_string($blob) || strlen($blob) < 512 || substr($blob, 0, 8) !== "\xD0\xCF\x11\xE0\xA1\xB1\x1A\xE1") {
+    return '';
+  }
+
+  $sectorSize = 1 << etds_qc_unpack_u16le($blob, 30);
+  $miniSectorSize = 1 << etds_qc_unpack_u16le($blob, 32);
+  $numFatSectors = etds_qc_unpack_u32le($blob, 44);
+  $firstDirSector = etds_qc_unpack_u32le($blob, 48);
+  $miniCutoff = etds_qc_unpack_u32le($blob, 56);
+  $firstMiniFatSector = etds_qc_unpack_u32le($blob, 60);
+  $numMiniFatSectors = etds_qc_unpack_u32le($blob, 64);
+  $firstDifatSector = etds_qc_unpack_u32le($blob, 68);
+  $numDifatSectors = etds_qc_unpack_u32le($blob, 72);
+
+  $difat = [];
+  for ($i = 0; $i < 109; $i++) {
+    $sector = etds_qc_unpack_u32le($blob, 76 + ($i * 4));
+    if ($sector !== 0xFFFFFFFF) {
+      $difat[] = $sector;
+    }
+  }
+
+  $nextDifatSector = $firstDifatSector;
+  for ($i = 0; $i < $numDifatSectors && $nextDifatSector !== 0xFFFFFFFE && $nextDifatSector !== 0xFFFFFFFF; $i++) {
+    $offset = ($nextDifatSector + 1) * $sectorSize;
+    $sectorData = substr($blob, $offset, $sectorSize);
+    $entriesPerSector = (int) floor($sectorSize / 4) - 1;
+    for ($j = 0; $j < $entriesPerSector; $j++) {
+      $fatSector = etds_qc_unpack_u32le($sectorData, $j * 4);
+      if ($fatSector !== 0xFFFFFFFF) {
+        $difat[] = $fatSector;
+      }
+    }
+    $nextDifatSector = etds_qc_unpack_u32le($sectorData, $entriesPerSector * 4);
+  }
+
+  $difat = array_slice($difat, 0, $numFatSectors);
+  $fat = [];
+  foreach ($difat as $fatSector) {
+    $offset = ($fatSector + 1) * $sectorSize;
+    $sectorData = substr($blob, $offset, $sectorSize);
+    foreach (unpack('V*', $sectorData) ?: [] as $entry) {
+      $fat[] = (int) $entry;
+    }
+  }
+  if ($fat === []) {
+    return '';
+  }
+
+  $directoryStream = etds_qc_ole_read_chain($blob, $fat, $firstDirSector, $sectorSize);
+  if ($directoryStream === '') {
+    return '';
+  }
+
+  $rootEntry = null;
+  $targetEntry = null;
+  $directoryLength = strlen($directoryStream);
+  for ($offset = 0; $offset + 128 <= $directoryLength; $offset += 128) {
+    $entry = substr($directoryStream, $offset, 128);
+    $nameLength = etds_qc_unpack_u16le($entry, 64);
+    if ($nameLength < 2) {
+      continue;
+    }
+    $nameRaw = substr($entry, 0, max(0, $nameLength - 2));
+    $name = trim((string) @iconv('UTF-16LE', 'UTF-8//IGNORE', $nameRaw));
+    $type = ord($entry[66] ?? "\x00");
+    $startSector = etds_qc_unpack_u32le($entry, 116);
+    $streamSize = etds_qc_unpack_u32le($entry, 120);
+    $parsedEntry = ['name' => $name, 'type' => $type, 'start_sector' => $startSector, 'size' => $streamSize];
+    if ($type === 5 && strcasecmp($name, 'Root Entry') === 0) {
+      $rootEntry = $parsedEntry;
+    }
+    if ($type === 2 && strcasecmp($name, $streamName) === 0) {
+      $targetEntry = $parsedEntry;
+    }
+  }
+
+  if (!$targetEntry) {
+    return '';
+  }
+
+  if (($targetEntry['size'] ?? 0) < $miniCutoff && $rootEntry) {
+    $miniFatStream = $numMiniFatSectors > 0 ? etds_qc_ole_read_chain($blob, $fat, $firstMiniFatSector, $sectorSize) : '';
+    $miniFat = $miniFatStream !== '' ? array_values(unpack('V*', $miniFatStream) ?: []) : [];
+    $rootMiniStream = etds_qc_ole_read_chain($blob, $fat, (int) $rootEntry['start_sector'], $sectorSize);
+    if ($miniFat !== [] && $rootMiniStream !== '') {
+      return substr(etds_qc_ole_read_mini_chain($rootMiniStream, $miniFat, (int) $targetEntry['start_sector'], $miniSectorSize), 0, (int) $targetEntry['size']);
+    }
+  }
+
+  return substr(etds_qc_ole_read_chain($blob, $fat, (int) $targetEntry['start_sector'], $sectorSize), 0, (int) $targetEntry['size']);
+}
+
+function etds_qc_biff_read_unicode_string(string $data, int &$offset): string {
+  $charCount = etds_qc_unpack_u16le($data, $offset);
+  $offset += 2;
+  $flags = ord($data[$offset] ?? "\x00");
+  $offset += 1;
+  $richRuns = 0;
+  $extSize = 0;
+  if (($flags & 0x08) === 0x08) {
+    $richRuns = etds_qc_unpack_u16le($data, $offset);
+    $offset += 2;
+  }
+  if (($flags & 0x04) === 0x04) {
+    $extSize = etds_qc_unpack_u32le($data, $offset);
+    $offset += 4;
+  }
+  $isUtf16 = ($flags & 0x01) === 0x01;
+  $byteLength = $isUtf16 ? ($charCount * 2) : $charCount;
+  $textRaw = substr($data, $offset, $byteLength);
+  $offset += $byteLength;
+  if ($richRuns > 0) {
+    $offset += $richRuns * 4;
+  }
+  if ($extSize > 0) {
+    $offset += $extSize;
+  }
+  $text = $isUtf16 ? (string) @iconv('UTF-16LE', 'UTF-8//IGNORE', $textRaw) : $textRaw;
+  return trim($text);
+}
+
+function etds_qc_biff_read_sst(string $data): array {
+  if (strlen($data) < 8) {
+    return [];
+  }
+  $uniqueCount = etds_qc_unpack_u32le($data, 4);
+  $offset = 8;
+  $strings = [];
+  for ($i = 0; $i < $uniqueCount && $offset < strlen($data); $i++) {
+    $strings[] = etds_qc_biff_read_unicode_string($data, $offset);
+  }
+  return $strings;
+}
+
+function etds_qc_biff_format_number(float $value): string {
+  if (abs($value - round($value)) < 0.0000001) {
+    return (string) (int) round($value);
+  }
+  return rtrim(rtrim(sprintf('%.10F', $value), '0'), '.');
+}
+
+function etds_qc_biff_decode_rk(int $rk): float {
+  $div100 = ($rk & 0x01) === 0x01;
+  $isInteger = ($rk & 0x02) === 0x02;
+  if ($isInteger) {
+    $value = $rk >> 2;
+  } else {
+    $packed = "\x00\x00\x00\x00" . pack('V', $rk & 0xFFFFFFFC);
+    $decoded = unpack('d', $packed);
+    $value = (float) ($decoded[1] ?? 0.0);
+  }
+  return $div100 ? ($value / 100) : $value;
+}
+
+function etds_qc_extract_xls_rows_from_biff(string $path): array {
+  $workbook = etds_qc_ole_read_stream($path, 'Workbook');
+  if ($workbook === '') {
+    $workbook = etds_qc_ole_read_stream($path, 'Book');
+  }
+  if ($workbook === '') {
+    return [];
+  }
+
+  $sharedStrings = [];
+  $sheetOffset = null;
+  $length = strlen($workbook);
+  for ($offset = 0; $offset + 4 <= $length;) {
+    $type = etds_qc_unpack_u16le($workbook, $offset);
+    $size = etds_qc_unpack_u16le($workbook, $offset + 2);
+    $payload = substr($workbook, $offset + 4, $size);
+    $nextOffset = $offset + 4 + $size;
+
+    if ($type === 0x0085 && $sheetOffset === null && strlen($payload) >= 4) {
+      $sheetOffset = etds_qc_unpack_u32le($payload, 0);
+    } elseif ($type === 0x00FC) {
+      $sstPayload = $payload;
+      while ($nextOffset + 4 <= $length && etds_qc_unpack_u16le($workbook, $nextOffset) === 0x003C) {
+        $continueSize = etds_qc_unpack_u16le($workbook, $nextOffset + 2);
+        $sstPayload .= substr($workbook, $nextOffset + 4, $continueSize);
+        $nextOffset += 4 + $continueSize;
+      }
+      $sharedStrings = etds_qc_biff_read_sst($sstPayload);
+    }
+
+    $offset = $nextOffset;
+  }
+
+  if ($sheetOffset === null || $sheetOffset >= $length) {
+    return [];
+  }
+
+  $grid = [];
+  for ($offset = $sheetOffset; $offset + 4 <= $length;) {
+    $type = etds_qc_unpack_u16le($workbook, $offset);
+    $size = etds_qc_unpack_u16le($workbook, $offset + 2);
+    $payload = substr($workbook, $offset + 4, $size);
+    $offset += 4 + $size;
+
+    if ($type === 0x000A) {
+      break;
+    }
+
+    if ($type === 0x00FD && strlen($payload) >= 10) {
+      $row = etds_qc_unpack_u16le($payload, 0);
+      $col = etds_qc_unpack_u16le($payload, 2);
+      $sstIndex = etds_qc_unpack_u32le($payload, 6);
+      $grid[$row][$col] = (string) ($sharedStrings[$sstIndex] ?? '');
+      continue;
+    }
+
+    if ($type === 0x0203 && strlen($payload) >= 14) {
+      $row = etds_qc_unpack_u16le($payload, 0);
+      $col = etds_qc_unpack_u16le($payload, 2);
+      $number = unpack('d', substr($payload, 6, 8));
+      $grid[$row][$col] = etds_qc_biff_format_number((float) ($number[1] ?? 0.0));
+      continue;
+    }
+
+    if ($type === 0x027E && strlen($payload) >= 10) {
+      $row = etds_qc_unpack_u16le($payload, 0);
+      $col = etds_qc_unpack_u16le($payload, 2);
+      $rk = etds_qc_unpack_u32le($payload, 6);
+      $grid[$row][$col] = etds_qc_biff_format_number(etds_qc_biff_decode_rk($rk));
+      continue;
+    }
+
+    if ($type === 0x00BD && strlen($payload) >= 6) {
+      $row = etds_qc_unpack_u16le($payload, 0);
+      $firstCol = etds_qc_unpack_u16le($payload, 2);
+      $lastCol = etds_qc_unpack_u16le($payload, strlen($payload) - 2);
+      $col = $firstCol;
+      for ($pos = 4; $pos + 6 <= strlen($payload) - 2 && $col <= $lastCol; $pos += 6, $col++) {
+        $rk = etds_qc_unpack_u32le($payload, $pos + 2);
+        $grid[$row][$col] = etds_qc_biff_format_number(etds_qc_biff_decode_rk($rk));
+      }
+      continue;
+    }
+  }
+
+  if ($grid === []) {
+    return [];
+  }
+
+  ksort($grid);
+  $rows = [];
+  foreach ($grid as $rowIndex => $cells) {
+    if (!is_array($cells) || $cells === []) {
+      continue;
+    }
+    ksort($cells);
+    $normalizedCells = [];
+    foreach ($cells as $colIndex => $value) {
+      $value = trim((string) $value);
+      if ($value !== '') {
+        $normalizedCells[(int) $colIndex] = $value;
+      }
+    }
+    if ($normalizedCells !== []) {
+      $rows[] = ['row_number' => $rowIndex + 1, 'cells' => $normalizedCells];
+    }
+  }
+  return $rows;
+}
+
+function etds_qc_normalize_statutory_section(string $value): string {
+  $normalized = strtoupper(preg_replace('/\s+/', '', trim($value)) ?? trim($value));
+  if (preg_match('/^194[A-Z]?$/', $normalized) === 1) {
+    return $normalized;
+  }
+  return strtoupper(trim($value));
+}
+
+function etds_qc_normalize_amount_text(string $value): string {
+  $normalized = preg_replace('/[^0-9.]/', '', trim($value)) ?? '';
+  if ($normalized === '' || !is_numeric($normalized)) {
+    return '';
+  }
+  $number = (float) $normalized;
+  if (floor($number) === $number) {
+    return (string) (int) $number;
+  }
+  return rtrim(rtrim(number_format($number, 2, '.', ''), '0'), '.');
+}
+
+function etds_qc_normalize_indian_date(string $value): string {
+  $value = trim($value);
+  if ($value === '') {
+    return '';
+  }
+  if (preg_match('/^(\d{1,2})[.\/-](\d{1,2})[.\/-](\d{2,4})$/', $value, $matches) === 1) {
+    $day = (int) $matches[1];
+    $month = (int) $matches[2];
+    $year = (int) $matches[3];
+    if ($year < 100) {
+      $year += 2000;
+    }
+    if (checkdate($month, $day, $year)) {
+      return sprintf('%04d-%02d-%02d', $year, $month, $day);
+    }
+  }
+  try {
+    return (new DateTimeImmutable($value, new DateTimeZone('Asia/Calcutta')))->format('Y-m-d');
+  } catch (Throwable) {
+    return '';
+  }
+}
+
+function etds_qc_extract_reference_number(string $value): string {
+  if (preg_match('/\b(?:URN|CRN)\s*NO\.?\s*([0-9]{8,20})\b/i', $value, $matches) === 1) {
+    return $matches[1];
+  }
+  if (preg_match('/\b([0-9]{8,20})\b/', $value, $matches) === 1) {
+    return $matches[1];
+  }
+  return trim($value);
+}
+
+function etds_qc_extract_month_heading(string $text): string {
+  if (preg_match('/\b(APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER|JANUARY|FEBRUARY|MARCH)\b(?:\s*-\s*(\d{4}))?/i', $text, $matches) !== 1) {
+    return '';
+  }
+  $month = ucfirst(strtolower($matches[1]));
+  $year = trim((string) ($matches[2] ?? ''));
+  return $year !== '' ? ($month . ' ' . $year) : $month;
+}
+
+function etds_qc_extract_26q_contractor_rows(array $rows): array {
+  $records = [];
+  $insideContractorBlock = false;
+  $currentMonth = '';
+  $pending = null;
+
+  $finalize = static function (?array $record) use (&$records): void {
+    if (!is_array($record)) {
+      return;
+    }
+    $name = trim((string) ($record['deductee_name'] ?? ''));
+    $pan = strtoupper(trim((string) ($record['pan'] ?? '')));
+    $tdsAmount = trim((string) ($record['tds_amount'] ?? ''));
+    $billAmount = trim((string) ($record['bill_amount'] ?? ''));
+    if ($name === '' || ($pan === '' && $tdsAmount === '' && $billAmount === '')) {
+      return;
+    }
+    $record['deductee_name'] = preg_replace('/\s+/', ' ', $name) ?? $name;
+    $record['pan'] = $pan;
+    $records[] = $record;
+  };
+
+  foreach ($rows as $row) {
+    $cells = [];
+    foreach ((array) ($row['cells'] ?? []) as $index => $value) {
+      $cells[(int) $index] = trim((string) $value);
+    }
+    $rowText = preg_replace('/\s+/', ' ', implode(' ', array_filter($cells, static fn(string $value): bool => $value !== ''))) ?? '';
+    $rowUpper = strtoupper(trim($rowText));
+
+    if ($rowUpper === '') {
+      continue;
+    }
+
+    if (str_contains($rowUpper, 'NAME OF THE EMPLOYEE')) {
+      $finalize($pending);
+      $pending = null;
+      break;
+    }
+
+    if (str_contains($rowUpper, 'NAME OF THE CONTRACTOR') || str_contains($rowUpper, 'DETAILS OF PAYMENTS ISSUED')) {
+      $insideContractorBlock = true;
+      continue;
+    }
+
+    if (!$insideContractorBlock) {
+      continue;
+    }
+
+    $monthHeading = etds_qc_extract_month_heading($rowUpper);
+    if ($monthHeading !== '') {
+      $currentMonth = $monthHeading;
+      continue;
+    }
+
+    if (str_contains($rowUpper, 'GRAND TOTAL') || preg_match('/^\*?\s*TOTAL\b/i', $rowUpper) === 1 || str_contains($rowUpper, ' - NIL')) {
+      continue;
+    }
+
+    $serial = trim((string) ($cells[1] ?? ''));
+    $name = trim((string) ($cells[2] ?? ''));
+    $section = etds_qc_normalize_statutory_section((string) ($cells[3] ?? ''));
+    $billAmount = etds_qc_normalize_amount_text((string) ($cells[4] ?? ''));
+    $tdsAmount = etds_qc_normalize_amount_text((string) ($cells[5] ?? ''));
+    $paymentDate = etds_qc_normalize_indian_date((string) ($cells[6] ?? ''));
+    $bankName = trim((string) ($cells[7] ?? ''));
+    $referenceText = trim((string) ($cells[8] ?? ''));
+    $remittanceDate = etds_qc_normalize_indian_date((string) ($cells[10] ?? ''));
+    $amountRemitted = etds_qc_normalize_amount_text((string) ($cells[11] ?? ''));
+
+    $startsRecord = ctype_digit($serial) && $name !== '' && $section !== '' && ($billAmount !== '' || $tdsAmount !== '');
+    if ($startsRecord) {
+      $finalize($pending);
+      $pending = [
+        'source_doc_id' => '',
+        'return_type' => '26Q / Form 140',
+        'deductee_name' => $name,
+        'pan' => '',
+        'section_code' => $section,
+        'bill_amount' => $billAmount,
+        'payment_amount' => $billAmount,
+        'tds_amount' => $tdsAmount,
+        'deduction_date' => $paymentDate,
+        'date_of_payment' => $paymentDate,
+        'bank_name' => $bankName,
+        'bank_code' => '',
+        'collecting_branch' => '',
+        'urn_or_crn' => etds_qc_extract_reference_number($referenceText),
+        'challan_reference' => etds_qc_extract_reference_number($referenceText),
+        'date_of_remittance' => $remittanceDate,
+        'amount_remitted' => $amountRemitted,
+        'month' => $currentMonth,
+        'confidence' => '96',
+      ];
+      continue;
+    }
+
+    if ($pending === null) {
+      continue;
+    }
+
+    $panCandidate = strtoupper(preg_replace('/[^A-Z0-9]/', '', (string) ($cells[2] ?? '')) ?? '');
+    if (preg_match('/^[A-Z]{5}[0-9]{4}[A-Z]$/', $panCandidate) === 1) {
+      $pending['pan'] = $panCandidate;
+    }
+
+    $branchOrCode = trim((string) ($cells[7] ?? ''));
+    if ($branchOrCode !== '') {
+      if (preg_match('/^[A-Z]{4}0[A-Z0-9]{6}$/', strtoupper($branchOrCode)) === 1 || preg_match('/^[0-9]{7}$/', $branchOrCode) === 1) {
+        $pending['bank_code'] = strtoupper($branchOrCode);
+      } else {
+        $pending['collecting_branch'] = $branchOrCode;
+      }
+    }
+
+    $extraReference = trim((string) ($cells[8] ?? ''));
+    if (($pending['urn_or_crn'] ?? '') === '' && $extraReference !== '') {
+      $pending['urn_or_crn'] = etds_qc_extract_reference_number($extraReference);
+      $pending['challan_reference'] = $pending['urn_or_crn'];
+    }
+
+    $finalize($pending);
+    $pending = null;
+  }
+
+  $finalize($pending);
+
+  return [
+    'columns' => ['source_doc_id', 'return_type', 'deductee_name', 'pan', 'section_code', 'bill_amount', 'payment_amount', 'tds_amount', 'deduction_date', 'date_of_payment', 'bank_name', 'bank_code', 'collecting_branch', 'urn_or_crn', 'challan_reference', 'date_of_remittance', 'amount_remitted', 'month', 'confidence'],
+    'records' => $records,
+  ];
+}
+
 function etds_qc_extract_salary_register_rows(array $rows): array {
   $records = [];
   $current = null;
@@ -2154,22 +2682,33 @@ function etds_qc_extract_xlsx(string $path): array {
   if ($rows === []) {
     return ['columns' => [], 'records' => []];
   }
+  $rawText = etds_qc_tabular_rows_to_text($rows);
 
   $salaryRegister = etds_qc_extract_salary_register_rows($rows);
   if (($salaryRegister['records'] ?? []) !== []) {
+    $salaryRegister['raw_text'] = $rawText;
     return $salaryRegister;
   }
 
   $quarterlySalary = etds_qc_extract_quarterly_salary_rows($rows);
   if (($quarterlySalary['records'] ?? []) !== []) {
+    $quarterlySalary['raw_text'] = $rawText;
     return $quarterlySalary;
+  }
+
+  $contractorWorking = etds_qc_extract_26q_contractor_rows($rows);
+  if (($contractorWorking['records'] ?? []) !== []) {
+    $contractorWorking['raw_text'] = $rawText;
+    return $contractorWorking;
   }
 
   $flatRows = [];
   foreach ($rows as $row) {
     $flatRows[] = (array) ($row['cells'] ?? []);
   }
-  return etds_qc_tabular_rows_to_records($flatRows);
+  $tabular = etds_qc_tabular_rows_to_records($flatRows);
+  $tabular['raw_text'] = $rawText;
+  return $tabular;
 }
 
 function etds_qc_default_deduction_date(string $sessionId): string {
@@ -2324,8 +2863,19 @@ function etds_qc_field_payload(string $field, string $value, int $confidence, in
 
 function etds_qc_document_classifier(string $documentName, string $text, array $columns = []): array {
   $haystack = strtoupper($documentName . ' ' . $text . ' ' . implode(' ', $columns));
+  $contractorNeedles = ['DETAILS OF PAYMENTS ISSUED', 'DETAILS OF REMITTANCE', 'NAME OF THE CONTRACTOR', 'UNDER SECTION', 'BILL AMOUNT', 'TDS DEDUCTED', 'DATE OF PAYMENT', '194 C'];
+  $contractorMatches = 0;
+  foreach ($contractorNeedles as $needle) {
+    if (str_contains($haystack, $needle)) {
+      $contractorMatches++;
+    }
+  }
+  if ($contractorMatches >= 4) {
+    return ['classification' => 'deductee_26q', 'confidence' => min(98, 55 + ($contractorMatches * 8))];
+  }
   $rules = [
     'challan' => ['CHALLAN', 'BSR', 'CIN', 'OLTAS', 'CRN', 'TAX YEAR'],
+    'deductee_26q' => ['DETAILS OF PAYMENTS ISSUED', 'DETAILS OF REMITTANCE', 'NAME OF THE CONTRACTOR', 'UNDER SECTION', 'BILL AMOUNT', 'TDS DEDUCTED', 'DATE OF PAYMENT', '194 C'],
     'deductee_list' => ['DEDUCTEE', 'PAN', 'DEDUCTEE NAME'],
     'salary_register' => ['SALARY', 'EMPLOYEE', 'BASIC', 'HRA', 'NAME OF THE STAFF', 'INCOME TAX', 'GROSS SALARY'],
     'payment_register' => ['PAYMENT', 'INVOICE', 'VENDOR'],
@@ -2353,6 +2903,141 @@ function etds_qc_document_classifier(string $documentName, string $text, array $
     }
   }
   return $best;
+}
+
+function etds_qc_legacy_excel_cache_dir(string $sessionId): string {
+  $directory = etds_qc_session_dir($sessionId) . '/logs/cache/legacy-excel';
+  if (!is_dir($directory)) {
+    @mkdir($directory, 0775, true);
+  }
+  return $directory;
+}
+
+function etds_qc_windows_powershell(): ?string {
+  $candidates = [
+    'C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe',
+    'powershell.exe',
+  ];
+  foreach ($candidates as $candidate) {
+    if ($candidate === 'powershell.exe' || is_file($candidate)) {
+      return $candidate;
+    }
+  }
+  return null;
+}
+
+function etds_qc_run_powershell_script(string $script): array {
+  $powershell = etds_qc_windows_powershell();
+  if ($powershell === null) {
+    return ['code' => 1, 'output' => []];
+  }
+  if (function_exists('proc_open')) {
+    $descriptors = [
+      0 => ['pipe', 'r'],
+      1 => ['pipe', 'w'],
+      2 => ['pipe', 'w'],
+    ];
+    $process = @proc_open(
+      [$powershell, '-NoProfile', '-NonInteractive', '-Sta', '-ExecutionPolicy', 'Bypass', '-Command', $script],
+      $descriptors,
+      $pipes,
+      null,
+      null,
+      ['bypass_shell' => true]
+    );
+    if (is_resource($process)) {
+      fclose($pipes[0]);
+      $stdout = stream_get_contents($pipes[1]);
+      fclose($pipes[1]);
+      $stderr = stream_get_contents($pipes[2]);
+      fclose($pipes[2]);
+      $exitCode = proc_close($process);
+      $output = preg_split('/\r\n|\r|\n/', trim($stdout . ($stderr !== '' ? ("\n" . $stderr) : ''))) ?: [];
+      $output = array_values(array_filter(array_map('trim', $output), static fn(string $line): bool => $line !== ''));
+      return ['code' => $exitCode, 'output' => $output];
+    }
+  }
+
+  $encodedScript = base64_encode(mb_convert_encoding($script, 'UTF-16LE', 'UTF-8'));
+  $command = '"' . $powershell . '" -NoProfile -NonInteractive -Sta -ExecutionPolicy Bypass -EncodedCommand ' . $encodedScript;
+  $output = [];
+  $exitCode = 1;
+  @exec($command . ' 2>&1', $output, $exitCode);
+  return ['code' => $exitCode, 'output' => $output];
+}
+
+function etds_qc_extract_xls_rows(string $path): array {
+  $rows = etds_qc_extract_xls_rows_from_biff($path);
+  if ($rows !== []) {
+    return $rows;
+  }
+
+  $sourcePs = str_replace("'", "''", $path);
+  $script = "\$ErrorActionPreference = 'Stop'; \$excel = \$null; \$workbook = \$null; \$sheet = \$null; \$usedRange = \$null; try { \$excel = New-Object -ComObject Excel.Application; \$excel.Visible = \$false; \$excel.DisplayAlerts = \$false; \$workbook = \$excel.Workbooks.Open('" . $sourcePs . "', 0, \$true); \$sheet = \$workbook.Worksheets.Item(1); \$usedRange = \$sheet.UsedRange; \$startRow = [int] \$usedRange.Row; \$endRow = \$startRow + [int] \$usedRange.Rows.Count - 1; \$startCol = [int] \$usedRange.Column; \$endCol = \$startCol + [int] \$usedRange.Columns.Count - 1; \$result = @(); for (\$r = \$startRow; \$r -le \$endRow; \$r++) { \$cells = @{}; for (\$c = \$startCol; \$c -le \$endCol; \$c++) { \$text = [string] \$sheet.Cells.Item(\$r, \$c).Text; if (-not [string]::IsNullOrWhiteSpace(\$text)) { \$cells[([string] (\$c - 1))] = \$text.Trim() } } if (\$cells.Count -gt 0) { \$result += @{ row_number = \$r; cells = \$cells } } } [Console]::Out.Write((\$result | ConvertTo-Json -Depth 5 -Compress)) } finally { if (\$usedRange -ne \$null) { [System.Runtime.InteropServices.Marshal]::ReleaseComObject(\$usedRange) | Out-Null } if (\$sheet -ne \$null) { [System.Runtime.InteropServices.Marshal]::ReleaseComObject(\$sheet) | Out-Null } if (\$workbook -ne \$null) { \$workbook.Close(\$false); [System.Runtime.InteropServices.Marshal]::ReleaseComObject(\$workbook) | Out-Null } if (\$excel -ne \$null) { \$excel.Quit(); [System.Runtime.InteropServices.Marshal]::ReleaseComObject(\$excel) | Out-Null } [GC]::Collect(); [GC]::WaitForPendingFinalizers(); }";
+  $result = etds_qc_run_powershell_script($script);
+  if (($result['code'] ?? 1) !== 0 || empty($result['output'])) {
+    return [];
+  }
+
+  $decoded = json_decode(implode("\n", (array) ($result['output'] ?? [])), true);
+  if (!is_array($decoded)) {
+    return [];
+  }
+
+  $rows = [];
+  foreach ($decoded as $row) {
+    if (!is_array($row)) {
+      continue;
+    }
+    $cells = [];
+    foreach ((array) ($row['cells'] ?? []) as $index => $value) {
+      $cells[(int) $index] = trim((string) $value);
+    }
+    if ($cells !== []) {
+      ksort($cells);
+      $rows[] = ['row_number' => (int) ($row['row_number'] ?? (count($rows) + 1)), 'cells' => $cells];
+    }
+  }
+  return $rows;
+}
+
+function etds_qc_convert_xls_to_xlsx(string $sessionId, string $path, string $documentId = ''): array {
+  if (etds_qc_windows_powershell() === null) {
+    return ['ok' => false, 'path' => '', 'mode' => 'xls_conversion_unavailable', 'note' => 'Legacy .xls conversion is not available on this host. Please install Microsoft Excel or upload the file as .xlsx.'];
+  }
+
+  $cacheDir = etds_qc_legacy_excel_cache_dir($sessionId);
+  $baseName = $documentId !== '' ? $documentId : pathinfo($path, PATHINFO_FILENAME);
+  $safeBase = preg_replace('/[^A-Za-z0-9._-]+/', '_', $baseName) ?? 'legacy_workbook';
+  $signature = substr(sha1($path . '|' . (string) @filemtime($path) . '|' . (string) @filesize($path)), 0, 12);
+  $targetPath = $cacheDir . '/' . $safeBase . '_' . $signature . '.xlsx';
+
+  if (is_file($targetPath)) {
+    return ['ok' => true, 'path' => $targetPath, 'mode' => 'xls_converted_cached', 'note' => 'Legacy .xls workbook reused from the case-local conversion cache.'];
+  }
+
+  $sourcePs = str_replace("'", "''", $path);
+  $targetPs = str_replace("'", "''", $targetPath);
+  $script = "\$ErrorActionPreference = 'Stop'; \$excel = \$null; \$workbook = \$null; try { \$excel = New-Object -ComObject Excel.Application; \$excel.Visible = \$false; \$excel.DisplayAlerts = \$false; \$workbook = \$excel.Workbooks.Open('" . $sourcePs . "', 0, \$true); \$workbook.SaveAs('" . $targetPs . "', 51); \$workbook.Close(\$false); } finally { if (\$workbook -ne \$null) { [System.Runtime.InteropServices.Marshal]::ReleaseComObject(\$workbook) | Out-Null } if (\$excel -ne \$null) { \$excel.Quit(); [System.Runtime.InteropServices.Marshal]::ReleaseComObject(\$excel) | Out-Null } [GC]::Collect(); [GC]::WaitForPendingFinalizers(); }";
+  $result = etds_qc_run_powershell_script($script);
+  $output = (array) ($result['output'] ?? []);
+  $exitCode = (int) ($result['code'] ?? 1);
+
+  if ($exitCode === 0 && is_file($targetPath)) {
+    return ['ok' => true, 'path' => $targetPath, 'mode' => 'xls_converted', 'note' => 'Legacy .xls workbook converted to a temporary case-local .xlsx file for extraction.'];
+  }
+
+  if (is_file($targetPath)) {
+    @unlink($targetPath);
+  }
+
+  $detail = trim(implode(' ', array_slice($output, 0, 3)));
+  return [
+    'ok' => false,
+    'path' => '',
+    'mode' => 'xls_conversion_failed',
+    'note' => 'Legacy .xls conversion failed on this host.' . ($detail !== '' ? (' ' . $detail) : ''),
+  ];
 }
 
 function etds_qc_find_pdf_converter(): ?string {
@@ -2537,10 +3222,47 @@ function etds_qc_extract_pdf_ocr_text(string $path): array {
   ];
 }
 
-function etds_qc_extract_tabular_document(string $path, string $extension): array {
+function etds_qc_extract_tabular_document(string $sessionId, string $path, string $extension, string $documentId = ''): array {
   return match ($extension) {
     'csv' => etds_qc_extract_csv($path),
     'xlsx' => etds_qc_extract_xlsx($path),
+    'xls' => (function () use ($path): array {
+      $rows = etds_qc_extract_xls_rows($path);
+      if ($rows === []) {
+        return ['columns' => [], 'records' => [], 'raw_text' => '', 'mode' => 'xls_direct_parse_failed', 'note' => 'Legacy .xls parsing could not read the workbook through the legacy workbook reader. Manual review may be required.'];
+      }
+      $rawText = etds_qc_tabular_rows_to_text($rows);
+      $salaryRegister = etds_qc_extract_salary_register_rows($rows);
+      if (($salaryRegister['records'] ?? []) !== []) {
+        $salaryRegister['raw_text'] = $rawText;
+        $salaryRegister['mode'] = 'xls_direct_excel_com';
+        $salaryRegister['note'] = 'Legacy .xls workbook parsed through the legacy workbook reader.';
+        return $salaryRegister;
+      }
+      $quarterlySalary = etds_qc_extract_quarterly_salary_rows($rows);
+      if (($quarterlySalary['records'] ?? []) !== []) {
+        $quarterlySalary['raw_text'] = $rawText;
+        $quarterlySalary['mode'] = 'xls_direct_excel_com';
+        $quarterlySalary['note'] = 'Legacy .xls workbook parsed through the legacy workbook reader.';
+        return $quarterlySalary;
+      }
+      $contractorWorking = etds_qc_extract_26q_contractor_rows($rows);
+      if (($contractorWorking['records'] ?? []) !== []) {
+        $contractorWorking['raw_text'] = $rawText;
+        $contractorWorking['mode'] = 'xls_direct_excel_com';
+        $contractorWorking['note'] = 'Legacy .xls workbook parsed through the legacy workbook reader.';
+        return $contractorWorking;
+      }
+      $flatRows = [];
+      foreach ($rows as $row) {
+        $flatRows[] = (array) ($row['cells'] ?? []);
+      }
+      $tabular = etds_qc_tabular_rows_to_records($flatRows);
+      $tabular['raw_text'] = $rawText;
+      $tabular['mode'] = 'xls_direct_excel_com';
+      $tabular['note'] = 'Legacy .xls workbook parsed through the legacy workbook reader.';
+      return $tabular;
+    })(),
     default => ['columns' => [], 'records' => []],
   };
 }
@@ -2570,13 +3292,16 @@ function etds_qc_extract_document_payload(string $sessionId, array $document): a
   $ocr = ['pages' => [], 'raw_text' => '', 'mode' => 'not_required'];
   $rawText = '';
 
-  if (in_array($extension, ['csv', 'xlsx'], true)) {
-    $tabular = etds_qc_extract_tabular_document($path, $extension);
-    $lines = [];
-    foreach (($tabular['records'] ?? []) as $record) {
-      $lines[] = implode(' ', array_map(static fn($value): string => (string) $value, $record));
+  if (in_array($extension, ['csv', 'xlsx', 'xls'], true)) {
+    $tabular = etds_qc_extract_tabular_document($sessionId, $path, $extension, (string) ($document['document_id'] ?? ''));
+    $rawText = trim((string) ($tabular['raw_text'] ?? ''));
+    if ($rawText === '') {
+      $lines = [];
+      foreach (($tabular['records'] ?? []) as $record) {
+        $lines[] = implode(' ', array_map(static fn($value): string => (string) $value, $record));
+      }
+      $rawText = trim(implode("\n", $lines));
     }
-    $rawText = trim(implode("\n", $lines));
   } elseif ($extension === 'pdf') {
     $pdfText = etds_qc_extract_pdf_text($path);
     $rawText = (string) ($pdfText['raw_text'] ?? '');
@@ -2725,7 +3450,51 @@ function etds_qc_extract_structured_entities(string $sessionId, array $document,
 
   foreach ($records as $index => $record) {
     $normalized = array_change_key_case($record, CASE_LOWER);
-    if (in_array($classification, ['salary_register', 'deductee_list', 'form_24q_working', 'form_26q_working'], true)) {
+    if ($classification === 'deductee_26q') {
+      $hasMeaningfulData = trim((string) ($normalized['deductee_name'] ?? '')) !== '' || trim((string) ($normalized['pan'] ?? '')) !== '' || trim((string) ($normalized['tds_amount'] ?? '')) !== '';
+      if (!$hasMeaningfulData) {
+        continue;
+      }
+      $confidence = etds_qc_extraction_record_confidence($normalized, ['deductee_name', 'pan', 'section_code', 'bill_amount', 'tds_amount', 'deduction_date']);
+      $challanReference = (string) ($normalized['challan_reference'] ?? $normalized['urn_or_crn'] ?? '');
+      $deductees[] = [
+        'deductee_id' => 'DED-' . str_pad((string) (count($deductees) + 1), 5, '0', STR_PAD_LEFT),
+        'document_id' => $document['document_id'] ?? '',
+        'fields' => [
+          etds_qc_field_payload('deductee_name', (string) ($normalized['deductee_name'] ?? ''), etds_qc_confidence_from_presence((string) ($normalized['deductee_name'] ?? ''), $confidence), $sourcePage),
+          etds_qc_field_payload('pan', strtoupper((string) ($normalized['pan'] ?? '')), etds_qc_confidence_from_presence((string) ($normalized['pan'] ?? ''), $confidence), $sourcePage),
+          etds_qc_field_payload('tds_amount', (string) ($normalized['tds_amount'] ?? ''), etds_qc_confidence_from_presence((string) ($normalized['tds_amount'] ?? ''), $confidence), $sourcePage),
+          etds_qc_field_payload('deduction_date', (string) ($normalized['deduction_date'] ?? ''), etds_qc_confidence_from_presence((string) ($normalized['deduction_date'] ?? ''), max(60, $confidence - 5)), $sourcePage),
+          etds_qc_field_payload('section_code', (string) ($normalized['section_code'] ?? ''), etds_qc_confidence_from_presence((string) ($normalized['section_code'] ?? ''), max(60, $confidence - 5)), $sourcePage),
+          etds_qc_field_payload('challan_reference', $challanReference, etds_qc_confidence_from_presence($challanReference, max(60, $confidence - 8)), $sourcePage),
+        ],
+        'confidence' => $confidence,
+      ];
+      $payments[] = [
+        'payment_id' => 'PAY-' . str_pad((string) (count($payments) + 1), 5, '0', STR_PAD_LEFT),
+        'document_id' => $document['document_id'] ?? '',
+        'voucher_number' => $challanReference,
+        'party_name' => (string) ($normalized['deductee_name'] ?? ''),
+        'pan' => strtoupper((string) ($normalized['pan'] ?? '')),
+        'amount' => (string) ($normalized['bill_amount'] ?? $normalized['payment_amount'] ?? ''),
+        'tds_amount' => (string) ($normalized['tds_amount'] ?? ''),
+        'payment_date' => (string) ($normalized['deduction_date'] ?? $normalized['date_of_payment'] ?? ''),
+        'section_code' => (string) ($normalized['section_code'] ?? ''),
+        'bank_name' => (string) ($normalized['bank_name'] ?? ''),
+        'bank_code' => (string) ($normalized['bank_code'] ?? ''),
+        'date_of_remittance' => (string) ($normalized['date_of_remittance'] ?? ''),
+        'month' => (string) ($normalized['month'] ?? ''),
+        'confidence' => $confidence,
+      ];
+      $recordRows[] = [
+        'record_id' => 'REC-' . str_pad((string) (count($recordRows) + 1), 5, '0', STR_PAD_LEFT),
+        'document_id' => $document['document_id'] ?? '',
+        'classification' => $classification,
+        'values' => $normalized,
+        'confidence' => $confidence,
+        'source_page' => $sourcePage,
+      ];
+    } elseif (in_array($classification, ['salary_register', 'deductee_list', 'form_24q_working', 'form_26q_working'], true)) {
       $hasMeaningfulData = trim((string) ($normalized['deductee_name'] ?? '')) !== '' || trim((string) ($normalized['pan'] ?? '')) !== '' || trim((string) ($normalized['tds_amount'] ?? '')) !== '';
       if (!$hasMeaningfulData) {
         continue;
@@ -2825,6 +3594,7 @@ function etds_qc_reload_source_data(string $sessionId, array $user): array {
   $confidenceScores = [];
   $fieldExtractedTotal = 0;
   $fieldMissingTotal = 0;
+  $processedContentHashes = [];
 
   foreach ($documents as &$document) {
     if (($document['is_removed'] ?? false) === true) {
@@ -2850,6 +3620,10 @@ function etds_qc_reload_source_data(string $sessionId, array $user): array {
     $document['extraction_confidence'] = $documentConfidence === [] ? (int) ($classification['confidence'] ?? 0) : (int) round(array_sum($documentConfidence) / count($documentConfidence));
     $ocrMode = (string) ($ocrPayload['mode'] ?? '');
     $ocrPageCount = count($ocrPayload['pages'] ?? []);
+    $payloadNote = trim((string) (($payload['tabular']['note'] ?? '') ?: ($payload['note'] ?? '')));
+    $contentHash = trim((string) ($document['content_hash'] ?? ''));
+    $isDuplicateContent = (($document['is_duplicate'] ?? false) === true && trim((string) ($document['duplicate_of'] ?? '')) !== '')
+      || ($contentHash !== '' && isset($processedContentHashes[$contentHash]));
     $isScannedPdfConverted = $ocrMode === 'pdf_ocr_scanned' && $ocrPageCount > 0;
     $isScannedPdfFailed = in_array($ocrMode, ['scanned_pdf_needs_manual_review', 'scanned_pdf_conversion_failed', 'scanned_pdf_ocr_failed'], true);
     $isScannedPdf = $extension === 'pdf' && ($isScannedPdfFailed || $isScannedPdfConverted);
@@ -2877,6 +3651,13 @@ function etds_qc_reload_source_data(string $sessionId, array $user): array {
         $document['extraction_note'] = 'PDF text extraction failed. The document may be scanned or image-based. Please upload page images or enable PDF-to-image OCR support.';
       }
     }
+    if ($payloadNote !== '') {
+      $document['extraction_note'] = $document['extraction_note'] !== '' ? ($document['extraction_note'] . ' ' . $payloadNote) : $payloadNote;
+    }
+    if ($isDuplicateContent) {
+      $duplicateNote = 'Duplicate upload detected. Structured rows were not merged again to avoid duplicate records.';
+      $document['extraction_note'] = $document['extraction_note'] !== '' ? ($document['extraction_note'] . ' ' . $duplicateNote) : $duplicateNote;
+    }
 
     if ($document['extraction_status'] === 'extraction_ready') {
       $documentsProcessed++;
@@ -2900,11 +3681,16 @@ function etds_qc_reload_source_data(string $sessionId, array $user): array {
         $deductor[$field] = $value['value'];
       }
     }
-    $allDeductees = array_merge($allDeductees, $structure['deductees']);
-    $allChallans = array_merge($allChallans, $structure['challans']);
-    $allSalary = array_merge($allSalary, $structure['salary']);
-    $allPayments = array_merge($allPayments, $structure['payments']);
-    $allRecords = array_merge($allRecords, $structure['records']);
+    if (!$isDuplicateContent) {
+      $allDeductees = array_merge($allDeductees, $structure['deductees']);
+      $allChallans = array_merge($allChallans, $structure['challans']);
+      $allSalary = array_merge($allSalary, $structure['salary']);
+      $allPayments = array_merge($allPayments, $structure['payments']);
+      $allRecords = array_merge($allRecords, $structure['records']);
+      if ($contentHash !== '') {
+        $processedContentHashes[$contentHash] = true;
+      }
+    }
 
     $ocr['documents'][] = [
       'document_id' => $document['document_id'] ?? '',
@@ -3051,7 +3837,10 @@ function etds_doctor_intelli_mode_v1(string $sessionId, array $user): array {
     $detectedType = 'unknown';
     $reason = '';
 
-    if (in_array($classification, ['salary_register', 'deductee_list', 'form_24q_working', 'form_26q_working'], true)) {
+    if ($classification === 'deductee_26q') {
+      $detectedType = 'non_salary_deductee';
+      $reason = 'Document classified as Form 140 / 26Q contractor payment working.';
+    } elseif (in_array($classification, ['salary_register', 'deductee_list', 'form_24q_working', 'form_26q_working'], true)) {
       $detectedType = 'salary_deductee';
       $reason = 'Document classified as ' . $classification . ' with salary/deductee data.';
     } elseif (in_array($classification, ['challan', 'bank_challan'], true)) {
@@ -3091,7 +3880,9 @@ function etds_doctor_intelli_mode_v1(string $sessionId, array $user): array {
   }
 
   $totalStaff = count($allDeductees) + count($allSalary);
+  $salaryRecordCount = count($allSalary);
   $totalTds = 0;
+  $totalBillAmount = 0;
   foreach ($allDeductees as $d) {
     foreach ($d['fields'] ?? [] as $f) {
       if (($f['field'] ?? '') === 'tds_amount' && ($f['value'] ?? '') !== '') {
@@ -3105,7 +3896,7 @@ function etds_doctor_intelli_mode_v1(string $sessionId, array $user): array {
   }
   foreach ($allPayments as $p) {
     $amt = (float) str_replace(',', '', (string) ($p['amount'] ?? ''));
-    if ($amt > 0) { $totalTds += $amt; }
+    if ($amt > 0) { $totalBillAmount += $amt; }
   }
 
   $totalChallan = 0;
@@ -3179,8 +3970,8 @@ function etds_doctor_intelli_mode_v1(string $sessionId, array $user): array {
     }
   }
 
-  if ($returnTypeCanonical !== '' && $totalStaff > 0 && in_array($returnTypeCanonical, ['26Q', '27Q', '27EQ'], true)) {
-    $findings[] = $nextFinding('medium', 'return_type_check', 'Return type is ' . etds_qc_return_type_label($returnType) . ' but salary/deductee records were found. Verify if this is expected.', 'Confirm return type matches the data uploaded.', 'return_type_check');
+  if ($returnTypeCanonical !== '' && $salaryRecordCount > 0 && in_array($returnTypeCanonical, ['26Q', '27Q', '27EQ'], true)) {
+    $findings[] = $nextFinding('medium', 'return_type_check', 'Return type is ' . etds_qc_return_type_label($returnType) . ' but salary records were found. Verify if this is expected.', 'Confirm return type matches the data uploaded.', 'return_type_check');
   }
 
   $hasMarchData = false;
@@ -3302,6 +4093,7 @@ function etds_doctor_intelli_mode_v1(string $sessionId, array $user): array {
     'total_deductees' => count($allDeductees),
     'total_tds' => $totalTds,
     'total_payments' => count($allPayments),
+    'total_bill_amount' => $totalBillAmount,
     'challan_count' => $challanCount,
     'total_challan' => $totalChallan,
     'challan_difference' => $difference,
