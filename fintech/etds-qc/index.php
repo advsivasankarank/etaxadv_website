@@ -56,6 +56,9 @@ function etds_qc_respond(bool $isAjax, string $redirect, string $type, string $m
 try {
 
 if ($action === 'login' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+  if (etds_qc_provisioning_required()) {
+    etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=login'), 'error', 'User provisioning required. Please contact the system administrator.');
+  }
   if (!rate_limit_check('login', 10)) {
     etds_qc_respond($isAjax, site_href('/fintech/etds-qc/?view=login'), 'error', 'Too many login attempts. Please wait 15 minutes and try again.');
   }
@@ -397,6 +400,15 @@ function etds_qc_nav_icon(string $name): string {
 }
 
 if ($view === 'login'):
+$page_title = 'eTDSDoc Internal Access | E Tax Advisors';
+$page_description = 'Internal TDS QC workspace for authorised E Tax Advisors staff.';
+$page_path = '/fintech/etds-qc/';
+$page_robots = 'noindex,nofollow,noarchive,nosnippet';
+$page_is_internal = true;
+$provisioningMessage = etds_qc_provisioning_required() ? etds_qc_provisioning_message() : '';
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+header('Pragma: no-cache');
+header('X-Robots-Tag: noindex, nofollow, noarchive, nosnippet');
 require_once dirname(__DIR__, 2) . '/includes/header.php';
 ?>
 <style>
@@ -413,7 +425,7 @@ require_once dirname(__DIR__, 2) . '/includes/header.php';
 .etds-login-card{width:100%;max-width:400px;background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,.08),0 1px 3px rgba(0,0,0,.04);padding:36px 32px;}
 .etds-login-card__eyebrow{font-size:11px;font-weight:700;color:#0d9488;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px;}
 .etds-login-card__title{font-size:24px;font-weight:700;color:#0f172a;margin-bottom:4px;}
-.etds-login-card__note{font-size:12px;color:#94a3b8;margin-bottom:24px;}
+.etds-login-card__note{font-size:12px;color:#94a3b8;margin-bottom:24px;line-height:1.5;}
 .etds-login-card .etds-fields{display:flex;flex-direction:column;gap:16px;}
 .etds-login-card .etds-field{display:flex;flex-direction:column;gap:5px;}
 .etds-login-card .etds-field label{font-size:12px;font-weight:600;color:#475569;}
@@ -425,16 +437,20 @@ require_once dirname(__DIR__, 2) . '/includes/header.php';
 .etds-login-card .btn-login-primary:hover{background:linear-gradient(135deg,#0f766e,#0d9488);box-shadow:0 4px 12px rgba(13,148,136,.3);}
 .etds-login-card .btn-login-secondary{display:block;text-align:center;padding:10px;border:1.5px solid #e2e8f0;border-radius:10px;background:#fff;color:#475569;font-size:13px;font-weight:500;text-decoration:none;transition:all .2s;}
 .etds-login-card .btn-login-secondary:hover{border-color:#0d9488;color:#0d9488;background:#f0fdfa;}
+body.etds-login-page .whatsapp-float,
+body.etds-login-page .mobile-action-bar { display: none !important; }
+body.etds-login-page .footer-message-btn { display: none !important; }
 @media(max-width:1024px){.etds-login-hero__left{padding:30px 40px;max-width:100%;}.etds-login-hero__right{flex:0 0 380px;padding:30px 40px;}.etds-login-hero__title{font-size:34px;}}
 @media(max-width:768px){.etds-login-hero{flex-direction:column;min-height:auto;padding:24px 0;}.etds-login-hero__left{padding:20px 24px;max-width:100%;}.etds-login-hero__right{flex:none;padding:0 24px 24px;}.etds-login-hero__title{font-size:28px;}}
 </style>
+<body class="etds-login-page">
 <main id="main-content">
   <section class="etds-login-hero">
     <div class="etds-login-hero__left">
       <div class="etds-login-hero__badge">Internal Access</div>
       <h1 class="etds-login-hero__title">eTDSDoc</h1>
       <p class="etds-login-hero__subtitle">Examine. Diagnose. Treat.</p>
-      <p class="etds-login-hero__desc">Internal TDS QC workspace for extracting, validating, diagnosing and preparing clean e-TDS data from Excel, PDF, image and challan files.</p>
+      <p class="etds-login-hero__desc">Internal TDS QC workspace for authorised E Tax Advisors staff. Extract, validate, diagnose and prepare clean e-TDS data from Excel, PDF, image and challan files.</p>
       <ul class="etds-login-hero__features">
         <li>Excel, PDF, image and scanned challan support</li>
         <li>Doctor Intelli Mode for e-TDS QC</li>
@@ -443,10 +459,13 @@ require_once dirname(__DIR__, 2) . '/includes/header.php';
     </div>
     <div class="etds-login-hero__right">
       <div class="etds-login-card">
-        <div class="etds-login-card__eyebrow">Internal Access</div>
+        <div class="etds-login-card__eyebrow">Internal Staff Login</div>
         <h2 class="etds-login-card__title">Sign In to eTDSDoc</h2>
-        <p class="etds-login-card__note">Authorised staff access only.</p>
+        <p class="etds-login-card__note">Authorised staff access only. All access and activity may be logged for audit and security purposes.</p>
         <?php etds_qc_render_flash($flash); ?>
+<?php if ($provisioningMessage !== ''): ?>
+        <div class="alert alert-warning" role="alert" style="font-size:12px;margin-bottom:16px;"><?= etds_qc_h($provisioningMessage) ?></div>
+<?php endif; ?>
         <form method="post" action="<?= etds_qc_h(site_href('/fintech/etds-qc/')) ?>">
           <?= csrf_field() ?>
           <input type="hidden" name="action" value="login">

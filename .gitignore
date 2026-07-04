@@ -5,6 +5,7 @@
 # Runtime case data
 storage/etds-qc/cases/
 storage/etds-qc/sessions/
+storage/security/rate_limits/
 
 # Runtime settings (counters, users)
 storage/etds-qc/settings/
@@ -41,6 +42,10 @@ ebal.etaxadv.com_old/
 support/
 tools/
 wordpress/
+
+!support/
+support/*
+!support/config.example.php
 
 # Unrelated files
 audit-report.html

@@ -3,16 +3,19 @@
 // E Tax Advisors - Support Config
 // ==============================
 
+require_once dirname(__DIR__) . '/includes/runtime_config.php';
+
 // DB Settings
 // Update these on the live server with your actual cPanel MySQL values.
 // Example live values shared by you:
 // DB_NAME => etaxadv_support
 // DB_USER => etaxadv_supportuser
 // DB_PASS => your live password
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'your_database_name');
-define('DB_USER', 'your_database_user');
-define('DB_PASS', 'your_database_password');
+$etaSupportDbConfig = eta_support_db_config();
+defined('DB_HOST') || define('DB_HOST', $etaSupportDbConfig['host']);
+defined('DB_NAME') || define('DB_NAME', $etaSupportDbConfig['name']);
+defined('DB_USER') || define('DB_USER', $etaSupportDbConfig['user']);
+defined('DB_PASS') || define('DB_PASS', $etaSupportDbConfig['pass']);
 
 // Site
 define('OFFICE_EMAIL', 'support@etaxadv.com');
@@ -51,6 +54,12 @@ function app_href(string $path): string {
 function db(): PDO {
   static $pdo = null;
   if ($pdo instanceof PDO) return $pdo;
+  if (!eta_support_db_is_configured()) {
+    if (eta_is_production()) {
+      throw new RuntimeException(eta_support_db_error_message());
+    }
+    throw new RuntimeException('Support database is not configured for this environment.');
+  }
   $dsn = "mysql:host=".DB_HOST.";dbname=".DB_NAME.";charset=utf8mb4";
   $pdo = new PDO($dsn, DB_USER, DB_PASS, [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,

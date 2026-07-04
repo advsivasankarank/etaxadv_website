@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/runtime_config.php';
 if (!isset($page_title)) {
   $page_title = "E Tax Advisors Private Limited";
 }
@@ -102,6 +103,8 @@ require_once __DIR__ . '/security.php';
 send_security_headers();
 
 $og_image = $og_image ?? '/assets/img/og-image.jpg';
+$googleSiteVerification = eta_google_site_verification();
+$googleAnalyticsId = eta_google_analytics_id();
 ?>
 <!doctype html>
 <html lang="en">
@@ -110,7 +113,7 @@ $og_image = $og_image ?? '/assets/img/og-image.jpg';
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title><?= htmlspecialchars($page_title) ?></title>
   <meta name="description" content="<?= htmlspecialchars($page_description) ?>" />
-  <meta name="robots" content="index,follow" />
+  <meta name="robots" content="<?= htmlspecialchars($page_robots ?? 'index,follow') ?>" />
   <link rel="canonical" href="<?= htmlspecialchars(page_url($page_path)) ?>" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="<?= htmlspecialchars($page_title) ?>" />
@@ -124,7 +127,9 @@ $og_image = $og_image ?? '/assets/img/og-image.jpg';
   <meta name="twitter:image" content="<?= htmlspecialchars(page_url($og_image)) ?>" />
   <link rel="icon" type="image/x-icon" href="<?= htmlspecialchars(site_href('/favicon.ico')) ?>" />
   <link rel="apple-touch-icon" href="<?= htmlspecialchars(site_href('/apple-touch-icon.png')) ?>" />
-  <meta name="google-site-verification" content="REPLACE_WITH_GSC_CODE" />
+<?php if ($googleSiteVerification !== null): ?>
+  <meta name="google-site-verification" content="<?= htmlspecialchars($googleSiteVerification) ?>" />
+<?php endif; ?>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
@@ -137,14 +142,16 @@ $og_image = $og_image ?? '/assets/img/og-image.jpg';
 <?php endif; ?>
   <script type="application/ld+json"><?= json_encode($organization_schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?></script>
 
+<?php if ($googleAnalyticsId !== null): ?>
   <!-- Google Analytics 4 -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=<?= htmlspecialchars($googleAnalyticsId) ?>"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'G-XXXXXXXXXX');
+    gtag('config', <?= json_encode($googleAnalyticsId, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>);
   </script>
+<?php endif; ?>
 </head>
 <body>
 

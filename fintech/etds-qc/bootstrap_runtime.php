@@ -17,6 +17,7 @@ const ETDS_QC_SESSIONS_ROOT = ETDS_QC_CASES_ROOT;
 const ETDS_QC_USERS_FILE = ETDS_QC_USERS_ROOT . '/users.json';
 const ETDS_QC_CONFIG_FILE = ETDS_QC_SETTINGS_ROOT . '/config.json';
 const ETDS_QC_COUNTER_FILE = ETDS_QC_SETTINGS_ROOT . '/counters.json';
+const ETDS_QC_PROVISIONING_FILE = ETDS_QC_SETTINGS_ROOT . '/provisioning.json';
 const ETDS_QC_MAX_UPLOAD_BYTES = 15 * 1024 * 1024;
 
 if (session_status() === PHP_SESSION_NONE) {
@@ -427,16 +428,7 @@ function etds_qc_bootstrap(): void {
   }
 
   if (!is_file(ETDS_QC_USERS_FILE)) {
-    etds_qc_write_json(ETDS_QC_USERS_FILE, [[
-      'id' => 'USR-0001',
-      'name' => 'System Administrator',
-      'email' => 'admin@etaxadv.local',
-      'role' => 'super_admin',
-      'password_hash' => '$2y$12$Kp.UmGs91Th5LFsLsAuEgO6KlFxW8kt8xkK8HvPk5a676gCi1ZaSa',
-      'status' => 'active',
-      'created_on' => etds_qc_now(),
-      'updated_on' => etds_qc_now(),
-    ]]);
+    etds_qc_write_json(ETDS_QC_USERS_FILE, []);
   }
 
   if (!is_file(ETDS_QC_CONFIG_FILE)) {
@@ -449,6 +441,12 @@ function etds_qc_bootstrap(): void {
 
   if (!is_file(ETDS_QC_COUNTER_FILE)) {
     etds_qc_write_json(ETDS_QC_COUNTER_FILE, ['case_seq' => [], 'audit_seq' => []]);
+  }
+
+  if (etds_qc_has_active_users()) {
+    etds_qc_clear_provisioning_required();
+  } else {
+    etds_qc_mark_provisioning_required('No active eTDSDoc users are configured. Manual provisioning is required before login can be used.');
   }
 
   etds_qc_bootstrap_masters();
@@ -507,6 +505,31 @@ function etds_qc_write_json(string $file, mixed $payload): void {
   }
 }
 
+function etds_qc_provisioning_state(): array {
+  $payload = etds_qc_load_json(ETDS_QC_PROVISIONING_FILE, []);
+  return is_array($payload) ? $payload : [];
+}
+
+function etds_qc_mark_provisioning_required(string $reason): void {
+  $current = etds_qc_provisioning_state();
+  $payload = [
+    'required' => true,
+    'reason' => $reason,
+    'updated_on' => etds_qc_now(),
+  ];
+  if (($current['required'] ?? false) === true && (string) ($current['reason'] ?? '') === $reason) {
+    return;
+  }
+  etds_qc_write_json(ETDS_QC_PROVISIONING_FILE, $payload);
+  error_log('eTDSDoc provisioning required: ' . $reason);
+}
+
+function etds_qc_clear_provisioning_required(): void {
+  if (is_file(ETDS_QC_PROVISIONING_FILE)) {
+    @unlink(ETDS_QC_PROVISIONING_FILE);
+  }
+}
+
 function etds_qc_detect_mime_type(string $path): string {
   if (function_exists('mime_content_type')) {
     $detected = @mime_content_type($path);
@@ -532,6 +555,28 @@ function etds_qc_config(): array {
 function etds_qc_users(): array {
   $users = etds_qc_load_json(ETDS_QC_USERS_FILE, []);
   return is_array($users) ? $users : [];
+}
+
+function etds_qc_has_active_users(): bool {
+  foreach (etds_qc_users() as $user) {
+    if (($user['status'] ?? '') === 'active' && !empty($user['email']) && !empty($user['password_hash'])) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function etds_qc_provisioning_required(): bool {
+  if (!is_file(ETDS_QC_USERS_FILE)) {
+    return true;
+  }
+  return !etds_qc_has_active_users();
+}
+
+function etds_qc_provisioning_message(): string {
+  $state = etds_qc_provisioning_state();
+  $reason = trim((string) ($state['reason'] ?? 'No active eTDSDoc users are configured.'));
+  return $reason !== '' ? $reason : 'No active eTDSDoc users are configured.';
 }
 
 function etds_qc_current_user(): ?array {
