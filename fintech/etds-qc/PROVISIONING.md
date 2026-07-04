@@ -4,37 +4,35 @@ Phase 1 hardening disables automatic creation of a default privileged user.
 
 For a fresh install:
 
-1. Ensure `storage/etds-qc/users/users.json` exists.
-2. Add at least one active user record with:
-   - `id`
-   - `name`
-   - `email`
-   - `role`
-   - `password_hash`
-   - `status`
-   - `created_on`
-   - `updated_on`
-3. Use PHP to generate a password hash locally:
+1. Ensure PHP CLI is available on the server or workstation.
+2. Run the provisioning utility:
 
 ```bash
-php -r "echo password_hash('ChangeThisPasswordNow!', PASSWORD_DEFAULT), PHP_EOL;"
+php fintech/etds-qc/tools/provision_admin.php --email=admin@example.com
 ```
 
-Example user structure:
+3. Enter the password when prompted.
+4. The utility writes the hashed password into `storage/etds-qc/users/users.json` and clears the provisioning-required state.
 
-```json
-[
-  {
-    "id": "USR-0001",
-    "name": "System Administrator",
-    "email": "admin@example.com",
-    "role": "super_admin",
-    "password_hash": "$2y$12$replace_this_with_a_real_hash",
-    "status": "active",
-    "created_on": "2026-07-04T10:00:00+05:30",
-    "updated_on": "2026-07-04T10:00:00+05:30"
-  }
-]
+To rotate or replace an existing admin email:
+
+```bash
+php fintech/etds-qc/tools/provision_admin.php --current-email=admin@etaxadv.local --email=secure-admin@example.com --name="System Administrator"
 ```
+
+To provide the password non-interactively:
+
+```bash
+php fintech/etds-qc/tools/provision_admin.php --email=admin@example.com --password="Use-A-Strong-Unique-Password!"
+```
+
+The utility:
+
+1. Refuses blank or weak passwords.
+2. Uses `password_hash()` to store the password securely.
+3. Never prints the password back to the terminal.
+4. Updates only local runtime storage and does not change any tracked application code or workflow data.
+
+If the older `admin@etaxadv.local` legacy admin record is still present in `users.json`, run the rotation command above to replace it with a real administrator email and a new password.
 
 If no active users are configured, the login page will show a provisioning-required message and authentication will remain disabled until a valid user is added.

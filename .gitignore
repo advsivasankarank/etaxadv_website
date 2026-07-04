@@ -46,6 +46,8 @@ wordpress/
 !support/
 support/*
 !support/config.example.php
+!fintech/etds-qc/tools/
+!fintech/etds-qc/tools/provision_admin.php
 
 # Unrelated files
 audit-report.html
