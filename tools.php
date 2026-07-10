@@ -49,7 +49,7 @@ require_once __DIR__ . '/includes/header.php';
           <div class="feature-icon">EB</div>
           <h3>e-BAL</h3>
           <p>Internal balance sheet, profit and loss, PDF output and XML-linked trial balance support.</p>
-          <a class="service-link" href="tools/e-bal/">Open e-BAL</a>
+          <a class="service-link" href="https://ebal.etaxadv.com" target="_blank" rel="noopener noreferrer">Open e-BAL</a>
         </article>
         <article class="card service-card">
           <div class="feature-icon">SUP</div>

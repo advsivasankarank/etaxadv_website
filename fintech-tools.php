@@ -41,7 +41,7 @@ require_once __DIR__ . '/includes/header.php';
           <span class="ft-btn">View Product</span>
         </a>
 
-        <a class="ft-card" href="/e-bal.php">
+        <a class="ft-card" href="https://ebal.etaxadv.com" target="_blank" rel="noopener noreferrer">
           <h3>e-Bal</h3>
           <p class="ft-subtitle">Financial Reporting Automation</p>
           <p class="ft-desc">Preparation of Schedule III compliant financial statements under the Companies Act, 2013.</p>
