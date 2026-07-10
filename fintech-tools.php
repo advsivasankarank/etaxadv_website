@@ -41,13 +41,17 @@ require_once __DIR__ . '/includes/header.php';
           <span class="ft-btn">View Product</span>
         </a>
 
-        <a class="ft-card" href="https://ebal.etaxadv.com" target="_blank" rel="noopener noreferrer">
+        <article class="ft-card ft-card-live">
+          <span class="ft-tag">Live Product</span>
           <h3>e-Bal</h3>
           <p class="ft-subtitle">Financial Reporting Automation</p>
           <p class="ft-desc">Preparation of Schedule III compliant financial statements under the Companies Act, 2013.</p>
-          <span class="ft-status">IN DEVELOPMENT</span>
-          <span class="ft-btn">View Product</span>
-        </a>
+          <span class="ft-status ft-status-live">Live on Web</span>
+          <div class="ft-actions">
+            <a class="ft-btn ft-btn-primary" href="https://ebal.etaxadv.com" target="_blank" rel="noopener noreferrer">Open App</a>
+            <a class="ft-btn ft-btn-secondary" href="https://ebal.etaxadv.com/demo_request.php" target="_blank" rel="noopener noreferrer">Request Demo</a>
+          </div>
+        </article>
 
         <a class="ft-card" href="/salpro.php">
           <h3>SalPro</h3>
