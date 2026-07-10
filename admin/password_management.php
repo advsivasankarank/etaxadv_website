@@ -1,13 +1,7 @@
 <?php
-require_once __DIR__ . '/../support/config.php';
+require_once __DIR__ . '/_auth.php';
 
-session_name('ENQUIRIES_ADMIN');
-session_start();
-
-if (empty($_SESSION['enq_auth']) || ($_SESSION['enq_role'] ?? '') !== 'admin') {
-  header('Location: login.php');
-  exit;
-}
+$currentUser = enq_auth_require_admin();
 
 if (empty($_SESSION['csrf_token'])) {
   $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
@@ -16,58 +10,6 @@ if (empty($_SESSION['csrf_token'])) {
 $csrf_token = $_SESSION['csrf_token'];
 $message = '';
 $message_type = '';
-
-function validate_password_strength(string $p): ?string {
-  if (strlen($p) < 10) return 'Password must be at least 10 characters.';
-  if (!preg_match('/[A-Z]/', $p)) return 'Password must contain at least one uppercase letter.';
-  if (!preg_match('/[a-z]/', $p)) return 'Password must contain at least one lowercase letter.';
-  if (!preg_match('/[0-9]/', $p)) return 'Password must contain at least one number.';
-  if (!preg_match('/[^A-Za-z0-9]/', $p)) return 'Password must contain at least one special character.';
-  return null;
-}
-
-function update_config_hash(string $constant_name, string $new_hash): bool {
-  $config_path = __DIR__ . '/../support/config.php';
-  if (!is_writable($config_path)) return false;
-
-  $fp = fopen($config_path, 'c+');
-  if (!$fp || !flock($fp, LOCK_EX)) {
-    if ($fp) fclose($fp);
-    return false;
-  }
-
-  $content = stream_get_contents($fp);
-  if ($content === false) {
-    flock($fp, LOCK_UN);
-    fclose($fp);
-    return false;
-  }
-
-  $quoted = preg_quote($constant_name, '/');
-  $pattern = "/(define\s*\(\s*'{$quoted}'\s*,\s*')[^']*(')/";
-  $replacement = "\${1}{$new_hash}\${2}";
-
-  $new_content = preg_replace($pattern, $replacement, $content, 1);
-
-  if ($new_content === null || $new_content === $content) {
-    flock($fp, LOCK_UN);
-    fclose($fp);
-    return false;
-  }
-
-  ftruncate($fp, 0);
-  rewind($fp);
-  fwrite($fp, $new_content);
-  fflush($fp);
-  flock($fp, LOCK_UN);
-  fclose($fp);
-
-  if (function_exists('opcache_invalidate')) {
-    opcache_invalidate($config_path, true);
-  }
-
-  return true;
-}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $submitted_token = $_POST['csrf_token'] ?? '';
@@ -83,50 +25,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $new_pwd      = $_POST['new_password'] ?? '';
       $confirm_pwd  = $_POST['confirm_password'] ?? '';
 
-      if (!password_verify($current_pwd, ADMIN_PASSWORD_HASH)) {
-        $message = 'Invalid current password.';
-        $message_type = 'err';
-      } elseif ($new_pwd !== $confirm_pwd) {
+      if ($new_pwd !== $confirm_pwd) {
         $message = 'Passwords do not match.';
         $message_type = 'err';
-      } elseif ($err = validate_password_strength($new_pwd)) {
-        $message = $err;
-        $message_type = 'err';
       } else {
-        $new_hash = password_hash($new_pwd, PASSWORD_DEFAULT);
-        if (update_config_hash('ADMIN_PASSWORD_HASH', $new_hash)) {
+        $err = enq_auth_change_password((string) $currentUser['id'], (string) $current_pwd, (string) $new_pwd);
+        if ($err === null) {
           $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
           $message = 'Admin password updated successfully.';
           $message_type = 'ok';
         } else {
-          $message = 'Failed to update configuration. Check file permissions.';
+          $message = $err;
           $message_type = 'err';
         }
       }
     } elseif ($action === 'reset_bo') {
-      $current_admin_pwd = $_POST['current_admin_password'] ?? '';
-      $new_bo_pwd        = $_POST['new_bo_password'] ?? '';
-      $confirm_bo_pwd    = $_POST['confirm_bo_password'] ?? '';
-
-      if (!password_verify($current_admin_pwd, ADMIN_PASSWORD_HASH)) {
-        $message = 'Invalid current Admin password.';
-        $message_type = 'err';
-      } elseif ($new_bo_pwd !== $confirm_bo_pwd) {
-        $message = 'Passwords do not match.';
-        $message_type = 'err';
-      } elseif ($err = validate_password_strength($new_bo_pwd)) {
-        $message = $err;
+      $target_email = trim((string) ($_POST['reset_email'] ?? ''));
+      if ($target_email === '') {
+        $message = 'Select a user email.';
         $message_type = 'err';
       } else {
-        $new_hash = password_hash($new_bo_pwd, PASSWORD_DEFAULT);
-        if (update_config_hash('BO_PASSWORD_HASH', $new_hash)) {
-          $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-          $message = 'BO password reset successfully.';
-          $message_type = 'ok';
-        } else {
-          $message = 'Failed to update configuration. Check file permissions.';
-          $message_type = 'err';
-        }
+        enq_auth_send_reset_link($target_email);
+        $message = 'If the user exists and is active, a password setup/reset email has been sent.';
+        $message_type = 'ok';
+      }
+    } elseif ($action === 'create_user') {
+      $new_name = trim((string) ($_POST['new_user_name'] ?? ''));
+      $new_email = trim((string) ($_POST['new_user_email'] ?? ''));
+      $new_role = trim((string) ($_POST['new_user_role'] ?? 'bo'));
+
+      $err = enq_auth_create_user($new_name, $new_email, $new_role);
+      if ($err === null) {
+        $message = 'User created successfully. A set-password email has been sent.';
+        $message_type = 'ok';
+      } else {
+        $message = $err;
+        $message_type = 'err';
       }
     } else {
       $message = 'Invalid action.';
@@ -163,7 +97,7 @@ require_once __DIR__ . '/../includes/header.php';
 
       <div class="card" style="padding:32px;">
         <h3 style="margin:0 0 6px;font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--navy);">Change Admin Password</h3>
-        <p style="margin:0 0 20px;color:var(--gray-600);font-size:13px;">Update your own admin login password.</p>
+        <p style="margin:0 0 20px;color:var(--gray-600);font-size:13px;">Update your own admin login password for <?= htmlspecialchars((string) ($currentUser['email'] ?? '')) ?>.</p>
         <form method="post">
           <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
           <input type="hidden" name="action" value="change_admin">
@@ -185,28 +119,54 @@ require_once __DIR__ . '/../includes/header.php';
       </div>
 
       <div class="card" style="padding:32px;">
-        <h3 style="margin:0 0 6px;font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--navy);">Reset BO Password</h3>
-        <p style="margin:0 0 20px;color:var(--gray-600);font-size:13px;">Reset the Back Office login password. Only Admin can perform this action.</p>
+        <h3 style="margin:0 0 6px;font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--navy);">Send Password Reset Link</h3>
+        <p style="margin:0 0 20px;color:var(--gray-600);font-size:13px;">Send a secure password setup/reset email to an active enquiries user. Only Admin can perform this action.</p>
         <form method="post">
           <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
           <input type="hidden" name="action" value="reset_bo">
           <div class="field" style="margin-bottom:14px;">
-            <label for="acp1">Your Admin Password</label>
-            <input class="input" id="acp1" name="current_admin_password" type="password" required autocomplete="current-password">
+            <label for="reset_email">User Email</label>
+            <select class="input" id="reset_email" name="reset_email" required>
+              <option value="">Select a user</option>
+<?php foreach (enq_auth_load_users() as $user): ?>
+<?php if (($user['status'] ?? '') === 'active'): ?>
+              <option value="<?= htmlspecialchars((string) ($user['email'] ?? '')) ?>"><?= htmlspecialchars((string) ($user['email'] ?? '')) ?> (<?= htmlspecialchars((string) ($user['role'] ?? 'user')) ?>)</option>
+<?php endif; ?>
+<?php endforeach; ?>
+            </select>
           </div>
-          <div class="field" style="margin-bottom:14px;">
-            <label for="bop1">New BO Password</label>
-            <input class="input" id="bop1" name="new_bo_password" type="password" required autocomplete="new-password" minlength="10">
-          </div>
-          <div class="field" style="margin-bottom:16px;">
-            <label for="bop2">Confirm New BO Password</label>
-            <input class="input" id="bop2" name="confirm_bo_password" type="password" required autocomplete="new-password" minlength="10">
-          </div>
-          <p style="margin:0 0 14px;font-size:11px;color:var(--gray-400);">Min 10 characters, 1 uppercase, 1 lowercase, 1 number, 1 special character.</p>
-          <button class="btn btn-gold" type="submit">Reset BO Password</button>
+          <p style="margin:0 0 14px;font-size:11px;color:var(--gray-400);">The email is sent from support@etaxadv.com with a secure time-limited link.</p>
+          <button class="btn btn-gold" type="submit">Send Reset Link</button>
         </form>
       </div>
 
+    </div>
+
+    <div class="card" style="padding:32px;margin-top:24px;">
+      <h3 style="margin:0 0 6px;font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--navy);">Create User</h3>
+      <p style="margin:0 0 20px;color:var(--gray-600);font-size:13px;">Create a new enquiries follow-up user and send a first-time set-password link from support@etaxadv.com.</p>
+      <form method="post">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
+        <input type="hidden" name="action" value="create_user">
+        <div style="display:grid;grid-template-columns:1fr 1fr 180px auto;gap:14px;align-items:end;">
+          <div class="field">
+            <label for="new_user_name">Name</label>
+            <input class="input" id="new_user_name" name="new_user_name" required>
+          </div>
+          <div class="field">
+            <label for="new_user_email">Email</label>
+            <input class="input" id="new_user_email" name="new_user_email" type="email" required>
+          </div>
+          <div class="field">
+            <label for="new_user_role">Role</label>
+            <select class="input" id="new_user_role" name="new_user_role">
+              <option value="bo">Back Office</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" type="submit">Create User</button>
+        </div>
+      </form>
     </div>
   </div>
 </section>

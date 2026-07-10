@@ -1,22 +1,16 @@
 <?php
-require_once __DIR__ . '/../support/config.php';
+require_once __DIR__ . '/_auth.php';
 
-session_name('ENQUIRIES_ADMIN');
-session_start();
+enq_auth_session_start();
 
 if (isset($_GET['logout'])) {
-  session_unset();
-  session_destroy();
+  enq_auth_logout();
   header('Location: login.php');
   exit;
 }
 
-if (empty($_SESSION['enq_auth'])) {
-  header('Location: login.php');
-  exit;
-}
-
-$is_admin = ($_SESSION['enq_role'] ?? '') === 'admin';
+$currentUser = enq_auth_require_auth();
+$is_admin = ($currentUser['role'] ?? '') === 'admin';
 
 $valid_statuses = ['new', 'contacted', 'appointment_fixed', 'consultation_completed', 'converted', 'closed'];
 
@@ -132,7 +126,7 @@ require_once __DIR__ . '/../includes/header.php';
     <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:32px;">
       <div>
         <h1 style="margin:0;font-family:var(--font-display);font-size:28px;font-weight:700;color:var(--navy);">Consultation Workflow</h1>
-        <p style="margin:4px 0 0;color:var(--gray-600);font-size:14px;"><?= count($enquiries) ?> total &middot; <span style="text-transform:capitalize;"><?= $is_admin ? 'Admin' : 'BO' ?></span></p>
+        <p style="margin:4px 0 0;color:var(--gray-600);font-size:14px;"><?= count($enquiries) ?> total &middot; <span style="text-transform:capitalize;"><?= $is_admin ? 'Admin' : 'BO' ?></span> &middot; <?= htmlspecialchars((string) ($currentUser['email'] ?? '')) ?></p>
       </div>
       <div style="display:flex;gap:8px;">
         <?php if ($is_admin): ?>

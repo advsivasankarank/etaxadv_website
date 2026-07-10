@@ -1,0 +1,16 @@
+[
+  {
+    "id": "ENQ-ADMIN-001",
+    "name": "Administrator",
+    "email": "etaxpdy@gmail.com",
+    "role": "admin",
+    "status": "active",
+    "must_set_password": true,
+    "password_hash": null,
+    "reset_token_hash": null,
+    "reset_expires_at": null,
+    "last_login_at": null,
+    "created_at": "2026-07-11T00:00:00+05:30",
+    "updated_at": "2026-07-11T00:00:00+05:30"
+  }
+]
