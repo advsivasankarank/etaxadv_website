@@ -515,6 +515,93 @@ main { display: block; }
   padding: 16px 0;
 }
 
+.google-review-section {
+  padding-top: 40px;
+}
+.google-review-shell {
+  display: grid;
+  grid-template-columns: 1.15fr .85fr;
+  gap: 24px;
+}
+.google-review-summary,
+.google-review-points {
+  height: 100%;
+}
+.google-review-kicker {
+  margin: 0 0 12px;
+  color: var(--gold);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.google-review-stars {
+  margin: 0 0 14px;
+  color: var(--gold);
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: .18em;
+}
+.google-review-summary h3,
+.google-review-points h3,
+.contact-review-copy h3 {
+  margin: 0 0 12px;
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--navy);
+}
+.google-review-summary p,
+.google-review-points p,
+.contact-review-copy p {
+  color: var(--gray-600);
+}
+.google-review-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+.contact-review-strip {
+  display: grid;
+  grid-template-columns: 1.2fr .8fr;
+  gap: 20px;
+  align-items: center;
+  padding: 28px 32px;
+  margin-bottom: 28px;
+  border: 1px solid var(--gray-100);
+  border-radius: var(--radius-md);
+  background: var(--white);
+  box-shadow: var(--shadow-xs);
+}
+.contact-review-copy p:last-child {
+  margin-bottom: 0;
+}
+.contact-review-actions {
+  display: grid;
+  justify-items: start;
+  gap: 16px;
+}
+.contact-review-qr {
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+}
+.contact-review-qr img {
+  width: 108px;
+  height: 108px;
+  display: block;
+  border: 1px solid var(--gray-100);
+  border-radius: 12px;
+  background: var(--white);
+  padding: 8px;
+}
+.contact-review-qr span {
+  color: var(--gray-600);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
 /* ============================================
    ABOUT TILES — Premium Two-Column
    ============================================ */
@@ -1304,6 +1391,8 @@ textarea.input { min-height: 120px; resize: vertical; }
   .nav { display: none; }
   .hamburger { display: block; }
   .trust-bar-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .google-review-shell,
+  .contact-review-strip { grid-template-columns: 1fr; }
   .core-services-grid { grid-template-columns: repeat(2, 1fr); }
   .about-tiles-grid { grid-template-columns: 1fr; }
   .about-vmc-grid { grid-template-columns: 1fr; }
@@ -1336,6 +1425,10 @@ textarea.input { min-height: 120px; resize: vertical; }
   .section-compact { padding: 28px 0; }
   .trust-bar-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .trust-bar-item strong { font-size: 20px; }
+  .google-review-actions { flex-direction: column; align-items: stretch; }
+  .contact-review-strip { padding: 24px; }
+  .contact-review-actions { justify-items: stretch; }
+  .contact-review-qr { justify-items: start; }
   .section-header { margin-bottom: 24px; }
   .ft-grid { grid-template-columns: 1fr; }
   .about-tile { padding: 28px; }

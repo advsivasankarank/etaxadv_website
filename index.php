@@ -2,6 +2,7 @@
 $page_title = "E Tax Advisors Private Limited — Tax, Legal & Compliance Advisory";
 $page_description = "Integrated Tax, Legal, Compliance and Business Advisory services across India. Led by K. Sivasankaran with nearly three decades of experience. Serving 1000+ clients with PAN India support.";
 $page_path = '/index.php';
+$google_review_url = 'https://g.page/r/CXjrmuq5lzjxEAI/review';
 
 require_once __DIR__ . '/includes/header.php';
 ?>
@@ -45,6 +46,36 @@ require_once __DIR__ . '/includes/header.php';
           </div>
           <p class="hero-cin">CIN: U74120PY2015PTC003005</p>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt google-review-section">
+    <div class="container">
+      <div class="section-header centered">
+        <p class="section-label">Google Reviews</p>
+        <h2 class="section-title">Independent client feedback that strengthens trust before the first conversation</h2>
+        <p class="section-intro">Public Google reviews help new clients evaluate service quality, responsiveness and professionalism before booking a consultation.</p>
+      </div>
+      <div class="google-review-shell">
+        <article class="card google-review-summary">
+          <p class="google-review-kicker">Google Business Profile</p>
+          <div class="google-review-stars" aria-label="Five star review platform">★★★★★</div>
+          <h3>See how clients review E Tax Advisors on Google</h3>
+          <p>Browse public client feedback or share your own experience after working with our team on tax, legal, compliance or advisory matters.</p>
+          <div class="google-review-actions">
+            <a class="btn btn-primary btn-lg" href="<?= htmlspecialchars($google_review_url) ?>" target="_blank" rel="noopener noreferrer">Review Us on Google</a>
+            <a class="btn btn-outline btn-lg" href="<?= htmlspecialchars(site_href('/contact.php')) ?>">Book Consultation</a>
+          </div>
+        </article>
+        <article class="card google-review-points">
+          <h3>Why this matters to new clients</h3>
+          <ul class="list-clean">
+            <li>Public reviews add independent credibility beyond website claims.</li>
+            <li>Prospective clients can assess responsiveness, professionalism and delivery confidence.</li>
+            <li>Existing clients get a simple route to share feedback after successful engagements.</li>
+          </ul>
+        </article>
       </div>
     </div>
   </section>

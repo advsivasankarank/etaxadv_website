@@ -4,6 +4,7 @@ require_once __DIR__ . '/includes/contact-handler.php';
 $page_title = "Contact & Consultation | E Tax Advisors";
 $page_description = "Book a consultation with E Tax Advisors Private Limited for tax, legal, compliance, bookkeeping and representation requirements.";
 $page_path = '/contact.php';
+$google_review_url = 'https://g.page/r/CXjrmuq5lzjxEAI/review';
 
 $consult_result = null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'contact_consult') {
@@ -64,6 +65,22 @@ require_once __DIR__ . '/includes/header.php';
         <p class="section-label">Consultation Request</p>
         <h2 class="section-title">How Can We Assist You?</h2>
         <p class="section-intro">Select the service area and consultation mode that best suits your requirement.</p>
+      </div>
+
+      <div class="contact-review-strip">
+        <div class="contact-review-copy">
+          <p class="google-review-kicker">Google Reviews</p>
+          <h3>Want extra confidence before you book?</h3>
+          <p>Review our public Google feedback before submitting your consultation request, or leave your own review after working with us.</p>
+        </div>
+        <div class="contact-review-actions">
+          <div class="google-review-stars" aria-label="Five star review platform">★★★★★</div>
+          <a class="btn btn-outline btn-lg" href="<?= htmlspecialchars($google_review_url) ?>" target="_blank" rel="noopener noreferrer">Open Google Reviews</a>
+          <div class="contact-review-qr">
+            <img src="<?= htmlspecialchars(site_href('/assets/img/google-review-qr.png')) ?>" alt="QR code for Google review page" />
+            <span>Scan to open the Google review page</span>
+          </div>
+        </div>
       </div>
 
       <div class="consult-shell">
