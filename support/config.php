@@ -19,8 +19,8 @@ defined('DB_PASS') || define('DB_PASS', $etaSupportDbConfig['pass']);
 
 // Site
 define('OFFICE_EMAIL', 'support@etaxadv.com');
-define('BO_PASSWORD_HASH', '$2y$12$jUBtFMhu/WdedQsmwJLXbu/M2Zj8Fxt7ZoPSy5a.4sH6NmZ/gcSce');
-define('ADMIN_PASSWORD_HASH', '$2y$12$ivdWha1Webf8ptxvOLbHtuEZo2mNg/ni3qN/hl2rub0iWYAgMVNSa');
+define('BO_PASSWORD_HASH', '$2y$12$nxLMSpoMs3yBzDIDkAAveejhvN3mKF5cE3R1igD55R5cYfyZbEyO6');
+define('ADMIN_PASSWORD_HASH', '$2y$12$w83AatgIZ5U6bRv6k0B6Pegveghf9Rwl3QUOA.ikaHcgh95cRhR2O');
 define('FROM_EMAIL', 'support@etaxadv.com');
 define('SITE_NAME', 'E Tax Advisors Private Limited');
 define('SESSION_NAME', 'ETAX_SUPPORT');
